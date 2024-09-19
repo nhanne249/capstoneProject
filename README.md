@@ -11,4 +11,4 @@ Dự án này là kênh thương mại điện tử về sách
 ```bash
 // Frontend
 cd Frontend
-nppm run dev
+npm run dev
