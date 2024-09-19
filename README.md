@@ -9,6 +9,6 @@ Dự án này là kênh thương mại điện tử về sách
 
 ## Cách chạy
 ```bash
-- Frontend
-+ cd Frontend
-+  nppm run dev
+// Frontend
+cd Frontend
+nppm run dev
