@@ -6,7 +6,11 @@ export default {
     "./src/main.jsx"
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        'suitable': '1rem'
+      }
+    },
   },
   plugins: [],
 }
