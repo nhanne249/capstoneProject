@@ -11,8 +11,8 @@ function App() {
           ? privateRouter.map((routers) => {
               console.log(routers);
             })
-          : publicRouter.map((routers) => {
-              return routers.map((route, index) => {
+          : publicRouter.map((router) => {
+              return router.map((route, index) => {
                 return (
                   <Route
                     path={route.path}

@@ -1,5 +1,5 @@
-import Main from "../../pages/Main/index";
 import LayoutPage from "../../layouts";
+import Main from "../../pages/Main/index";
 
 const mainRouter = [
   {
@@ -12,6 +12,10 @@ const mainRouter = [
       },
       {
         path: "main",
+        element: Main,
+      },
+      {
+        path: "about",
         element: Main,
       },
     ]
