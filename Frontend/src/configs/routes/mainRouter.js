@@ -1,5 +1,7 @@
 import LayoutPage from "../../layouts";
 import Main from "../../pages/Main/index";
+import SignIn from "../../pages/SignIn";
+import SignUp from "../../pages/SignUp";
 
 const mainRouter = [
   {
@@ -7,15 +9,19 @@ const mainRouter = [
     element: LayoutPage,
     children: [
       {
-        path: "*",
-        element: Main,
-      },
-      {
         path: "main",
         element: Main,
       },
       {
-        path: "about",
+        path: "signin",
+        element: SignIn,
+      },
+      {
+        path: "signup",
+        element: SignUp,
+      },
+      {
+        path: "*", 
         element: Main,
       },
     ]

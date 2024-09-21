@@ -41,6 +41,10 @@ const HeaderPage = () => {
     console.log(value);
   };
 
+  const handleProfileClick = () => {
+    navigate('/signin')
+  }
+
   return (
     <div className="bg-transparent flex justify-between">
       <Menu
@@ -59,6 +63,7 @@ const HeaderPage = () => {
         <Button
           icon={<UserOutlined />}
           className="border-none text-teal-600 shadow-none"
+          onClick={handleProfileClick}
         />
         <Button
           icon={<ShoppingCartOutlined />}
