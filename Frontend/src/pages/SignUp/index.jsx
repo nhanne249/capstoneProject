@@ -1,7 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "./styles.scss";
 
-import { Button, Checkbox, Form, Grid, Input, theme, Typography } from "antd";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Grid,
+  Input,
+  theme,
+  Typography,
+  Row,
+  Col,
+} from "antd";
 import CardCustom from "../../utils/components/card";
 
 import cover from "/home/quanghia/unidata/myProjects/uniProject/capstoneProject/Frontend/src/assets/images/loginCover.png";
@@ -79,20 +90,40 @@ export default function SignUp() {
           onFinish={onFinish}
           layout="vertical"
           requiredMark="optional"
-          className="grid-col-3"
+          className="custom-form"
         >
-          <Form.Item
-            name="username"
-            rules={[
-              {
-                type: "text",
-                required: true,
-                message: "Please input your Username!",
-              },
-            ]}
-          >
-            <Input prefix={<UserOutlined />} placeholder="Username" />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="username"
+                rules={[
+                  {
+                    type: "text",
+                    required: true,
+                    message: "Please input your Username!",
+                  },
+                ]}
+              >
+                <Input prefix={<UserOutlined />} placeholder="Username" />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item
+                name="phone"
+                rules={[
+                  {
+                    type: "number",
+                    required: true,
+                    message: "Please input your phone number!",
+                  },
+                ]}
+              >
+                <Input prefix={<PhoneOutlined />} placeholder="Phone number" />
+              </Form.Item>
+            </Col>
+          </Row>
+
           <Form.Item
             name="email"
             rules={[
@@ -106,18 +137,6 @@ export default function SignUp() {
             <Input prefix={<MailOutlined />} placeholder="Email" />
           </Form.Item>
 
-          <Form.Item
-            name="phone"
-            rules={[
-              {
-                type: "number",
-                required: true,
-                message: "Please input your phone number!",
-              },
-            ]}
-          >
-            <Input prefix={<PhoneOutlined />} placeholder="Phone number" />
-          </Form.Item>
           <Form.Item
             name="password"
             rules={[
