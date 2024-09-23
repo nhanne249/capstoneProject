@@ -53,7 +53,8 @@ const HeaderPage = () => {
         className="w-fit flex justify-self-auto"
         onClick={onItemClick}
       />
-      <div className="w-1/5 flex items-center justify-between">
+
+      <div className="w-1/4 flex items-center justify-between">
         <Search
           onSearch={onSearch}
           style={{
@@ -64,11 +65,11 @@ const HeaderPage = () => {
           icon={<UserOutlined />}
           className="border-none text-teal-600 shadow-none"
           onClick={handleProfileClick}
-        />
+        >Profile</Button>
         <Button
           icon={<ShoppingCartOutlined />}
           className="border-none text-teal-600 shadow-none"
-        />
+        >Cart</Button>
       </div>
     </div>
   );
