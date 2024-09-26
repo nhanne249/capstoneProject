@@ -1,73 +1,52 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { userRegisterDto } from './dto/user-register.dto';
-import { userLoginDto } from './dto/user-login.dto';
-import { adminLoginDto } from './dto/admin-login.dto';
+import { userSignupDto } from './dto/user-signup.dto';
+import { SigninDto } from './dto/signin.dto';
 
-@Controller('auth')
+@Controller('')
 export class AuthController {
   constructor(private authService: AuthService) { }
 
-  @Post('user/register')
-  async register(@Body() registerDto: userRegisterDto) {
+  @Post('user/signup')
+  async signup(@Body() signupDto: userSignupDto) {
     try {
-      const user = await this.authService.userRegister(registerDto);
+      await this.authService.userSignup(signupDto)
       return {
-        message: 'Nguoi dung dang ky thanh cong.',
-        user: user,
+        message: 'Sign up successfully.',
       };
     } catch (error) {
       return {
-        message: 'Dang ky that bai.',
-        error: error.message || 'Loi khong xac dinh.',
+        message: 'Sign up failed.',
+        error: error.message,
       };
     }
   }
 
-  @Post('user/login')
+  @Post('signin')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: userLoginDto) {
-    const { email, password } = loginDto;
+  async login(@Body() SigninDto: SigninDto) {
+    const { username, password } = SigninDto;
+
     try {
-      const user = await this.authService.userValidate(email, password);
+      const user = await this.authService.loginValidate(username, password);
+
       if (!user) {
         return {
-          message: 'Dang nhap that bai.',
-          error: 'Email hoac mat khau khong dung.'
+          message: 'Sign in failed.',
+          error: 'Incorrect username or password.',
         };
       }
-      return {
-        message: 'Nguoi dung dang nhap thanh cong.',
-        user: await this.authService.userLogin(user)
-      };
-    } catch (error) {
-      return {
-        message: 'Dang nhap that bai.',
-        error: error.message || 'Loi khong xac dinh.'
-      };
-    }
-  }
 
-  @Post('admin/login')
-  @HttpCode(HttpStatus.OK)
-  async loginAdmin(@Body() adminLoginDto: adminLoginDto) {
-    const { username, password } = adminLoginDto;
-    try {
-      const admin = await this.authService.adminValidate(username, password);
-      if (!admin) {
-        return {
-          message: 'Admin dang nhap that bai.',
-          error: 'Username hoac mat khau khong dung.'
-        };
-      }
       return {
-        message: 'Admin dang nhap thanh cong.',
-        admin: await this.authService.adminLogin(admin)
+        message: `Sign in Successfully`,
+        username: user.username,
+        role: user.role,
+        token: await this.authService.login(user),
       };
     } catch (error) {
       return {
-        message: 'Dang nhap that bai.',
-        error: error.message || 'Loi khong xac dinh.'
+        message: 'Sign in failed.',
+        error: error.message || 'Unspecified error.',
       };
     }
   }

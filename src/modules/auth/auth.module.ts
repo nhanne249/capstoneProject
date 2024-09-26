@@ -5,7 +5,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Admin } from './admin.entity';
 
 @Module({
   imports: [
@@ -13,7 +12,7 @@ import { Admin } from './admin.entity';
       secret: 'abc123',
       signOptions: { expiresIn: '1h' }
     }),
-    TypeOrmModule.forFeature([User, Admin]),
+    TypeOrmModule.forFeature([User]),
     PassportModule,
   ],
   controllers: [AuthController],
