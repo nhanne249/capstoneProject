@@ -9,6 +9,10 @@ const mainRouter = [
     element: LayoutPage,
     children: [
       {
+        path: "*", 
+        element: Main,
+      },
+      {
         path: "main",
         element: Main,
       },
@@ -19,10 +23,6 @@ const mainRouter = [
       {
         path: "signup",
         element: SignUp,
-      },
-      {
-        path: "*", 
-        element: Main,
       },
     ]
   },

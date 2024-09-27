@@ -1,21 +1,9 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles.scss";
 
-import {
-  Button,
-  Checkbox,
-  Form,
-  Grid,
-  Input,
-  theme,
-  Typography,
-  Row,
-  Col,
-} from "antd";
-import CardCustom from "../../utils/components/card";
+import { Button, Form, Grid, Input, theme, Typography, Row, Col } from "antd";
 
-import cover from "/home/quanghia/unidata/myProjects/uniProject/capstoneProject/Frontend/src/assets/images/loginCover.png";
+// import cover from "/home/quanghia/unidata/myProjects/uniProject/capstoneProject/Frontend/src/assets/images/loginCover.png";
 
 import {
   LockOutlined,
@@ -26,7 +14,7 @@ import {
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
-const { Text, Title, Link } = Typography;
+const { Text, Title } = Typography;
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -170,7 +158,7 @@ export default function SignUp() {
           </Form.Item>
 
           <Form.Item>
-            <a style={styles.forgotPassword} href="">
+            <a style={styles.forgotPassword} href="#">
               Forgot password? Then good luck
             </a>
           </Form.Item>
@@ -198,7 +186,7 @@ export default function SignUp() {
       </div>
 
       <div className="max-w-sm">
-        <img src={cover} alt="" />
+        {/* <img src={cover} alt="" /> */}
         <h1>xxxx to be changed xxxx</h1>
       </div>
     </section>

@@ -1,3 +1,3 @@
 export const API_DOMAIN = {
-    API: process.env.REACT_APP_API
+    API: import.meta.env.VITE_BACKEND_API
 };
