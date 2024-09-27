@@ -53,9 +53,6 @@ export default function SignUp() {
       textAlign: "left",
       width: "100%",
     },
-    forgotPassword: {
-      float: "right",
-    },
     header: {
       marginBottom: token.marginXL,
     },
@@ -69,17 +66,15 @@ export default function SignUp() {
     text: {
       color: token.colorTextSecondary,
     },
-    title: {
-      fontSize: screens.md ? token.fontSizeHeading2 : token.fontSizeHeading3,
-    },
+    title: {},
   };
 
   return (
     <section style={styles.section} className="	display: flex">
       <div style={styles.container}>
         <div style={styles.header}>
-          <Title style={styles.title}>Sign in</Title>
-          <Text style={styles.text}>Join BrooK for books!</Text>
+          <h1 className="text-6xl font-sans">Sign up</h1>
+          <p className="font-sans">Join BrooK for books!</p>
         </div>
 
         <Form
@@ -99,7 +94,6 @@ export default function SignUp() {
                 rules={[
                   {
                     type: "text",
-                    required: true,
                     message: "Please input your Username!",
                   },
                 ]}
@@ -114,12 +108,11 @@ export default function SignUp() {
                 rules={[
                   {
                     type: "number",
-                    required: true,
                     message: "Please input your phone number!",
                   },
                 ]}
               >
-                <Input prefix={<PhoneOutlined />} placeholder="Phone number" />
+                <Input prefix={<PhoneOutlined />} placeholder="Telephone" />
               </Form.Item>
             </Col>
           </Row>
@@ -168,27 +161,22 @@ export default function SignUp() {
               placeholder="Re-enter your password"
             />
           </Form.Item>
-
-          <Form.Item>
-            <a style={styles.forgotPassword} href="">
-              Forgot password? Then good luck
-            </a>
-          </Form.Item>
           <Form.Item style={{ marginBottom: "0px" }}>
-            {/* //////////////////////////// */}
+            {/* //////////////////////// */}
             <Button
               htmlType="submit"
-              className="w-44 bg-green-700 text-white font-extrabold font-sans"
+              className="w-44 h-14 text-lg  bg-green-700 text-white font-extrabold font-sans"
             >
               Sign up
             </Button>
-            {/* //////////////////////////// */}
+            {/* //////////////////////// */}
 
+            {/* switch page */}
             <div style={styles.footer} className="flex items-center">
-              <Text style={styles.text}>Don't have an account?</Text>{" "}
+              <Text style={styles.text}>Have one already?</Text>{" "}
               <Button
                 onClick={handleChangeMode}
-                className=" border-none hover:bg-green-700 hover:text-white  text-green-700 font-extrabold font-sans"
+                className=" border-none shadow-none hover:bg-green-700 hover:text-white  text-green-700 font-extrabold font-sans text-lg"
               >
                 Sign in now
               </Button>

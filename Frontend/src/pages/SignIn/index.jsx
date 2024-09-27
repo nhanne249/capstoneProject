@@ -37,7 +37,8 @@ export default function SignIn() {
       width: "100%"
     },
     forgotPassword: {
-      float: "right"
+      float: "right",
+      color: "green",
     },
     header: {
       marginBottom: token.marginXL
@@ -61,10 +62,8 @@ export default function SignIn() {
     <section style={styles.section} className="	display: flex">
       <div style={styles.container} >
         <div style={styles.header}>
-          <Title style={styles.title}>Sign in</Title>
-          <Text style={styles.text}>
-            Welcome back to BrooK!
-          </Text>
+          <h1 className="text-6xl font-sans">Sign in</h1>
+          <p className="font-sans">Welcome back to BrooK!</p>
         </div>
 
         <Form
@@ -118,14 +117,15 @@ export default function SignIn() {
 
           <Form.Item style={{ marginBottom: "0px" }}>
             {/* //////////////////////////// */}
-            <Button  htmlType="submit" className="w-44 bg-green-700 text-white font-extrabold font-sans">
+            <Button  htmlType="submit" className="w-44 h-14 text-lg  bg-green-700 text-white font-extrabold font-sans">
               Log in
             </Button>
             {/* //////////////////////////// */}
 
+            {/* switch page */}
             <div style={styles.footer} className="flex items-center">
               <Text style={styles.text}>Don't have an account?</Text>{" "}
-              <Button  onClick={handleChangeMode} className=" border-none hover:bg-green-700 hover:text-white  text-green-700 font-extrabold font-sans">
+              <Button  onClick={handleChangeMode} className=" border-none shadow-none hover:bg-green-700 hover:text-white  text-green-700 font-extrabold font-sans text-lg">
                 Sign up now
               </Button>
             </div>

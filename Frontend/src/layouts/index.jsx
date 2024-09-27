@@ -13,7 +13,7 @@ const LayoutPage = () => {
       <Header className="w-full px-12 bg-white">
         <HeaderPage />
       </Header>
-      <Content className="w-full px-12 bg-yellow-50">
+      <Content className="w-full px-12 bg-white">
         <Outlet />
       </Content>
       <Footer>
