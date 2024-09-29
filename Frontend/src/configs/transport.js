@@ -1,5 +1,5 @@
-import httpHandler from './axios';
-import { API_DOMAIN } from '../constant/httpConstant.js';
+import httpHandler from './axiosConfig.js';
+import { API_DOMAIN } from './constant/httpConstant.js';
 
 function get(domain, url, config = {}) {
   return httpHandler(domain).get(`${url}`, config);

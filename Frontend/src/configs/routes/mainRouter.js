@@ -10,6 +10,10 @@ const mainRouter = [
     element: LayoutPage,
     children: [
       {
+        path: "*", 
+        element: Main,
+      },
+      {
         path: "main",
         element: Main,
       },
