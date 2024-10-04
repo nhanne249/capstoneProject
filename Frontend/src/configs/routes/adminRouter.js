@@ -1,11 +1,11 @@
 import LayoutPage from "../../layouts";
 import Profile from "../../pages/Profile";
 
-const userRouter = [
+const adminRouter = [
   {
     role: "user",
     path: "/user",
-    element: LayoutPage,
+    element: <LayoutPage/>,
     children: [
       {
         path: "*",
@@ -14,4 +14,4 @@ const userRouter = [
     ],
   },
 ];
-export default userRouter;
+export default adminRouter;

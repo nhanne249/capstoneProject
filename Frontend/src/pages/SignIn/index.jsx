@@ -8,7 +8,7 @@ import { LockOutlined, MailOutlined } from "@ant-design/icons";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -110,14 +110,20 @@ export default function SignIn() {
 
           <Form.Item style={{ marginBottom: "0px" }}>
             {/* //////////////////////////// */}
-            <Button  htmlType="submit" className="w-44 h-14 text-lg  bg-green-700 text-white font-extrabold font-sans">
+            <Button
+              htmlType="submit"
+              className="w-44 h-14 text-lg  bg-green-700 text-white font-extrabold font-sans"
+            >
               Log in
             </Button>
 
             {/* switch page */}
             <div style={styles.footer} className="flex items-center">
               <Text style={styles.text}>Don't have an account?</Text>{" "}
-              <Button  onClick={handleChangeMode} className=" border-none shadow-none hover:bg-green-700 hover:text-white  text-green-700 font-extrabold font-sans text-lg">
+              <Button
+                onClick={handleChangeMode}
+                className=" border-none shadow-none hover:bg-green-700 hover:text-white  text-green-700 font-extrabold font-sans text-lg"
+              >
                 Sign up now
               </Button>
             </div>
