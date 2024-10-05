@@ -6,7 +6,6 @@ function get(domain, url, config = {}) {
 }
 
 function post(domain, url, data, config = {}) {
-    console.log(domain);
   return httpHandler(domain).post(`${url}`, data, config);
 }
 

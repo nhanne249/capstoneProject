@@ -14,7 +14,7 @@ import {
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -177,11 +177,6 @@ export default function SignUp() {
             </div>
           </Form.Item>
         </Form>
-      </div>
-
-      <div className="max-w-sm">
-        {/* <img src={cover} alt="" /> */}
-        <h1>xxxx to be changed xxxx</h1>
       </div>
     </section>
   );

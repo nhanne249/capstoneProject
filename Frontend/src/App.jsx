@@ -1,39 +1,51 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { publicRouter, privateRouter } from "./configs/routes";
 import Cookies from "js-cookie";
 import "./App.scss";
 
 const userPresent = !!Cookies.get("userPresent");
-const role = !!Cookies.get("role");
+const role = Cookies.get("role");
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        {publicRouter.map((router) => {
-          return router.map((route, index) => {
+        {userPresent &&
+          privateRouter.map((routers) => {
             return (
-              <Route path={route.path} key={index} element={<route.element />}>
-                {route.children.map((children, index) => {
-                  return (
-                    <Route
-                      path={children.path}
-                      element={<children.element />}
-                      key={index}
-                    />
-                  );
-                })}
-              </Route>
+              routers.role == role && (
+                <Route
+                  path={routers.path}
+                  key={routers}
+                  element={<routers.element />}
+                >
+                  {routers.children.map(({ path, Component }, index) => {
+                    console.log(path);
+                    return (
+                      <Route path={path} key={index} element={<Component />} />
+                    );
+                  })}
+                </Route>
+              )
             );
-          });
+          })}
+        {publicRouter.map((router, index) => {
+          return (
+            <Route path={router.path} key={index} element={<router.element />}>
+              {router.children.map((children, index) => {
+                return (
+                  <Route
+                    path={children.path}
+                    element={<children.Component />}
+                    key={index}
+                  />
+                );
+              })}
+            </Route>
+          );
         })}
-        {userPresent
-          ? privateRouter.map((routers) => {
-              console.log(routers);
-            })
-          : null}
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 

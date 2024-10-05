@@ -1,38 +1,7 @@
-import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Descriptions,
-  Modal,
-  Input,
-  Form,
-  Divider,
-} from "antd";
+import { useState } from "react";
+import { Button, Modal, Input, Form, Divider } from "antd";
 
-import BuyingLog from "../BuyingLog";
-
-const items = [
-  {
-    key: "1",
-    label: "Username",
-    children: "Nghia Q. Truong",
-  },
-  {
-    key: "2",
-    label: "Email",
-    children: "nghia@gmail.com",
-  },
-  {
-    key: "3",
-    label: "Telephone",
-    children: "0987654321",
-  },
-  {
-    key: "4",
-    label: "Address",
-    children: "Ho Chi Minh City, Vietnam, Earth",
-  },
-];
-function Profile() {
+const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "1",
@@ -65,18 +34,20 @@ function Profile() {
   };
   return (
     <>
-      
-      
       <p className="m-4 my-6 font-sans text-4xl">Account</p>
       <div className="container flex justify-between ">
         <div className="text-lg container m-4 font-sans">
           <p className="text-2xl">Username</p>
           <div className="items-center h-10 border rounded-lg border-gray-600 content-center">
-            <p label="Username" className="m-4">{formData.username}</p>
+            <p label="Username" className="m-4">
+              {formData.username}
+            </p>
           </div>
         </div>
         <div className="text-lg container m-4 font-sans">
-          <p label="Email" className="text-2xl">Email</p>
+          <p label="Email" className="text-2xl">
+            Email
+          </p>
           <div className="items-center h-10 border rounded-lg border-gray-600 content-center xl:rounded-lg">
             <p className="m-4">{formData.email}</p>
           </div>
@@ -84,7 +55,9 @@ function Profile() {
         <div className="text-lg container m-4 font-sans">
           <p className="text-2xl">Phone number</p>
           <div className="items-center h-10 border rounded-lg border-gray-600 content-center xl:rounded-lg">
-            <p label="Phone" className="m-4">{formData.phone}</p>
+            <p label="Phone" className="m-4">
+              {formData.phone}
+            </p>
           </div>
         </div>
       </div>
@@ -94,7 +67,9 @@ function Profile() {
           <div className="text-lg container m-4 font-sans">
             <p className="text-2xl">Fullname</p>
             <div className="items-center h-10 border rounded-lg border-gray-600 content-center xl:rounded-lg">
-              <p label="Fullname" className="m-4">{formData.fullname}</p>
+              <p label="Fullname" className="m-4">
+                {formData.fullname}
+              </p>
             </div>
           </div>
           <div className="text-lg container m-4 font-sans">
@@ -115,54 +90,48 @@ function Profile() {
             Edit
           </Button>
         </div>
-
       </div>
 
       <Modal
-          title="Edit Info"
-          open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          <Form layout="vertical">
-            <Form.Item label="Username">
-              <Input
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-              />
-            </Form.Item>
-            <Form.Item label="Email">
-              <Input
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-              />
-            </Form.Item>
-            <Form.Item label="Phone">
-              <Input
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-              />
-            </Form.Item>
-            <Form.Item label="Fullname">
-              <Input
-                name="fullname"
-                value={formData.fullname}
-                onChange={handleInputChange}
-              />
-            </Form.Item>
-          </Form>
-        </Modal>
-      
-
-      
+        title="Edit Info"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form layout="vertical">
+          <Form.Item label="Username">
+            <Input
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+            />
+          </Form.Item>
+          <Form.Item label="Email">
+            <Input
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+          </Form.Item>
+          <Form.Item label="Phone">
+            <Input
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+            />
+          </Form.Item>
+          <Form.Item label="Fullname">
+            <Input
+              name="fullname"
+              value={formData.fullname}
+              onChange={handleInputChange}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
 
       <h1>Here lay buying history</h1>
-      {/* <BuyingLog /> */}
-      {/* <TestLog></TestLog> */}
     </>
   );
-}
+};
 export default Profile;

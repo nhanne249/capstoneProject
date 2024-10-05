@@ -4,37 +4,36 @@ import SignIn from "../../pages/SignIn";
 import SignUp from "../../pages/SignUp";
 import Profile from "../../pages/Profile";
 
-const mainRouter = [
-  {
-    path: "/*",
+const mainRouter ={ 
+    path: "*",
     element: LayoutPage,
     children: [
       {
         path: "*", 
-        element: Main,
+        Component: Main,
       },
       {
         path: "main",
-        element: Main,
+        Component: Main,
       },
       {
         path: "signin",
-        element: SignIn,
+        Component: SignIn,
       },
       {
         path: "signup",
-        element: SignUp,
+        Component: SignUp,
       },
       {
         path: "profile",
-        element: Profile,
+        Component: Profile,
       },
       {
         path: "*", 
-        element: Main,
+        Component: Main,
       },
-    ]
-  },
+    ]}
   
-];
+  
+;
 export default mainRouter;

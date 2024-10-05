@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form, Grid, Input, theme, Typography } from "antd";
 import { useDispatch } from "react-redux";
 import { signinThunk } from "../../redux/action/signin";
-// import cover from "/home/quanghia/unidata/myProjects/uniProject/capstoneProject/Frontend/src/assets/images/loginCover.png";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 
@@ -10,7 +11,7 @@ const { useToken } = theme;
 const { useBreakpoint } = Grid;
 const { Text } = Typography;
 
-export default function SignIn() {
+const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -21,8 +22,43 @@ export default function SignIn() {
   const screens = useBreakpoint();
 
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-    dispatch(signinThunk(values)).then((res) => console.log(res));
+    dispatch(signinThunk(values)).then((res) => {
+      //Handle sigin success
+      if (res?.payload.message == "Sign in Successfully") {
+        toast.success("Đăng nhập thành công!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        Cookies.set("userPresent", `${res?.payload.token}`, {
+          expires: 7,
+          path: "",
+        });
+        Cookies.set("role", `${res?.payload.role.toLowerCase()}`, {
+          expires: 7,
+          path: "",
+        });
+        navigate(`/${res?.payload.role.toLowerCase()}`, { replace: true });
+      }
+      //Handle sigin error
+      if (res?.payload.error) {
+        toast.error("Username hoặc mật khẩu chưa chính xác!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    });
   };
 
   const styles = {
@@ -133,4 +169,5 @@ export default function SignIn() {
       <div className="max-w-sm">{/* <img src={cover} alt="" /> */}</div>
     </section>
   );
-}
+};
+export default SignIn;
