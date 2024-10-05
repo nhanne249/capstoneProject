@@ -5,7 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-@Controller('user')
+@Controller('api/user')
 export class UserController {
   constructor(
     @InjectRepository(User)
@@ -43,8 +43,8 @@ export class UserController {
           return 'Email already exists.'
         }
       }
-      if (updateUserDto.phone_number) {
-        const existingEmailUser = await this.userRepository.findOne({ where: { phone_number: updateUserDto.phone_number } });
+      if (updateUserDto.phone) {
+        const existingEmailUser = await this.userRepository.findOne({ where: { phone: updateUserDto.phone } });
         if (existingEmailUser && existingEmailUser.username !== username) {
           return 'Phone number already exists.'
         }
@@ -81,7 +81,7 @@ export class UserController {
   }
 }
 
-@Controller('admin')
+@Controller('api/admin')
 export class AdminController {
   constructor(
     private readonly adminService: AdminService,

@@ -19,7 +19,7 @@ export class User {
     email: string;
 
     @Column({ unique: true })
-    phone_number: string;
+    phone: string;
     
     @Column({
         type: 'enum',

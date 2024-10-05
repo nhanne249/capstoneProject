@@ -19,7 +19,7 @@ export class userSignupDto {
     email: string;
 
     @IsString()
-    phone_number: string;
+    phone: string;
 
 
 }

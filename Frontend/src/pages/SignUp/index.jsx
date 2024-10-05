@@ -1,183 +1,280 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { signUpThunk } from "../../redux/action/signUp";
 import "./styles.scss";
 
-import { Button, Form, Grid, Input, theme, Typography, Row, Col } from "antd";
-
-// import cover from "/home/quanghia/unidata/myProjects/uniProject/capstoneProject/Frontend/src/assets/images/loginCover.png";
+import { Button, Form, Input } from "antd";
 
 import {
   LockOutlined,
   MailOutlined,
   UserOutlined,
   PhoneOutlined,
+  InfoOutlined,
 } from "@ant-design/icons";
-
-const { useToken } = theme;
-const { useBreakpoint } = Grid;
-const { Text } = Typography;
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const handleChangeMode = () => {
-    navigate("/signin");
-  };
-  const { token } = useToken();
-  const screens = useBreakpoint();
+  const dispatch = useDispatch();
+
+  const [checkPassword, setCheckPassWord] = useState();
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
+
+    dispatch(signUpThunk(values)).then((res) => {
+      console.log(res.payload);
+      //Handle sigin success
+      if (res?.payload.message == "Sign up successfully.") {
+        toast.success("Tạo tài khoản thành công!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        navigate("/signin", { replace: true });
+      }
+      //Handle sigin error
+      if (res?.payload.message == "Sign up failed.") {
+        if (res?.payload.error == "Username already exists")
+          toast.error("Username đã tồn tại!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        if (res?.payload.error == "Email already exists")
+          toast.error("Email đã tồn tại!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        if (res?.payload.error == "Phone number already exists")
+          toast.error("Số điện thoại đã tồn tại!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+      }
+    });
   };
 
-  const styles = {
-    container: {
-      margin: "0 auto",
-      padding: screens.md
-        ? `${token.paddingXL}px`
-        : `${token.sizeXXL}px ${token.padding}px`,
-      width: "380px",
-    },
-    footer: {
-      marginTop: token.marginLG,
-      textAlign: "left",
-      width: "100%",
-    },
-    header: {
-      marginBottom: token.marginXL,
-    },
-    section: {
-      alignItems: "center",
-      backgroundColor: token.colorBgContainer,
-      display: "flex",
-      height: screens.sm ? "100vh" : "auto",
-      padding: screens.md ? `${token.sizeXXL}px 0px` : "0px",
-    },
-    text: {
-      color: token.colorTextSecondary,
-    },
-    title: {},
+  const handleChangeMode = () => {
+    navigate("/signin");
   };
 
   return (
-    <section style={styles.section} className="	display: flex">
-      <div style={styles.container}>
-        <div style={styles.header}>
-          <h1 className="text-6xl font-sans">Sign up</h1>
-          <p className="font-sans">Join BrooK for books!</p>
-        </div>
+    <div className="w-96 m-0 px-5">
+      <h1 className="text-6xl font-sans mb-4">Sign up</h1>
+      <p className="font-sans">Join BrooK for books!</p>
 
-        <Form
-          name="normal_register"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-          layout="vertical"
-          requiredMark="optional"
-          className="custom-form"
+      <Form
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={onFinish}
+        autoComplete="off"
+        layout="vertical"
+        requiredMark="optional"
+      >
+        <Form.Item
+          name="name"
+          rules={[
+            {
+              type: "text",
+              message: "Please input your name!",
+            },
+          ]}
         >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="username"
-                rules={[
-                  {
-                    type: "text",
-                    message: "Please input your Username!",
-                  },
-                ]}
-              >
-                <Input prefix={<UserOutlined />} placeholder="Username" />
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                name="phone"
-                rules={[
-                  {
-                    type: "number",
-                    message: "Please input your phone number!",
-                  },
-                ]}
-              >
-                <Input prefix={<PhoneOutlined />} placeholder="Telephone" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Form.Item
-            name="email"
-            rules={[
-              {
-                type: "email",
-                required: true,
-                message: "Please input your Email!",
+          <Input
+            prefix={<InfoOutlined />}
+            placeholder="name"
+            className="h-10"
+          />
+        </Form.Item>
+        <Form.Item
+          name="username"
+          rules={[
+            {
+              type: "text",
+              message: "Please input your Username!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="Username"
+            className="h-10"
+          />
+        </Form.Item>
+        <Form.Item
+          name="phone"
+          rules={[
+            {
+              required: true,
+              message: "Please input your phone number!",
+            },
+            {
+              validator: (_, value) => {
+                if (value != undefined && value != null) {
+                  if (
+                    !/^(0(1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9]))\d{7}$/.test(
+                      value
+                    )
+                  ) {
+                    return Promise.reject("Please enter a valid phone number!");
+                  }
+                  return Promise.resolve();
+                } else {
+                  return Promise.reject();
+                }
               },
-            ]}
-          >
-            <Input prefix={<MailOutlined />} placeholder="Email" />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Password!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<PhoneOutlined />}
+            placeholder="Telephone"
+            className="h-10"
+          />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          rules={[
+            {
+              type: "email",
+              required: true,
+              message: "Please input your Email!",
+            },
+            {
+              validator: (_, value) => {
+                if (value != undefined && value != null) {
+                  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    return Promise.reject("Please enter a valid email address");
+                  }
+                  return Promise.resolve();
+                } else {
+                  return Promise.reject();
+                }
               },
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              type="password"
-              placeholder="Password"
-            />
-          </Form.Item>
+            },
+          ]}
+        >
+          <Input
+            prefix={<MailOutlined />}
+            placeholder="Email"
+            className="h-10"
+          />
+        </Form.Item>
 
-          <Form.Item
-            name="repeat_password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your repeat Password!",
+        <Form.Item
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Password!",
+            },
+            {
+              validator: (_, value) => {
+                if (value != undefined && value != null) {
+                  if (!/^.{8,16}$/.test(value)) {
+                    return Promise.reject("Password must have 8-16 symbols!");
+                  } else if (!/(?=.*[A-Z])/.test(value)) {
+                    return Promise.reject(
+                      "Password must have uppercase letter!"
+                    );
+                  } else if (!/(?=.*[a-z])/.test(value)) {
+                    return Promise.reject(
+                      "Password must have lowercase letter!"
+                    );
+                  } else if (!/(?=.*\d)/.test(value)) {
+                    return Promise.reject("Password must have number!");
+                  } else if (!/(?=.*[!@#$%^&*])/.test(value)) {
+                    return Promise.reject("Password must have special symbol!");
+                  }
+                  return Promise.resolve();
+                } else {
+                  return Promise.reject();
+                }
               },
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              type="password"
-              placeholder="Re-enter your password"
-            />
-          </Form.Item>
+            },
+          ]}
+        >
+          <Input.Password
+            prefix={<LockOutlined />}
+            type="password"
+            placeholder="Password"
+            onChange={(value) => setCheckPassWord(value.target.value)}
+            className="h-10"
+          />
+        </Form.Item>
 
-          <Form.Item>
-            <a style={styles.forgotPassword} href="#">
-              Forgot password? Then good luck
-            </a>
-          </Form.Item>
-          <Form.Item style={{ marginBottom: "0px" }}>
-            {/* //////////////////////// */}
+        <Form.Item
+          name="confirmPassword"
+          rules={[
+            {
+              required: true,
+              message: "Please confirm your Password!",
+            },
+            {
+              validator: (_, value) => {
+                if (value != undefined && value != null) {
+                  if (value != checkPassword) {
+                    return Promise.reject("Password is not correct!");
+                  }
+                  return Promise.resolve();
+                } else {
+                  return Promise.reject();
+                }
+              },
+            },
+          ]}
+        >
+          <Input.Password
+            prefix={<LockOutlined />}
+            type="password"
+            placeholder="Confirm your password"
+            className="h-10"
+          />
+        </Form.Item>
+        <Form.Item className="mb-0">
+          <Button
+            htmlType="submit"
+            className="w-44 h-10 text-lg bg-green-700 text-white font-extrabold font-sans hover:!border-green-700 hover:!text-green-700"
+          >
+            Sign up
+          </Button>
+          <div className="flex items-center justify-between w-full pt-5">
+            <div className="text-gray-400">Already have account?</div>
             <Button
-              htmlType="submit"
-              className="w-44 h-14 text-lg  bg-green-700 text-white font-extrabold font-sans"
+              onClick={handleChangeMode}
+              className="border-none shadow-none text-green-700 font-extrabold font-sans text-lg hover:!text-green-400"
             >
-              Sign up
+              Sign in
             </Button>
-            {/* //////////////////////// */}
-
-            {/* switch page */}
-            <div style={styles.footer} className="flex items-center">
-              <Text style={styles.text}>Have one already?</Text>{" "}
-              <Button
-                onClick={handleChangeMode}
-                className=" border-none shadow-none hover:bg-green-700 hover:text-white  text-green-700 font-extrabold font-sans text-lg"
-              >
-                Sign in now
-              </Button>
-            </div>
-          </Form.Item>
-        </Form>
-      </div>
-    </section>
+          </div>
+        </Form.Item>
+      </Form>
+    </div>
   );
 }

@@ -3,11 +3,11 @@ import { AuthService } from './auth.service';
 import { userSignupDto } from './dto/user-signup.dto';
 import { SigninDto } from './dto/signin.dto';
 
-@Controller('')
+@Controller('api')
 export class AuthController {
   constructor(private authService: AuthService) { }
 
-  @Post('user/signup')
+  @Post('signup')
   async signup(@Body() signupDto: userSignupDto) {
     try {
       await this.authService.userSignup(signupDto)

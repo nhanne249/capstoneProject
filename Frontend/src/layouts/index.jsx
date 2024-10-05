@@ -9,14 +9,14 @@ const { Header, Footer, Content } = Layout;
 
 const LayoutPage = () => {
   return (
-    <Layout>
+    <Layout className="min-w-full min-h-full">
       <Header className="w-full px-12 bg-white">
         <HeaderPage />
       </Header>
-      <Content className="w-full px-12 bg-white">
+      <Content className="w-full px-12 bg-white flex items-center justify-center">
         <Outlet />
       </Content>
-      <Footer>
+      <Footer className="h-16">
         <FooterPage />
       </Footer>
     </Layout>

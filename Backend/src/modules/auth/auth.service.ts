@@ -19,8 +19,8 @@ export class AuthService {
 
     // User signup
     async userSignup(signupDto: userSignupDto): Promise<User> {
-        const { username, password, name, email, phone_number } = signupDto;
-
+        
+        const { username, password, name, email, phone } = signupDto;
         const foundUser = await this.userRepository.findOne({ where: { username } });
         if (foundUser) {
             throw new Error('Username already exists');
@@ -29,7 +29,7 @@ export class AuthService {
         if (foundEmail) {
             throw new Error('Email already exists');
         }
-        const foundPhoneNumber = await this.userRepository.findOne({ where: { phone_number } });
+        const foundPhoneNumber = await this.userRepository.findOne({ where: { phone } });
         if (foundPhoneNumber) {
             throw new Error('Phone number already exists');
         }
@@ -44,7 +44,7 @@ export class AuthService {
             password: hashedPassword,
             name,
             email,
-            phone_number
+            phone
             // ,role
         });
 

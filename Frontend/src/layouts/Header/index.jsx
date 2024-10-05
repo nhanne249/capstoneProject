@@ -68,12 +68,7 @@ const HeaderPage = () => {
       />
 
       <div className="w-1/4 flex items-center justify-between">
-        <Search
-          onSearch={onSearch}
-          style={{
-            width: 200,
-          }}
-        />
+        <Search onSearch={onSearch} className="w-52" />
         <Button
           icon={<UserOutlined />}
           className="border-none text-teal-600 shadow-none"

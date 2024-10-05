@@ -1,15 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { Button, Form, Grid, Input, theme, Typography } from "antd";
+import { Button, Form, Input } from "antd";
 import { useDispatch } from "react-redux";
-import { signinThunk } from "../../redux/action/signin";
+import { signInThunk } from "../../redux/action/signIn";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
-
-const { useToken } = theme;
-const { useBreakpoint } = Grid;
-const { Text } = Typography;
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -18,11 +14,9 @@ const SignIn = () => {
   const handleChangeMode = () => {
     navigate("/signup");
   };
-  const { token } = useToken();
-  const screens = useBreakpoint();
 
   const onFinish = (values) => {
-    dispatch(signinThunk(values)).then((res) => {
+    dispatch(signInThunk(values)).then((res) => {
       //Handle sigin success
       if (res?.payload.message == "Sign in Successfully") {
         toast.success("Đăng nhập thành công!", {
@@ -61,113 +55,100 @@ const SignIn = () => {
     });
   };
 
-  const styles = {
-    container: {
-      margin: "0 auto",
-      padding: screens.md
-        ? `${token.paddingXL}px`
-        : `${token.sizeXXL}px ${token.padding}px`,
-      width: "380px",
-    },
-    footer: {
-      marginTop: token.marginLG,
-      textAlign: "left",
-      width: "100%",
-    },
-    forgotPassword: {
-      float: "right",
-      color: "green",
-    },
-    header: {
-      marginBottom: token.marginXL,
-    },
-    section: {
-      alignItems: "center",
-      backgroundColor: token.colorBgContainer,
-      display: "flex",
-      height: screens.sm ? "100vh" : "auto",
-      padding: screens.md ? `${token.sizeXXL}px 0px` : "0px",
-    },
-    text: {
-      color: token.colorTextSecondary,
-    },
-    title: {
-      fontSize: screens.md ? token.fontSizeHeading2 : token.fontSizeHeading3,
-    },
-  };
-
   return (
-    <section style={styles.section} className="	display: flex">
-      <div style={styles.container}>
-        <div style={styles.header}>
-          <h1 className="text-6xl font-sans">Sign in</h1>
-          <p className="font-sans">Welcome back to BrooK!</p>
-        </div>
+    <div className="w-96 m-0 px-5">
+      <h1 className="text-6xl font-sans mb-4">Sign in</h1>
+      <p className="font-sans">Welcome back to BrooK!</p>
 
-        <Form
-          name="normal_login"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-          layout="vertical"
-          requiredMark="optional"
-          className=""
+      <Form
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={onFinish}
+        autoComplete="off"
+        layout="vertical"
+        requiredMark="optional"
+        className="py-5"
+      >
+        <Form.Item
+          name="username"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Username!",
+            },
+          ]}
         >
-          <Form.Item
-            name="username"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Username!",
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="Username"
+            className="h-10"
+          />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Password!",
+            },
+            {
+              validator: (_, value) => {
+                if (value != undefined && value != null) {
+                  if (!/^.{8,16}$/.test(value)) {
+                    return Promise.reject("Password must have 8-16 symbols!");
+                  } else if (!/(?=.*[A-Z])/.test(value)) {
+                    return Promise.reject(
+                      "Password must have uppercase letter!"
+                    );
+                  } else if (!/(?=.*[a-z]) /.test(value)) {
+                    return Promise.reject(
+                      "Password must have lowercase letter!"
+                    );
+                  } else if (!/(?=.*\d)/.test(value)) {
+                    return Promise.reject("Password must have number!");
+                  } else if (!/(?=.*[!@#$%^&*])/.test(value)) {
+                    return Promise.reject("Password must have special symbol!");
+                  }
+                  return Promise.resolve();
+                } else {
+                  return Promise.reject();
+                }
               },
-            ]}
-          >
-            <Input prefix={<MailOutlined />} placeholder="Email" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Password!",
-              },
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              type="password"
-              placeholder="Password"
-            />
-          </Form.Item>
-          <div style={styles.forgotPassword} href="">
-            Forgot password?
-          </div>
-
-          <Form.Item style={{ marginBottom: "0px" }}>
-            {/* //////////////////////////// */}
+            },
+          ]}
+        >
+          <Input.Password
+            prefix={<LockOutlined />}
+            type="password"
+            placeholder="Password"
+            className="h-10"
+          />
+        </Form.Item>
+        <div className="w-full h-fit flex flex-row items-center justify-between">
+          <Form.Item className="mb-0">
             <Button
               htmlType="submit"
-              className="w-44 h-14 text-lg  bg-green-700 text-white font-extrabold font-sans"
+              className="w-44 h-10 text-lg bg-green-700 text-white font-extrabold font-sans hover:!border-green-700 hover:!text-green-700"
             >
-              Log in
+              Sigin in
             </Button>
-
-            {/* switch page */}
-            <div style={styles.footer} className="flex items-center">
-              <Text style={styles.text}>Don't have an account?</Text>{" "}
-              <Button
-                onClick={handleChangeMode}
-                className=" border-none shadow-none hover:bg-green-700 hover:text-white  text-green-700 font-extrabold font-sans text-lg"
-              >
-                Sign up now
-              </Button>
-            </div>
           </Form.Item>
-        </Form>
-      </div>
-      <div className="max-w-sm">{/* <img src={cover} alt="" /> */}</div>
-    </section>
+          <Button className="border-none text-green-700 hover:!text-green-400 shadow-none">
+            Forgot password?
+          </Button>
+        </div>
+        <div className="flex items-center justify-between w-full pt-5">
+          <div className="text-gray-400">Don't have an account?</div>
+          <Button
+            onClick={handleChangeMode}
+            className="border-none shadow-none text-green-700 font-extrabold font-sans text-lg hover:!text-green-400"
+          >
+            Sign up
+          </Button>
+        </div>
+      </Form>
+    </div>
   );
 };
 export default SignIn;

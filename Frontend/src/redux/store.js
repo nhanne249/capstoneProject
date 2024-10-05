@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import signin from "./slice/signin";
+import signIn from "./slice/signIn";
+import signUp from "./slice/signUp";
 
 const store = configureStore({
   reducer: {
-    signin: signin.reducer,
+    signIn: signIn.reducer,
+    signUp: signUp.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>

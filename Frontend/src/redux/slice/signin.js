@@ -1,26 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {signinThunk} from '../action/signin'
+import {signInThunk} from '../action/signIn'
 
-const signin = createSlice({
-  name: "signinFunc",
+const signIn = createSlice({
+  name: "signInFunc",
   initialState: {
-    // isSignin: false,
+    // issignIn: false,
   },
   reducers: {
     
   },
   extraReducers: (builder) => {
     builder.addCase(
-      signinThunk.fulfilled,
+      signInThunk.fulfilled,
       (state, { payload }) => {
         if (payload) {
-          // state.signinThunk = payload;
+          // state.signInThunk = payload;
           if(payload?.message == "Sign in Successfully")
-          state.isSignin = true;
+          state.issignIn = true;
       }
       }
     )
   }
 });
-export const {signinFunc} = signin.actions;
-export default signin;
+export const {signInFunc} = signIn.actions;
+export default signIn;

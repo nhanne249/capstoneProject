@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import signin from '../api/signin'
+import signIn from '../api/signIn'
 
-export const signinThunk = createAsyncThunk(
-    'signin',
+export const signInThunk = createAsyncThunk(
+    'signIn',
     async (data) => {
-        const res = await signin(data)
+        const res = await signIn(data)
         return res
     }
 )

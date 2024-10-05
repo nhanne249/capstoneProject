@@ -14,7 +14,7 @@ export class UserService {
   async getUser(username: string): Promise<User> {
     return this.userRepository.findOne({
       where: { username },
-      select: ['id', 'username', 'email', 'phone_number', 'name'],
+      select: ['id', 'username', 'email', 'phone', 'name'],
     });
   }
 
@@ -38,7 +38,7 @@ export class AdminService {
 
   getAllUserByAdmin(): Promise<User[]> {
     return this.userRepository.find({
-      select: ['id', 'username', 'email', 'phone_number', 'name', 'role'],
+      select: ['id', 'username', 'email', 'phone', 'name', 'role'],
     });
   }
 }
