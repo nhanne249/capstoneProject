@@ -1,5 +1,5 @@
 import LayoutPage from "../../layouts";
-import Profile from "../../pages/Profile";
+import Profile from "../../pages/UserPages/Profile";
 
 const adminRouter = 
   {

@@ -1,5 +1,5 @@
 import "./styles.scss";
-import CardCustom from "../../utils/components/card";
+import CardCustom from "../../../utils/components/card";
 
 const Main = () => {
   return (
@@ -11,7 +11,6 @@ const Main = () => {
         contentClassName="font-sans text-base font-medium text-gray-600"
       />
       <div>This is the home page</div>
-      
     </div>
   );
 };

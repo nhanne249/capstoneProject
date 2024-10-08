@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Descriptions, Radio } from 'antd';
+import{ useState } from 'react';
+import { Descriptions } from 'antd';
 const borderedItems = [
   {
     key: '1',
@@ -10,7 +10,7 @@ const borderedItems = [
     key: '2',
     label: 'Billing',
     children: 'Prepaid',
-  },
+  },  
   {
     key: '3',
     label: 'Time',

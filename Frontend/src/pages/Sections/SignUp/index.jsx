@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { signUpThunk } from "../../redux/action/signUp";
+import { signUpThunk } from "../../../redux/action/signUp";
 import "./styles.scss";
 
 import { Button, Form, Input } from "antd";

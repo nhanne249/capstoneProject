@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Input } from "antd";
 import { useDispatch } from "react-redux";
-import { signInThunk } from "../../redux/action/signIn";
+import { signInThunk } from "../../../redux/action/signIn";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 

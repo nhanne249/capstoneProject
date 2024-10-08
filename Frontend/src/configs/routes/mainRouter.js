@@ -1,8 +1,8 @@
 import LayoutPage from "../../layouts";
-import Main from "../../pages/Main/index";
-import SignIn from "../../pages/SignIn";
-import SignUp from "../../pages/SignUp";
-import Profile from "../../pages/Profile";
+import Main from "../../pages/Sections/Main";
+import SignIn from "../../pages/Sections/SignIn";
+import SignUp from "../../pages/Sections/SignUp";
+import UploadImage from "../../pages/test";
 
 const mainRouter ={ 
     path: "*",
@@ -25,8 +25,8 @@ const mainRouter ={
         Component: SignUp,
       },
       {
-        path: "profile",
-        Component: Profile,
+        path: "test",
+        Component: UploadImage,
       },
       {
         path: "*", 
