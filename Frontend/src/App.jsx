@@ -20,7 +20,6 @@ function App() {
                   element={<routers.element />}
                 >
                   {routers.children.map(({ path, Component }, index) => {
-                    console.log(path);
                     return (
                       <Route path={path} key={index} element={<Component />} />
                     );

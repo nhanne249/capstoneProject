@@ -2,16 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Menu, Button } from "antd";
 import { UserOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import Cookies from "js-cookie";
 import "./styles.scss";
 
 const { Search } = Input;
-const role = Cookies.get("role") ? "/" + Cookies.get("role") : undefined;
 
 const menuItemClassName =
   "w-24 flex justify-center items-center text-suitable font-sans font-bold text-gray-600 hover:text-blue-900";
 
-const HeaderPage = () => {
+const HeaderPage = (role) => {
   const navigate = useNavigate();
   const [itemClicked, setItemClicked] = useState("main");
 
@@ -53,9 +51,12 @@ const HeaderPage = () => {
   };
 
   const handleProfileClick = () => {
-    if (role == "/user") navigate(role + "/profile");
-    else if (role == "/admin") navigate(role + "/dashboard");
-    else navigate("/signin");
+    setItemClicked("");
+    if (role) {
+      role = "/" + role.role;
+      if (role == "/user") navigate(role + "/profile");
+      else if (role == "/admin") navigate(role + "/dashboard");
+    } else navigate("/signin");
   };
 
   return (

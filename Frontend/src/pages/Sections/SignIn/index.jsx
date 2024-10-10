@@ -56,9 +56,9 @@ const SignIn = () => {
   };
 
   return (
-    <div className="w-96 m-0 px-5">
-      <h1 className="text-6xl font-sans mb-4">Sign in</h1>
-      <p className="font-sans">Welcome back to BrooK!</p>
+    <div className="h-full w-full m-0 px-5 flex items-center justify-center self-center flex-col">
+      <h1 className="text-6xl font-sans mb-4 h-auto">Sign in</h1>
+      <p className="font-sans h-auto">Welcome back to BrooK!</p>
 
       <Form
         initialValues={{
@@ -68,7 +68,7 @@ const SignIn = () => {
         autoComplete="off"
         layout="vertical"
         requiredMark="optional"
-        className="py-5"
+        className="py-5 h-full"
       >
         <Form.Item
           name="username"
@@ -92,30 +92,32 @@ const SignIn = () => {
               required: true,
               message: "Please input your Password!",
             },
-            {
-              validator: (_, value) => {
-                if (value != undefined && value != null) {
-                  if (!/^.{8,16}$/.test(value)) {
-                    return Promise.reject("Password must have 8-16 symbols!");
-                  } else if (!/(?=.*[A-Z])/.test(value)) {
-                    return Promise.reject(
-                      "Password must have uppercase letter!"
-                    );
-                  } else if (!/(?=.*[a-z]) /.test(value)) {
-                    return Promise.reject(
-                      "Password must have lowercase letter!"
-                    );
-                  } else if (!/(?=.*\d)/.test(value)) {
-                    return Promise.reject("Password must have number!");
-                  } else if (!/(?=.*[!@#$%^&*])/.test(value)) {
-                    return Promise.reject("Password must have special symbol!");
-                  }
-                  return Promise.resolve();
-                } else {
-                  return Promise.reject();
-                }
-              },
-            },
+            // {
+            //   validator: (_, value) => {
+            //     if (value != undefined && value != null) {
+            //       if (!/^.{8,16}$/.test(value)) {
+            //         return Promise.reject("Password must have 8-16 symbols!");
+            //       } else if (!/(?=.*[A-Z])/.test(value)) {
+            //         return Promise.reject(
+            //           "Password must have uppercase letter!"
+            //         );
+            //       } else if (!/(?=.*[a-z])/.test(value)) {
+            //         return Promise.reject(
+            //           "Password must have lowercase letter!"
+            //         );
+            //       } else if (!/(?=.*\d)/.test(value)) {
+            //         return Promise.reject("Password must have number!");
+            //       } else if (!/(?=.*[!@#$%^&*])/.test(value)) {
+            //         return Promise.reject(
+            //           "Password must have special symbol!"
+            //         );
+            //       }
+            //       return Promise.resolve();
+            //     } else {
+            //       return Promise.reject();
+            //     }
+            //   },
+            // },
           ]}
         >
           <Input.Password
@@ -131,7 +133,7 @@ const SignIn = () => {
               htmlType="submit"
               className="w-44 h-10 text-lg bg-green-700 text-white font-extrabold font-sans hover:!border-green-700 hover:!text-green-700"
             >
-              Sigin in
+              Sign in
             </Button>
           </Form.Item>
           <Button className="border-none text-green-700 hover:!text-green-400 shadow-none">

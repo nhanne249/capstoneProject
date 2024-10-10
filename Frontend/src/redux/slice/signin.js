@@ -4,7 +4,6 @@ import {signInThunk} from '../action/signIn'
 const signIn = createSlice({
   name: "signInFunc",
   initialState: {
-    // issignIn: false,
   },
   reducers: {
     
@@ -14,7 +13,6 @@ const signIn = createSlice({
       signInThunk.fulfilled,
       (state, { payload }) => {
         if (payload) {
-          // state.signInThunk = payload;
           if(payload?.message == "Sign in Successfully")
           state.issignIn = true;
       }
