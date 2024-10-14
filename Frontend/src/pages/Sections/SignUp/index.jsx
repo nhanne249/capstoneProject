@@ -108,7 +108,7 @@ export default function SignUp() {
         >
           <Input
             prefix={<InfoOutlined />}
-            placeholder="name"
+            placeholder="Name"
             className="h-10"
           />
         </Form.Item>
@@ -154,7 +154,7 @@ export default function SignUp() {
         >
           <Input
             prefix={<PhoneOutlined />}
-            placeholder="Telephone"
+            placeholder="Phone"
             className="h-10"
           />
         </Form.Item>
