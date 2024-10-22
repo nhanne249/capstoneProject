@@ -15,7 +15,6 @@ const UserManagement = () => {
 
   useEffect(() => {
     dispatch(getAllUsersByAdminThunk({ page })).then((res) => {
-      console.log(res);
       setDataRecieved(res.payload);
     });
   }, []);
@@ -25,7 +24,7 @@ const UserManagement = () => {
       title: "STT",
       className: "flex justify-center",
       dataIndex: "id",
-      key: "id",
+      key: null,
       width: "5%",
     },
     {
