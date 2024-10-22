@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query } from '@nestjs/common';
 import { UserService, AdminService } from './user.service';
 import { User } from '../auth/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -89,8 +89,9 @@ export class AdminController {
   ) { }
 
   @Get('users')
-  async getAllUser() {
-    return this.adminService.getAllUserByAdmin();
+  async getAllUser(@Query('page') page: string) {
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    return this.adminService.getAllUserByAdmin(pageNumber);
   }
 
   @Delete(':username')
