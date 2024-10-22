@@ -1,9 +1,9 @@
-import { Body, Controller, Post, Get, Param, Put, Delete, Query, ParseIntPipe  } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Body, Controller, Post, Get, Put, Delete, Query, Param,  } from '@nestjs/common';
 import { BookService } from './book.service';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { BookDto } from './dto/book.dto';
 
-@Controller('book')
+@Controller('api/book')
 export class BookController {
     constructor(private readonly bookService: BookService) { }
 
@@ -19,18 +19,13 @@ export class BookController {
         return { message: 'Book retrieved successfully', data: book };
     }
 
-    @Put()
+    @Put(':bookId')
     async updateBook(
-        @Body() updateBookDto: UpdateBookDto) {
+        @Body() bookDto: BookDto, @Param('bookId') bookId: number) {
         try {
-            const updatedBook = await this.bookService.getBookById(updateBookDto.bookId);
+            await this.bookService.updateBook(bookDto, bookId);
 
-            if (!updatedBook) {
-                return { message: 'Book not found', data: null };
-            }
-            await this.bookService.updateBook(updatedBook, updateBookDto);
-
-            return { message: 'Book updated successfully', data: updatedBook };
+            return { message: 'Book updated successfully', data: bookDto };
         } catch {
             return {
                 message: 'Error updating book'
@@ -38,9 +33,9 @@ export class BookController {
         }
     }
 
-    @Delete()
+    @Delete(':bookId')
     async deleteBook(
-        @Body('bookId') bookId: number) {
+        @Param('bookId') bookId: number) {
         try {
             const deletedBook = await this.bookService.deleteBook(bookId);
 
@@ -57,16 +52,16 @@ export class BookController {
     }
 
     @Post()
-    async addBook(@Body() createBookDto: CreateBookDto) {
+    async addBook(@Body() bookDto: BookDto) {
         try {
-            const existingBook = await this.bookService.getBookByTitle(createBookDto.title);
+            const existingBook = await this.bookService.getBookByTitle(bookDto.title);
 
             if (existingBook) {
                 return {
                     message: 'Book already exists',
                 };
             }
-            return this.bookService.addBook(createBookDto);
+            return this.bookService.addBook(bookDto);
         } catch {
             return {
                 message: 'Error adding book',
@@ -76,7 +71,7 @@ export class BookController {
 
 }
 
-@Controller('books')
+@Controller('api/books')
 export class BooksController {
     constructor(private readonly bookService: BookService) { }
     @Get()
@@ -86,7 +81,7 @@ export class BooksController {
             const books = await this.bookService.getAllBooks(pageNumber);
             return {
                 message: 'Find all books successfully',
-                data: books,
+                response: books,
             };
         } catch (error) {
             return {

@@ -1,10 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { Book } from './book.entity';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
-import { title } from 'process';
+import { BookDto } from './dto/book.dto';
+import { PaginationResponse } from 'src/pagination.dto';
 
 @Injectable()
 export class BookService {
@@ -20,36 +20,47 @@ export class BookService {
     async getBookById(bookId: number): Promise<Book> {
         return this.bookRepository.findOne({ where: { id: bookId } });
     }
-    async getAllBooks(page: number): Promise<Book[]> {
+    async getAllBooks(page: number): Promise<PaginationResponse<BookDto>> {
         const pageSize = 10;
         const offset = (page - 1) * pageSize;
 
-        const books = await this.bookRepository.find({
+        const [books, total] = await this.bookRepository.findAndCount({
             skip: offset,
             take: pageSize,
         });
-
-        return books;
+        const totalPages = Math.ceil(total / pageSize);
+        const hasNextPage = page < totalPages;
+        const hasPreviousPage = page > 1;
+        return {
+            data: books,
+            pageNumber: page,
+            pageSize: pageSize,
+            total: total,
+            totalPages: totalPages,
+            hasNextPage: hasNextPage,
+            hasPreviousPage: hasPreviousPage,
+        };
     }
 
     async deleteBook(bookId: number) {
         return await this.bookRepository.delete(bookId);
     }
 
-    async updateBook(book: Book, updateBookDto: UpdateBookDto): Promise<Book> {
-        const updatedBook = this.bookRepository.merge(book, updateBookDto);
+    async updateBook(bookDto: BookDto,bookId: number ): Promise<Book> {
+        const book = await this.bookRepository.findOne({ where: { id: bookId } });
+        const updatedBook = this.bookRepository.merge(book, bookDto);
         return this.bookRepository.save(updatedBook);  // Save the updated book
     }
 
-    async addBook(createBookDto: CreateBookDto): Promise<Book> {
-        const newBook = this.bookRepository.create(createBookDto);
+    async addBook(book: BookDto): Promise<Book> {
+        const newBook = this.bookRepository.create(book);
         return this.bookRepository.save(newBook);
     }
 
     async searchBooks(search: string, page: number) {
         const pageSize = 10;
         const offset = (page - 1) * pageSize;
-        const books = await this.bookRepository.find({
+        const [books, total] = await this.bookRepository.findAndCount({
             where: [
                 { title: ILike(`%${search}%`) },
                 { author: ILike(`%${search}%`) },
@@ -59,6 +70,11 @@ export class BookService {
             skip: offset,
             take: pageSize,
         });
-        return books;
+        return {
+            data: books,
+            pageNumber: page,
+            pageSize: pageSize,
+            total: total,
+        };
     }
 }

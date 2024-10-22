@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { userSignupDto } from './dto/user-signup.dto';
@@ -12,11 +13,11 @@ export class AuthController {
     try {
       await this.authService.userSignup(signupDto)
       return {
-        message: 'Sign up successfully.',
+        message: 'Sign up successfully!',
       };
     } catch (error) {
       return {
-        message: 'Sign up failed.',
+        message: 'Sign up failed!',
         error: error.message,
       };
     }
@@ -32,21 +33,21 @@ export class AuthController {
 
       if (!user) {
         return {
-          message: 'Sign in failed.',
-          error: 'Incorrect username or password.',
+          message: 'Sign in failed!',
+          error: 'Incorrect username or password!',
         };
       }
 
       return {
-        message: `Sign in Successfully`,
+        message: `Sign in Successfully!`,
         username: user.username,
         role: user.role,
         token: await this.authService.login(user),
       };
     } catch (error) {
       return {
-        message: 'Sign in failed.',
-        error: error.message || 'Unspecified error.',
+        message: 'Sign in failed!',
+        error: error.message || 'Unspecified error!',
       };
     }
   }

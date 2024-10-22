@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Post, Param, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { ReviewService } from './review.service';
 
-@Controller('review')
+@Controller('api/review')
 export class ReviewController {
     constructor(private readonly reviewService: ReviewService) {}
-    @Get('book/:bookId/reviews')
+    @Get('book/:bookId')
     async getReviewByBookId(@Param('bookId') bookId: number) {
         return this.reviewService.getReviewsByBookId(bookId);
     }

@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../auth/user.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
+import { PaginationResponse } from 'src/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -18,7 +20,7 @@ export class UserService {
     });
   }
 
-  async updateUser(username: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(username: string, updateUserDto: UserDto): Promise<User> {
     const user = await this.getUser(username);
     if (!user) {
       throw new Error('User not found');
@@ -40,14 +42,27 @@ export class AdminService {
     private userRepository: Repository<User>,
   ) {}
 
-  getAllUserByAdmin(page: number): Promise<User[]> {
+  async getAllUserByAdmin(page: number): Promise<PaginationResponse<User>> {
     const pageSize = 10;
     const offset = (page - 1) * pageSize;
 
-    return this.userRepository.find({
+    const [users, total] = await this.userRepository.findAndCount({
       skip: offset,
       take: pageSize,
       select: ['id', 'username', 'email', 'phone', 'name', 'role'],
     });
+    const totalPages = Math.ceil(total / pageSize);
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+
+    return {
+      data: users,
+      pageNumber: page,
+      pageSize: pageSize,
+      total: total,
+      totalPages: totalPages,
+      hasNextPage: hasNextPage,
+      hasPreviousPage: hasPreviousPage,
+    };
   }
 }

@@ -1,13 +1,16 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query, SetMetadata, Req } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Controller, Get, Body, Param, Delete, Put, UseGuards, Query, SetMetadata, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthGuard, RolesGuard } from '../auth/auth.guard';
-/* eslint-disable prettier/prettier */
 import { UserService, AdminService } from './user.service';
 import { User } from '../auth/user.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcryptjs';
 
+const Roles = (...role: string[]) => SetMetadata('role', role);
+
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('api/user')
 export class UserController {
   constructor(
@@ -16,7 +19,7 @@ export class UserController {
     private readonly userService: UserService
   ) { }
 
-  @UseGuards(AuthGuard)
+  @Roles('User')
   @Get()
   async getUser(@Req() request: Request) {
     try {
@@ -39,11 +42,11 @@ export class UserController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @Roles('User')
   @Put()
   async updateUser(
     @Req() request: Request,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UserDto,
   ) {
     try {
       const userPayload = request['user'];
@@ -81,7 +84,7 @@ export class UserController {
     }
   }
 
-  @UseGuards(AuthGuard)
+  @Roles('User')
   @Delete()
   async deleteUser(@Req() request: Request) {
     try {
@@ -107,8 +110,6 @@ export class UserController {
   }
 }
 
-export const Roles = (...role: string[]) => SetMetadata('role', role);
-
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('api/admin')
 export class AdminController {
@@ -117,14 +118,14 @@ export class AdminController {
     private readonly userService: UserService,
   ) { }
 
-  @Roles('admin')
+  @Roles('Admin')
   @Get('users')
   async getAllUserByAdmin(@Query('page') page: string) {
     const pageNumber = page ? parseInt(page, 10) : 1;
     return this.adminService.getAllUserByAdmin(pageNumber);
   }
 
-  @Roles('admin')
+  @Roles('Admin')
   @Get(':username')
   async getUserByAdmin(@Param('username') username: string) {
     try {
@@ -139,7 +140,7 @@ export class AdminController {
     }
   }
 
-  @Roles('admin')
+  @Roles('Admin')
   @Delete(':username')
   async deleteUserByAdmin(@Param('username') username: string) {
     try {

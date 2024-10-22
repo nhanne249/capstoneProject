@@ -1,6 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { userSignupDto } from './dto/user-signup.dto';
-import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -64,7 +64,6 @@ export class AuthService {
     // User login
     async login(user: User) {
         const payload = { username: user.username, sub: user.id, role: user.role };
-        console.log(payload)
         return this.jwtService.sign(payload);
     }
 
