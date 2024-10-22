@@ -7,9 +7,9 @@ import { BookDto } from './dto/book.dto';
 export class BookController {
     constructor(private readonly bookService: BookService) { }
 
-    @Get()
+    @Get(':bookId')
     async getBook(
-        @Body('bookId') bookId: number,) {
+        @Param('bookId') bookId: number,) {
         const book = await this.bookService.getBookById(bookId);
 
         if (!book) {
@@ -91,7 +91,7 @@ export class BooksController {
         }
     }
 
-    @Get('search')
+    @Get()
     async searchBook(
         @Query('search') search: string,
         @Query('page') page: string ) {

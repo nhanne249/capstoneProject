@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {signUpThunk} from '../action/signUp'
 
 const signUp = createSlice({
   name: "signUpFunc",
@@ -8,15 +7,7 @@ const signUp = createSlice({
   reducers: {
     
   },
-  extraReducers: (builder) => {
-    builder.addCase(
-      signUpThunk.fulfilled,
-      (state, { payload }) => {
-        if (payload) {
-          state.signUpThunk = payload;
-      }
-      }
-    )
+  extraReducers: () => {
   }
 });
 export const {signUpFunc} = signUp.actions;
