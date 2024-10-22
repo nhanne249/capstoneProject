@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Controller, Get, Body, Param, Delete, Put, Query } from '@nestjs/common';
 import { UserService, AdminService } from './user.service';
 import { User } from '../auth/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -49,8 +50,8 @@ export class UserController {
           return 'Phone number already exists.'
         }
       }
-      const updatedUser = await this.userService.updateUser(username, updateUserDto);
-      return { message: 'User updated successfully', };
+      await this.userService.updateUser(username, updateUserDto);
+      return { message: 'User updated successfully'};
     } catch (error) {
       return {
         message: 'Update user failed',
