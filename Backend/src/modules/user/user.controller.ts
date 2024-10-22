@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query, SetM
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthGuard, RolesGuard } from '../auth/auth.guard';
+/* eslint-disable prettier/prettier */
 import { UserService, AdminService } from './user.service';
 import { User } from '../auth/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -70,8 +71,8 @@ export class UserController {
       } else {
         delete updateUserDto.password;
       }
-      const updatedUser = await this.userService.updateUser(username, updateUserDto);
-      return { message: 'User updated successfully', };
+      await this.userService.updateUser(username, updateUserDto);
+      return { message: 'User updated successfully'};
     } catch (error) {
       return {
         message: 'Update user failed',
