@@ -57,14 +57,13 @@ export class AuthService {
         const user = await this.userRepository.findOne({ where: { username } });
         if (user && (await bcrypt.compare(password, user.password))) {
             return user;
-            // Check if it's a user or admin by looking for the username
         }
         return null;
     }
 
     // User login
     async login(user: User) {
-        const payload = { username: user.username, sub: user.username };
+        const payload = { username: user.username, sub: user.id, role: user.role };
         return this.jwtService.sign(payload);
     }
 

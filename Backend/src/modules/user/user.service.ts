@@ -36,8 +36,13 @@ export class AdminService {
     private userRepository: Repository<User>,
   ) {}
 
-  getAllUserByAdmin(): Promise<User[]> {
+  getAllUserByAdmin(page: number): Promise<User[]> {
+    const pageSize = 10;
+    const offset = (page - 1) * pageSize;
+
     return this.userRepository.find({
+      skip: offset,
+      take: pageSize,
       select: ['id', 'username', 'email', 'phone', 'name', 'role'],
     });
   }
