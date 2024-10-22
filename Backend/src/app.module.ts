@@ -5,6 +5,7 @@ import { User } from './modules/auth/user.entity';
 import { Book } from './modules/book/book.entity';
 import { UsersModule } from './modules/user/user.module';
 import { BookModule } from './modules/book/book.module';
+import { env } from 'process';
 
 @Module({
   imports: [

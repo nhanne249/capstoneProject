@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query, SetMetadata, Req } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { AuthGuard, RolesGuard } from '../auth/auth.guard';
 import { UserService, AdminService } from './user.service';
 import { User } from '../auth/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcryptjs';
 
 @Controller('api/user')
 export class UserController {
@@ -13,26 +15,39 @@ export class UserController {
     private readonly userService: UserService
   ) { }
 
-  @Get(':username')
-  async getUser(@Param('username') username: string) {
+  @UseGuards(AuthGuard)
+  @Get()
+  async getUser(@Req() request: Request) {
     try {
+      const userPayload = request['user'];
+      const username = userPayload.username;
+
       const foundUser = await this.userService.getUser(username);
-      if (!foundUser) return 'Username does not exist.'
-      return foundUser;
+      if (!foundUser) {
+        return { message: 'User not found.' };
+      }
+      return {
+        message: 'User retrieved successfully',
+        data: foundUser
+      }
     } catch (error) {
       return {
-        message: 'Find user fail.',
+        message: 'Failed to retrieve user information.',
         error: error.message,
-      }
+      };
     }
   }
 
-  @Put(':username')
+  @UseGuards(AuthGuard)
+  @Put()
   async updateUser(
-    @Param('username') username: string,
+    @Req() request: Request,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     try {
+      const userPayload = request['user'];
+      const username = userPayload.username;
+
       const foundUser = await this.userService.getUser(username);
       if (!foundUser) {
         return 'Username does not exist.'
@@ -44,10 +59,16 @@ export class UserController {
         }
       }
       if (updateUserDto.phone) {
-        const existingEmailUser = await this.userRepository.findOne({ where: { phone: updateUserDto.phone } });
-        if (existingEmailUser && existingEmailUser.username !== username) {
+        const existingPhoneUser = await this.userRepository.findOne({ where: { phone: updateUserDto.phone } });
+        if (existingPhoneUser && existingPhoneUser.username !== username) {
           return 'Phone number already exists.'
         }
+      }
+      if (updateUserDto.password) {
+        const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+        updateUserDto.password = hashedPassword;
+      } else {
+        delete updateUserDto.password;
       }
       const updatedUser = await this.userService.updateUser(username, updateUserDto);
       return { message: 'User updated successfully', };
@@ -59,9 +80,13 @@ export class UserController {
     }
   }
 
-  @Delete(':username')
-  async deleteUser(@Param('username') username: string) {
+  @UseGuards(AuthGuard)
+  @Delete()
+  async deleteUser(@Req() request: Request) {
     try {
+      const userPayload = request['user'];
+      const username = userPayload.username;
+
       const deletedUser = await this.userService.getUser(username);
       if (!deletedUser) {
         return 'Username does not exist.';
@@ -81,6 +106,9 @@ export class UserController {
   }
 }
 
+export const Roles = (...role: string[]) => SetMetadata('role', role);
+
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('api/admin')
 export class AdminController {
   constructor(
@@ -88,14 +116,31 @@ export class AdminController {
     private readonly userService: UserService,
   ) { }
 
+  @Roles('admin')
   @Get('users')
-  async getAllUser(@Query('page') page: string) {
+  async getAllUserByAdmin(@Query('page') page: string) {
     const pageNumber = page ? parseInt(page, 10) : 1;
     return this.adminService.getAllUserByAdmin(pageNumber);
   }
 
+  @Roles('admin')
+  @Get(':username')
+  async getUserByAdmin(@Param('username') username: string) {
+    try {
+      const foundUser = await this.userService.getUser(username);
+      if (!foundUser) return 'Username does not exist.'
+      return foundUser;
+    } catch (error) {
+      return {
+        message: 'Find user fail.',
+        error: error.message,
+      }
+    }
+  }
+
+  @Roles('admin')
   @Delete(':username')
-  async deleteUser(@Param('username') username: string) {
+  async deleteUserByAdmin(@Param('username') username: string) {
     try {
       const deletedUser = await this.userService.getUser(username);
       if (!deletedUser) {
