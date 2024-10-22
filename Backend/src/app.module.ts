@@ -5,6 +5,7 @@ import { User } from './modules/auth/user.entity';
 import { Book } from './modules/book/book.entity';
 import { UsersModule } from './modules/user/user.module';
 import { BookModule } from './modules/book/book.module';
+import { env } from 'process';
 import { CartItemModule } from './modules/cart-item/cart-item.module';
 import { CartItem } from './modules/cart-item/cart-item.entity';
 import { ReviewModule } from './modules/review/review.module';

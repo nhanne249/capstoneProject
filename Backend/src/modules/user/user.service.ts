@@ -20,8 +20,12 @@ export class UserService {
 
   async updateUser(username: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.getUser(username);
-    Object.assign(user, updateUserDto);
-    return this.userRepository.save(user);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const newUser = Object.assign(user, updateUserDto);
+    await this.deleteUserbyId(user.id)
+    return await this.userRepository.save(newUser);
   }
 
   async deleteUserbyId(id: number) {
