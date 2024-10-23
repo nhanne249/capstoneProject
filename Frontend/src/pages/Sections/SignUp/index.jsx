@@ -27,7 +27,7 @@ export default function SignUp() {
     dispatch(signUpThunk(values)).then((res) => {
       console.log(res.payload);
       //Handle sigin success
-      if (res?.payload.message == "Sign up successfully.") {
+      if (res?.payload.message == "Sign up successfully!") {
         toast.success("Tạo tài khoản thành công!", {
           position: "top-right",
           autoClose: 3000,
@@ -41,7 +41,7 @@ export default function SignUp() {
         navigate("/signin", { replace: true });
       }
       //Handle sigin error
-      if (res?.payload.message == "Sign up failed.") {
+      if (res?.payload.message == "Sign up failed!") {
         if (res?.payload.error == "Username already exists")
           toast.error("Username đã tồn tại!", {
             position: "top-right",

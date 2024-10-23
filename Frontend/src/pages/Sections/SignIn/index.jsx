@@ -18,7 +18,7 @@ const SignIn = () => {
     const onFinish = (values) => {
         dispatch(signInThunk(values)).then((res) => {
             //Handle sigin success
-            if (res?.payload.message == "Sign in Successfully") {
+            if (res?.payload.message == "Sign in Successfully!") {
                 toast.success("Đăng nhập thành công!", {
                     position: "top-right",
                     autoClose: 3000,
@@ -29,6 +29,7 @@ const SignIn = () => {
                     progress: undefined,
                     theme: "colored",
                 });
+                console.log("sucess 1");
                 Cookies.set("userPresent", `${res?.payload.token}`, {
                     expires: 7,
                     path: "",
@@ -37,6 +38,7 @@ const SignIn = () => {
                     expires: 7,
                     path: "",
                 });
+                console.log("sucessfully");
                 navigate(`/${res?.payload.role.toLowerCase()}`, { replace: true });
             }
             //Handle sigin error

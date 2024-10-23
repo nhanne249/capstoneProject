@@ -11,17 +11,18 @@ const UserManagement = () => {
   const [dataReceived, setDataRecieved] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [dataToDelete, setDataToDelete] = useState();
-  const page = 0;
+  const page = 1;
 
   useEffect(() => {
-    dispatch(getAllUsersByAdminThunk({ page })).then((res) => {
-      setDataRecieved(res.payload);
+    dispatch(getAllUsersByAdminThunk({ page }))
+    .then((res) => {
+      setDataRecieved(res.payload.data);
     });
   }, []);
 
   const columns = [
     {
-      title: "STT",
+      title: "ID",
       className: "flex justify-center",
       dataIndex: "id",
       key: null,
