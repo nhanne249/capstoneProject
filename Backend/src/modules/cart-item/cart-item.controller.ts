@@ -1,17 +1,18 @@
 import { Body, Controller, Delete, Get, Post, Param, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
 import { CartItemService } from './cart-item.service';
 import { AddCartDto } from './dto/add-to-cart.dto';
+import { DeleteBookFromCartDto } from './dto/delete-to-cart.dto';
 
-@Controller('cart-item')
+@Controller('api/cart')
 export class CartItemController {
   constructor(private readonly cartItemService: CartItemService) {}
 
-    @Get('api/cart')
-    getAllCartItems() {
-      return this.cartItemService.getAllCartItems();  
+    @Get()
+    getAllCartItems(@Body('userId') userId: number) {
+      return this.cartItemService.getAllCartItems(userId);  
     }
 
-    @Post('api/add')
+    @Post()
     @UsePipes(ValidationPipe)
     AddBookToCart(@Body() addCartDto: AddCartDto) {
         return this.cartItemService.AddBookToCart(
@@ -21,8 +22,9 @@ export class CartItemController {
         );
     }
 
-    @Delete('api/delete/:id')
-    deleteBookFromCart(@Param('id', ParseIntPipe) cartItemId: number): Promise<void> {
-        return this.cartItemService.deleteBookFromCart(cartItemId);
+    @Delete()
+    async deleteBookFromCart(@Body() deleteBookFromCartDto: DeleteBookFromCartDto): Promise<void> {
+      const { userId, bookId } = deleteBookFromCartDto;
+      return this.cartItemService.deleteBookFromCart(userId, bookId);
     }
 }

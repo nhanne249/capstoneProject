@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 import { User } from '../auth/user.entity';
 import { Book } from '../book/book.entity';
 
@@ -16,13 +16,13 @@ export class Review {
   @Column('datetime', { default: () => 'CURRENT_TIMESTAMP' })
   reviewDate: Date;  
 
-  /*@ManyToOne(() => User, user => user.review, { eager: true })  
+  @ManyToOne(() => User,  { eager: true })  
   @JoinColumn({ name: 'userId' })  
   user: User;
 
-  @ManyToOne(() => Book, book => book.review, { eager: true })  
+  @ManyToOne(() => Book, { eager: true })  
   @JoinColumn({ name: 'bookId' })  
-  book: Book;*/
+  book: Book;
   
   @Column('int')
   userId: number;  
