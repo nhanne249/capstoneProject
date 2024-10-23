@@ -52,7 +52,7 @@ const HeaderPage = (role) => {
 
   const handleProfileClick = () => {
     setItemClicked("");
-    if (role) {
+    if (role.role) {
       role = "/" + role.role;
       if (role == "/user") navigate(role + "/profile");
       else if (role == "/admin") navigate(role + "/dashboard");

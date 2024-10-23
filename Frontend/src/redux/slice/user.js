@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUserProfileThunk } from "../action/admin";
+import { getUserProfileThunk } from "../action/user";
 
 const user = createSlice({
     name: "userFunc",
