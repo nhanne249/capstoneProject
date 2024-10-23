@@ -29,7 +29,6 @@ const SignIn = () => {
                     progress: undefined,
                     theme: "colored",
                 });
-                console.log("sucess 1");
                 Cookies.set("userPresent", `${res?.payload.token}`, {
                     expires: 7,
                     path: "",
@@ -38,7 +37,6 @@ const SignIn = () => {
                     expires: 7,
                     path: "",
                 });
-                console.log("sucessfully");
                 navigate(`/${res?.payload.role.toLowerCase()}`, { replace: true });
             }
             //Handle sigin error
