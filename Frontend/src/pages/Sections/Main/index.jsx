@@ -1,5 +1,5 @@
 import "./styles.scss";
-import CardCustom from "../../../utils/components/card";
+// import CardCustom from "../../../utils/components/card";
 
 
 const Main = () => {
