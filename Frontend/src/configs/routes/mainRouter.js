@@ -30,7 +30,7 @@ const mainRouter ={
         Component: UploadImage,
       },
       {
-        path: "*", 
+        path: "", 
         Component: Main,
       },
     ]}
