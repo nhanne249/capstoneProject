@@ -7,45 +7,34 @@ const userPresent = !!Cookies.get("userPresent");
 const role = Cookies.get("role");
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {userPresent &&
-          privateRouter.map((routers) => {
-            return (
-              routers.role == role && (
-                <Route
-                  path={routers.path}
-                  key={routers}
-                  element={<routers.element />}
-                >
-                  {routers.children.map(({ path, Component }, index) => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                {userPresent &&
+                    privateRouter.map((routers) => {
+                        return (
+                            routers.role == role && (
+                                <Route path={routers.path} key={routers} element={<routers.element />}>
+                                    {routers.children.map(({ subPath, Component }, index) => {
+                                        console.log(subPath);
+                                        return <Route path={subPath} key={index} element={<Component />} />;
+                                    })}
+                                </Route>
+                            )
+                        );
+                    })}
+                {publicRouter.map((router, index) => {
                     return (
-                      <Route path={path} key={index} element={<Component />} />
+                        <Route path={router.path} key={index} element={<router.element />}>
+                            {router.children.map((children, index) => {
+                                return <Route path={children.path} element={<children.Component />} key={index} />;
+                            })}
+                        </Route>
                     );
-                  })}
-                </Route>
-              )
-            );
-          })}
-        {publicRouter.map((router, index) => {
-          return (
-            <Route path={router.path} key={index} element={<router.element />}>
-              {router.children.map((children, index) => {
-                return (
-                  <Route
-                    path={children.path}
-                    element={<children.Component />}
-                    key={index}
-                  />
-                );
-              })}
-            </Route>
-          );
-        })}
-      </Routes>
-    </BrowserRouter>
-  );
+                })}
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;

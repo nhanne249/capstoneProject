@@ -1,5 +1,4 @@
 import LayoutPage from "../../layouts";
-import Profile from "../../pages/UserPages/Profile";
 import UserManagement from "../../pages/AdminPages/UserManagement"
 
 const adminRouter = 
@@ -9,16 +8,20 @@ const adminRouter =
     element: LayoutPage,
     children: [
       {
-        path: "*",
-        Component: Profile,
-      },
-      {
-        path: "users",
+        subPath: "*",
         Component: UserManagement,
       },
       {
-        path: "dashboard",
-        Component: Profile,
+        subPath: "",
+        Component: UserManagement,
+      },
+      {
+        subPath: "users",
+        Component: UserManagement,
+      },
+      {
+        subPath: "dashboard",
+        Component: UserManagement,
       },
     ],
   }

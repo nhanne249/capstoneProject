@@ -31,7 +31,7 @@ const Test = () => {
 
     return (
         <div className="grid grid-cols-4">
-            <Card link="https://i.ibb.co/9sSCtwQ/truyenkieu1.jpg" title="Ông lão đánh cá và con cá vàng" sellingPrice={"200000"} />
+            <Card link="https://i.ibb.co/9sSCtwQ/truyenkieu1.jpg" title="Truyện Kiều" sellingPrice={"200000"} />
             <Card link="https://i.ibb.co/9sSCtwQ/truyenkieu1.jpg" title="Truyện Kiều" sellingPrice={"200000"} />
             <Card link="https://i.ibb.co/9sSCtwQ/truyenkieu1.jpg" title="Truyện Kiều" sellingPrice={"200000"} />
             <Card link="https://i.ibb.co/9sSCtwQ/truyenkieu1.jpg" title="Truyện Kiều" sellingPrice={"200000"} />
