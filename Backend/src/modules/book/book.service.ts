@@ -21,7 +21,7 @@ export class BookService {
         return this.bookRepository.findOne({ where: { id: bookId } });
     }
     async getAllBooks(page: number): Promise<PaginationResponse<BookDto>> {
-        const pageSize = 10;
+        const pageSize = 12;
         const offset = (page - 1) * pageSize;
 
         const [books, total] = await this.bookRepository.findAndCount({

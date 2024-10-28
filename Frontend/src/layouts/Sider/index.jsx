@@ -12,7 +12,7 @@ const SiderPage = (role) => {
         {
           label: (
             <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Tổng quan
+              Dashboard
             </div>
           ),
           key: "dashboard",
@@ -20,7 +20,7 @@ const SiderPage = (role) => {
         {
           label: (
             <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Quản lý người dùng
+              Customers
             </div>
           ),
           key: "users",
@@ -28,10 +28,18 @@ const SiderPage = (role) => {
         {
           label: (
             <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Quản lý đơn hàng
+              Orders
             </div>
           ),
           key: "orders",
+        },
+        {
+          label: (
+            <div className="h-9 text-sky-800 text-lg font-bold py-2">
+              Storage
+            </div>
+          ),
+          key: "products",
         },
       ]);
     if (role.role == "user")

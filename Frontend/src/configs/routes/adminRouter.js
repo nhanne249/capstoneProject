@@ -1,5 +1,6 @@
 import LayoutPage from "../../layouts";
 import UserManagement from "../../pages/AdminPages/UserManagement"
+import ProductManagement from "../../pages/AdminPages/ProductManagement";
 
 const adminRouter = 
   {
@@ -22,6 +23,10 @@ const adminRouter =
       {
         subPath: "*",
         Component: UserManagement,
+      },
+      {
+        path: "products",
+        Component: ProductManagement,
       },
     ],
   }
