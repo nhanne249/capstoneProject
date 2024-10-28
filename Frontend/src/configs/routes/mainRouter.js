@@ -5,13 +5,9 @@ import SignUp from "../../pages/Sections/SignUp";
 import UploadImage from "../../pages/test";
 
 const mainRouter ={ 
-    path: "*",
+    path: "",
     element: LayoutPage,
     children: [
-      {
-        path: "*", 
-        Component: Main,
-      },
       {
         path: "main",
         Component: Main,

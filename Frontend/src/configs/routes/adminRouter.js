@@ -8,7 +8,11 @@ const adminRouter =
     element: LayoutPage,
     children: [
       {
-        subPath: "*",
+        subPath: "users",
+        Component: UserManagement,
+      },
+      {
+        subPath: "dashboard",
         Component: UserManagement,
       },
       {
@@ -16,11 +20,7 @@ const adminRouter =
         Component: UserManagement,
       },
       {
-        subPath: "users",
-        Component: UserManagement,
-      },
-      {
-        subPath: "dashboard",
+        subPath: "*",
         Component: UserManagement,
       },
     ],

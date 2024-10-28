@@ -11,12 +11,11 @@ function App() {
         <BrowserRouter>
             <Routes>
                 {userPresent &&
-                    privateRouter.map((routers) => {
+                    privateRouter.map((routers, key) => {
                         return (
                             routers.role == role && (
-                                <Route path={routers.path} key={routers} element={<routers.element />}>
+                                <Route path={routers.path} key={key} element={<routers.element />}>
                                     {routers.children.map(({ subPath, Component }, index) => {
-                                        console.log(subPath);
                                         return <Route path={subPath} key={index} element={<Component />} />;
                                     })}
                                 </Route>
