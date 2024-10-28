@@ -55,7 +55,7 @@
 import React, {useEffect, useState} from 'react'
 import { getAllBooksThunk } from '../../redux/action/book'
 import { useDispatch } from 'react-redux';
-import book from '../../redux/api/book';
+import CardCustom from '../../utils/components/card';
 
 const Test = () => {
   const dispatch = useDispatch();
@@ -67,7 +67,6 @@ const Test = () => {
   useEffect(() => {
     dispatch(getAllBooksThunk(page))
     .then((res) => {
-      console.log(res)
       setBooks(res.payload.response.data)
       setDataReceived(res.payload.response) // metadata
       setIsReceived(true); 
@@ -78,9 +77,14 @@ const Test = () => {
 
   return (
     <div>
-              hello
+        {books && books.map((book) => {
+          return (
+            <CardCustom key={book.id} className="h-[200px] w-40 overflow-hidden" imgLink={book.image[0]} title={book.title}/>
+          );
+        })}
     </div>
   )
 }
 
 export default Test
+

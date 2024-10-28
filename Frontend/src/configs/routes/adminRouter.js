@@ -1,6 +1,7 @@
 import LayoutPage from "../../layouts";
 import Profile from "../../pages/UserPages/Profile";
 import UserManagement from "../../pages/AdminPages/UserManagement"
+import ProductManagement from "../../pages/AdminPages/ProductManagement";
 
 const adminRouter = 
   {
@@ -15,6 +16,10 @@ const adminRouter =
       {
         path: "users",
         Component: UserManagement,
+      },
+      {
+        path: "products",
+        Component: ProductManagement,
       },
       {
         path: "dashboard",

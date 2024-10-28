@@ -3,6 +3,7 @@ import Main from "../../pages/Sections/Main";
 import SignIn from "../../pages/Sections/SignIn";
 import SignUp from "../../pages/Sections/SignUp";
 import UploadImage from "../../pages/test";
+import Publications from "../../pages/Sections/Publications";
 
 const mainRouter ={ 
     path: "*",
@@ -23,6 +24,10 @@ const mainRouter ={
       {
         path: "signup",
         Component: SignUp,
+      },
+      {
+        path: "publications",
+        Component: Publications,
       },
       {
         path: "test",

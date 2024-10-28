@@ -1,26 +1,27 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAllUsersByAdminThunk, deleteUserThunk } from "../../../redux/action/admin";
+import { getAllBooksThunk } from "../../../redux/action/book";
 import { Table, Pagination, Button, Modal, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import "./styles.scss";
 
-const UserManagement = () => {
+const ProductManagement = () => {
   const dispatch = useDispatch();
 
   const [dataReceived, setDataReceived] = useState();
+
   const [openModal, setOpenModal] = useState(false);
   const [dataToDelete, setDataToDelete] = useState();
   const [isReceived, setIsReceived] = useState(false);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    dispatch(getAllUsersByAdminThunk({ page }))
+    dispatch(getAllBooksThunk(page))
     .then((res) => {
-      setDataReceived(res.payload);
+      setDataReceived(res.payload.response);
       setIsReceived(true);
-    });
-  }, [isReceived]);
+    })
+  }, [isReceived])
 
   const handlePageChange = (e) => {
     setPage(e);    
@@ -34,59 +35,56 @@ const UserManagement = () => {
       // className: "flex justify-center",
       dataIndex: "id",
       key: null,
-      width: "5%",
+      width: "4%",
     },
     {
-      title: "Full name",
-      dataIndex: "name",
-      key: "name",
-      width: "25%",
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+      width: "6%",
+      render: (value) => <img src={value[0]} className="w-[50px] h-[50px]" />,
     },
     {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-      width: "20%",
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      width: "35%",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      width: "20%",
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+      width: "10%",
+    },
+    // {
+    //   title: "Sold amount",
+    //   dataIndex: "sold",
+    //   key: "sold",
+    //   width: "15%",
+    // },
+    {
+      title: "Cost price",
+      dataIndex: "costPrice",
+      key: "costPrice",
+      width: "10%",
+      render: (value) => <div className="">{value.replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND</div>
     },
     {
-      title: "Telephone",
-      dataIndex: "phone",
-      key: "phone",
-      width: "15%",
+      title: "Sell price",
+      dataIndex: "sellingPrice",
+      key: "sellingPrice",
+      width: "10%",
+      render: (value) => <div className="">{value.replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND</div>
+
     },
     {
       title: "Edit",
       dataIndex: null,
       key: null,
-      width: "6%",
+      width: "25%",
       // className: "flex justify-center",
       render: (value) => (
-        <Tooltip placement="top" title={"Update user profile"}>
-          <Button
-            onClick={() => {
-              setOpenModal(true);
-              setDataToDelete(value);
-            }}
-            icon={<DeleteOutlined />}
-            className="border-none"
-          />
-        </Tooltip>
-      ),
-    },
-    {
-      title: "Remove",
-      dataIndex: null,
-      key: null,
-      width: "6%",
-      // className: "flex justify-center",
-      render: (value) => (
-        <Tooltip placement="top" title={"Remove user"}>
+        <Tooltip placement="top" title={"Delete product"}>
           <Button
             onClick={() => {
               setOpenModal(true);
@@ -100,18 +98,14 @@ const UserManagement = () => {
     },
   ];
 
-  const handleDeleteUser = (value) => {
+  const handleDeleteProduct = (value) => {
     console.log(value);
-    dispatch(deleteUserThunk({username: value}))
-    .then((res) => {
-      console.log(res);
-    })
     setIsReceived(false);
   };
   return (
     <div className="flex flex-col w-auto">
       <h1 className="text-3xl font-bold h-auto mb-10 mt-4 text-sky-800">
-        Customer management
+        Product management
       </h1>
       <Table
         bordered
@@ -138,10 +132,10 @@ const UserManagement = () => {
         }}
         onOk={() => {
           setOpenModal(false);
-          handleDeleteUser(dataToDelete?.username);
+          // handleDeleteProduct(dataToDelete?.id);
         }}
       />
     </div>
   );
 };
-export default UserManagement;
+export default ProductManagement;
