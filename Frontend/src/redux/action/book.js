@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import book from '../api/book'
 
-const { getAllBooks, searchBook,getBook,createBook,updateBook,deleteBook } = book;
+const { getAllBooks, searchBook,getBook,createBook,updateBook,deleteBook,getNewestBook } = book;
 
 export const getAllBooksThunk = createAsyncThunk(
     'getAllBooks',
@@ -42,6 +42,13 @@ export const deleteBookThunk = createAsyncThunk(
     'deleteBook',
     async (data) => {
         const res = await deleteBook(data);
+        return res;
+    }
+)
+export const getNewestBookThunk = createAsyncThunk(
+    'getNewestBook',
+    async (data) => {
+        const res = await getNewestBook(data);
         return res;
     }
 )

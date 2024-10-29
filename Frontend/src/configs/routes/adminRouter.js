@@ -17,16 +17,16 @@ const adminRouter =
         Component: UserManagement,
       },
       {
+        subPath: "products",
+        Component: ProductManagement,
+      },
+      {
         subPath: "",
         Component: UserManagement,
       },
       {
         subPath: "*",
         Component: UserManagement,
-      },
-      {
-        path: "products",
-        Component: ProductManagement,
       },
     ],
   }

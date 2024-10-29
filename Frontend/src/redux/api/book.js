@@ -37,6 +37,9 @@ const book = {
     },
     deleteBook: (data) => {
         return transport.delete(`${url}/${data}`);
-    }
+    },
+    getNewestBook: () => {
+        return transport.get(`${url}s/newest`);
+     }
 }
 export default book;

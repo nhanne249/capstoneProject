@@ -1,6 +1,6 @@
 import "./styles.scss";
 
 const FooterPage = () => {
-  return <div>@ All Right Reserved by Programming Intergration Project</div>;
+  return <div>@ This is Programming Intergration Project</div>;
 };
 export default FooterPage;

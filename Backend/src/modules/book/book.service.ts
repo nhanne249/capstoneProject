@@ -77,4 +77,11 @@ export class BookService {
             total: total,
         };
     }
+    async getNewestBooks(): Promise<Book[]> {
+        const books = await this.bookRepository.find({
+            order: { id: 'DESC' },
+            take: 4,
+        });
+        return books;
+    }
 }

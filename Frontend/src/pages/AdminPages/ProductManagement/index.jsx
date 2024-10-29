@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAllBooksThunk } from "../../../redux/action/book";
+import { getAllBooksThunk, deleteBookThunk } from "../../../redux/action/book";
 import { Table, Pagination, Button, Modal, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
 import "./styles.scss";
 
 const ProductManagement = () => {
@@ -16,73 +17,55 @@ const ProductManagement = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    dispatch(getAllBooksThunk(page))
-    .then((res) => {
+    dispatch(getAllBooksThunk(page)).then((res) => {
       setDataReceived(res.payload.response);
       setIsReceived(true);
-    })
-  }, [isReceived])
-
+    });
+  }, [isReceived]);
   const handlePageChange = (e) => {
-    setPage(e);    
+    setPage(e);
     setIsReceived(false);
-  }
-
+  };
 
   const columns = [
     {
       title: "ID",
-      // className: "flex justify-center",
       dataIndex: "id",
-      key: null,
       width: "4%",
     },
     {
       title: "Image",
       dataIndex: "image",
-      key: "image",
-      width: "6%",
-      render: (value) => <img src={value[0]} className="w-[50px] h-[50px]" />,
+      width: "10%",
+      render: (value) => <img src={value ? value[0] : ""} className="w-[100px] h-[100px]" />,
     },
     {
       title: "Title",
       dataIndex: "title",
-      key: "title",
       width: "35%",
     },
     {
       title: "Quantity",
       dataIndex: "quantity",
-      key: "quantity",
       width: "10%",
+      render: (value) => <div className="text-center">{value}</div>,
     },
-    // {
-    //   title: "Sold amount",
-    //   dataIndex: "sold",
-    //   key: "sold",
-    //   width: "15%",
-    // },
     {
       title: "Cost price",
       dataIndex: "costPrice",
-      key: "costPrice",
       width: "10%",
-      render: (value) => <div className="">{value.replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND</div>
+      render: (value) => <div className="">{value.replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</div>,
     },
     {
       title: "Sell price",
       dataIndex: "sellingPrice",
-      key: "sellingPrice",
       width: "10%",
-      render: (value) => <div className="">{value.replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND</div>
-
+      render: (value) => <div className="">{value.replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</div>,
     },
     {
-      title: "Edit",
+      title: "Actions",
+      width: "21%",
       dataIndex: null,
-      key: null,
-      width: "25%",
-      // className: "flex justify-center",
       render: (value) => (
         <Tooltip placement="top" title={"Delete product"}>
           <Button
@@ -99,21 +82,37 @@ const ProductManagement = () => {
   ];
 
   const handleDeleteProduct = (value) => {
-    console.log(value);
-    setIsReceived(false);
+    dispatch(deleteBookThunk(value)).then((res) => {
+      if (res.payload.error) {
+        toast.error(res.payload.error, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else if (res.payload.message == "Book deleted successfully") {
+        toast.success(res.payload.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setIsReceived(false);
+      }
+    });
   };
   return (
     <div className="flex flex-col w-auto">
-      <h1 className="text-3xl font-bold h-auto mb-10 mt-4 text-sky-800">
-        Product management
-      </h1>
-      <Table
-        bordered
-        columns={columns}
-        dataSource={dataReceived?.data || []}
-        pagination={false}
-        className="w-auto"
-      />
+      <h1 className="text-3xl font-bold h-auto mb-10 mt-4 text-sky-800">Product management</h1>
+      <Table bordered columns={columns} dataSource={dataReceived?.data || []} pagination={false} className="w-auto" />
       <Pagination
         defaultCurrent={1}
         total={dataReceived?.total || 0}
@@ -123,7 +122,7 @@ const ProductManagement = () => {
         className="self-end my-5"
       />
       <Modal
-        title={`Bạn muốn xóa tài khoản của ${dataToDelete?.name}?`}
+        title={`Bạn muốn xóa sản phẩm ${dataToDelete?.title}?`}
         open={openModal}
         centered={true}
         onCancel={() => {
@@ -132,7 +131,7 @@ const ProductManagement = () => {
         }}
         onOk={() => {
           setOpenModal(false);
-          // handleDeleteProduct(dataToDelete?.id);
+          handleDeleteProduct(dataToDelete?.id);
         }}
       />
     </div>

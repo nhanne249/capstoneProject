@@ -44,9 +44,10 @@ export class BookController {
             }
 
             return { message: 'Book deleted successfully' };
-        } catch {
+        } catch (e){
             return {
                 message: 'Error delete book',
+                error: e.message,
             }
         }
     }
@@ -109,5 +110,10 @@ export class BooksController {
                 error: error.message,
             };
         }
+    }
+
+    @Get("newest")
+    getNewestBook() {
+        return this.bookService.getNewestBooks();
     }
 }
