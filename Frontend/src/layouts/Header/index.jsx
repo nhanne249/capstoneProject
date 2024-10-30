@@ -29,11 +29,6 @@ const HeaderPage = (role) => {
       label: <div className={menuItemClassName}>Events</div>,
       disabled: itemClicked == "events",
     },
-    // {
-    //   key: "publications",
-    //   label: <div className={menuItemClassName}>Publications</div>,
-    //   disabled: itemClicked == "publications",
-    // },
     {
       key: "contact",
       label: <div className={menuItemClassName}>Contact us</div>,
