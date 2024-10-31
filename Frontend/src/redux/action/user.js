@@ -5,8 +5,8 @@ const { getUserProfile, updateUserProfile,deleteUserAccount } = user;
 
 export const getUserProfileThunk = createAsyncThunk(
     'getUserProfile',
-    async (data) => {
-        const res = await getUserProfile(data);
+    async () => {
+        const res = await getUserProfile();
         return res;
     }
 )

@@ -8,11 +8,15 @@ const userRouter =
     element: LayoutPage,
     children: [
       {
-        path: "*",
+        subPath: "*",
         Component: Profile,
       },
       {
-        path: "profile",
+        subPath: "profile",
+        Component: Profile,
+      },
+      {
+        subPath: "",
         Component: Profile,
       },
     ],

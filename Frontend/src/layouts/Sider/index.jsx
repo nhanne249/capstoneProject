@@ -29,15 +29,11 @@ const SiderPage = (role) => {
     if (role.role == "user")
       setItems([
         {
-          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Tổng quan</div>,
-          key: "dashboard",
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Profile</div>,
+          key: "profile",
         },
         {
-          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Quản lý người dùng</div>,
-          key: "users",
-        },
-        {
-          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Quản lý đơn hàng</div>,
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Order Logs</div>,
           key: "orders",
         },
       ]);

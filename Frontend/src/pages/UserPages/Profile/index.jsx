@@ -1,137 +1,89 @@
-import { useState } from "react";
-import { Button, Modal, Input, Form, Divider } from "antd";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getUserProfileThunk, updateUserProfileThunk } from "../../../redux/action/user";
+import { Button, Input, Form } from "antd";
 
 const Profile = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    id: "1",
-    role: "user",
-    username: "joe123",
-    fullname: "sirgio joe",
-    password: "12345",
-    email: "joe@mama.com",
-    phone: "0987654321",
-  });
+  const [formEdit] = Form.useForm();
+  const dispatch = useDispatch();
+  const [profileData, setProfileData] = useState();
+  const [isReceived, setIsReceived] = useState(false);
+  const [isEditBtnClicked, setIsEditBtnClicked] = useState(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
+  useEffect(() => {
+    dispatch(getUserProfileThunk()).then((res) => {
+      setProfileData(res.payload.data);
+      setIsReceived(true);
+    });
+  }, [isReceived]);
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleEditData = (values) => {
+    console.log(values);
   };
   return (
-    <>
-      <p className="m-4 my-6 font-sans text-4xl">Account</p>
-      <div className="container flex justify-between ">
-        <div className="text-lg container m-4 font-sans">
-          <p className="text-2xl">Username</p>
-          <div className="items-center h-10 border rounded-lg border-gray-600 content-center">
-            <p label="Username" className="m-4">
-              {formData.username}
-            </p>
+    isReceived && (
+      <div className="flex flex-col w-full">
+        <h1 className="text-5xl font-bold h-auto mb-5 mt-4 text-sky-800">Account</h1>
+        <Form
+          layout="horizontal"
+          onFinish={handleEditData}
+          className="w-full"
+          form={formEdit}
+          disabled={!isEditBtnClicked}
+          initialValues={{
+            name: profileData?.name,
+            email: profileData?.email,
+            phone: profileData?.phone,
+            username: profileData?.username,
+          }}
+        >
+          <div className="flex flex-col w-1/2">
+            <div className="px-2 pb-1 font-medium text-2xl">Name</div>
+            <Form.Item name="name">
+              <Input className="!w-[600px] rounded-lg border-gray-600 content-center h-14 text-2xl !text-stone-800" />
+            </Form.Item>
           </div>
-        </div>
-        <div className="text-lg container m-4 font-sans">
-          <p label="Email" className="text-2xl">
-            Email
-          </p>
-          <div className="items-center h-10 border rounded-lg border-gray-600 content-center xl:rounded-lg">
-            <p className="m-4">{formData.email}</p>
-          </div>
-        </div>
-        <div className="text-lg container m-4 font-sans">
-          <p className="text-2xl">Phone number</p>
-          <div className="items-center h-10 border rounded-lg border-gray-600 content-center xl:rounded-lg">
-            <p label="Phone" className="m-4">
-              {formData.phone}
-            </p>
-          </div>
-        </div>
-      </div>
-      <Divider />
-      <div>
-        <div className="container flex justify-between ">
-          <div className="text-lg container m-4 font-sans">
-            <p className="text-2xl">Fullname</p>
-            <div className="items-center h-10 border rounded-lg border-gray-600 content-center xl:rounded-lg">
-              <p label="Fullname" className="m-4">
-                {formData.fullname}
-              </p>
+          <div className="flex flex-row gap-5 justify-between w-fit">
+            <div className="flex flex-col w-1/2">
+              <div className="px-2 pb-1 font-medium text-2xl">Email</div>
+              <Form.Item name="email">
+                <Input className="!w-[600px] rounded-lg border-gray-600 content-center h-14 text-2xl !text-stone-800" />
+              </Form.Item>
+            </div>
+            <div className="flex flex-col w-1/2">
+              <div className="px-2 pb-1 font-medium text-2xl">Phone</div>
+              <Form.Item name="phone">
+                <Input className="!w-[600px] h-14 rounded-lg border-gray-600 content-center text-2xl !text-stone-800" />
+              </Form.Item>
             </div>
           </div>
-          <div className="text-lg container m-4 font-sans">
-            <p className="text-2xl">UserId</p>
-            <div className="items-center h-10 border rounded-lg border-gray-600 content-center xl:rounded-lg">
-              <p className="m-4">{formData.id}</p>
-            </div>
+          <div className="flex flex-col w-1/2">
+            <div className="px-2 pb-1 font-medium text-2xl">Username</div>
+            <Form.Item name="username">
+              <Input className="!w-[600px] h-14 rounded-lg border-gray-600 content-center text-2xl !text-stone-800" />
+            </Form.Item>
           </div>
-          <div className="text-lg container m-4 font-sans">
-            <p className="text-2xl">Role</p>
-            <div className="items-center h-10 border rounded-lg border-gray-600 content-center xl:rounded-lg">
-              <p className="m-4">{formData.role}</p>
-            </div>
-          </div>
-        </div>
-        <div className="float-right">
-          <Button type="primary" onClick={showModal}>
+          {isEditBtnClicked && (
+            <Form.Item>
+              <Button
+                className="w-52 h-12 z-10 mb-5 bg-sky-300 !text-white relative font-semibold after:-z-20 after:absolute after:h-1 after:w-1 after:bg-sky-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 [text-shadow:3px_5px_2px_#075985;] hover:[text-shadow:2px_2px_2px_#7dd4fc] text-2xl"
+                htmlType="submit"
+              >
+                Save
+              </Button>
+            </Form.Item>
+          )}
+        </Form>
+        {!isEditBtnClicked && (
+          <Button
+            className="w-52 h-12 z-10 mb-5 bg-sky-300 !text-white relative font-semibold after:-z-20 after:absolute after:h-1 after:w-1 after:bg-sky-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 [text-shadow:3px_5px_2px_#075985;] hover:[text-shadow:2px_2px_2px_#7dd4fc] text-2xl"
+            onClick={() => setIsEditBtnClicked(true)}
+          >
             Edit
           </Button>
-        </div>
+        )}
       </div>
-
-      <Modal
-        title="Edit Info"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form layout="vertical">
-          <Form.Item label="Username">
-            <Input
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-          </Form.Item>
-          <Form.Item label="Email">
-            <Input
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </Form.Item>
-          <Form.Item label="Phone">
-            <Input
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-            />
-          </Form.Item>
-          <Form.Item label="Fullname">
-            <Input
-              name="fullname"
-              value={formData.fullname}
-              onChange={handleInputChange}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <h1>Here lay buying history</h1>
-    </>
+    )
   );
 };
 export default Profile;
