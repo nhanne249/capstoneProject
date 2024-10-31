@@ -1,21 +1,29 @@
 import { useState, useEffect } from "react";
+import { flushSync } from "react-dom";
 import { useDispatch } from "react-redux";
-import { getAllBooksThunk, deleteBookThunk } from "../../../redux/action/book";
-import { Table, Pagination, Button, Modal, Tooltip } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { getAllBooksThunk, deleteBookThunk, updateBookThunk, createBookThunk } from "../../../redux/action/book";
+import { Table, Pagination, Button, Modal, Tooltip, Form, Input, InputNumber } from "antd";
+import axios from "axios";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import "./styles.scss";
+
+const { TextArea } = Input;
 
 const ProductManagement = () => {
   const dispatch = useDispatch();
 
+  const [form] = Form.useForm();
+  const [formEdit] = Form.useForm();
   const [dataReceived, setDataReceived] = useState();
-
-  const [openModal, setOpenModal] = useState(false);
-  const [dataToDelete, setDataToDelete] = useState();
+  const [fieldId, setFieldId] = useState();
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openAddBookModal, setOpenAddBookModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageList, setImageList] = useState([]);
   const [isReceived, setIsReceived] = useState(false);
   const [page, setPage] = useState(1);
-
   useEffect(() => {
     dispatch(getAllBooksThunk(page)).then((res) => {
       setDataReceived(res.payload.response);
@@ -66,21 +74,43 @@ const ProductManagement = () => {
       title: "Actions",
       width: "21%",
       dataIndex: null,
-      render: (value) => (
-        <Tooltip placement="top" title={"Delete product"}>
-          <Button
-            onClick={() => {
-              setOpenModal(true);
-              setDataToDelete(value);
-            }}
-            icon={<DeleteOutlined />}
-            className="border-none"
-          />
-        </Tooltip>
+      render: (values) => (
+        <div>
+          <Tooltip placement="top" title={"Delete product"}>
+            <Button
+              onClick={() => {
+                flushSync(() => {
+                  setFieldId({ id: values.id, title: values.title });
+                });
+                setOpenDeleteModal(true);
+              }}
+              icon={<DeleteOutlined />}
+              className="border-none"
+            />
+          </Tooltip>
+          <Tooltip placement="top" title={"Edit product"}>
+            <Button
+              onClick={() => {
+                flushSync(() => {
+                  setFieldId({ id: values.id, title: values.title });
+                });
+                setImageList(values?.image === null ? [] : values.image);
+                formEdit.setFieldValue("title", values.title);
+                formEdit.setFieldValue("author", values.author);
+                formEdit.setFieldValue("description", values.description);
+                formEdit.setFieldValue("quantity", values.quantity);
+                formEdit.setFieldValue("costPrice", values.costPrice);
+                formEdit.setFieldValue("sellingPrice", values.sellingPrice);
+                setOpenEditModal(true);
+              }}
+              icon={<EditOutlined />}
+              className="border-none"
+            />
+          </Tooltip>
+        </div>
       ),
     },
   ];
-
   const handleDeleteProduct = (value) => {
     dispatch(deleteBookThunk(value)).then((res) => {
       if (res.payload.error) {
@@ -105,13 +135,96 @@ const ProductManagement = () => {
           progress: undefined,
           theme: "colored",
         });
+        setOpenDeleteModal(false);
         setIsReceived(false);
       }
     });
   };
+
+  const handleUploadImage = () => {
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+    axios
+      .post(`${import.meta.env.VITE_IMG_STORAGE_LINK}`, formData)
+      .then(({ data }) => {
+        setImageList((prevState) => [...(prevState || []), data.data.url]);
+        setSelectedFile(null);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleEditData = (values) => {
+    const dataSend = {
+      id: fieldId?.id,
+      title: values.title,
+      author: values.author,
+      quantity: values.quantity,
+      costPrice: parseFloat(values.costPrice),
+      sellingPrice: parseFloat(values.sellingPrice),
+      description: values.description,
+      image: imageList,
+    };
+    dispatch(updateBookThunk(dataSend)).then((res) => {
+      if (res.payload.message == "Book updated successfully") {
+        toast.success(res.payload.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setOpenEditModal(false);
+        setImageList([]);
+        setFieldId();
+      }
+    });
+  };
+
+  const handleAddBoook = (values) => {
+    const dataSend = {
+      title: values.title,
+      author: values.author,
+      quantity: values.quantity,
+      costPrice: parseFloat(values.costPrice),
+      sellingPrice: parseFloat(values.sellingPrice),
+      description: values.description,
+      image: imageList,
+    };
+    dispatch(createBookThunk(dataSend)).then((res) => {
+      toast.success(res.payload.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      setOpenAddBookModal(false);
+      setImageList([]);
+      setIsReceived(false);
+    });
+  };
+
   return (
     <div className="flex flex-col w-auto">
-      <h1 className="text-3xl font-bold h-auto mb-10 mt-4 text-sky-800">Product management</h1>
+      <h1 className="text-3xl font-bold h-auto mb-5 mt-4 text-sky-800">Product management</h1>
+      <Button
+        className="w-52 h-12 z-10 mb-5 bg-sky-300 !text-white relative font-semibold after:-z-20 after:absolute after:h-1 after:w-1 after:bg-sky-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 [text-shadow:3px_5px_2px_#075985;] hover:[text-shadow:2px_2px_2px_#7dd4fc] text-2xl"
+        onClick={() => setOpenAddBookModal(true)}
+      >
+        Add new book
+      </Button>
       <Table bordered columns={columns} dataSource={dataReceived?.data || []} pagination={false} className="w-auto" />
       <Pagination
         defaultCurrent={1}
@@ -122,18 +235,180 @@ const ProductManagement = () => {
         className="self-end my-5"
       />
       <Modal
-        title={`Bạn muốn xóa sản phẩm ${dataToDelete?.title}?`}
-        open={openModal}
+        title={`Delete book ${fieldId?.title}?`}
+        open={openDeleteModal}
         centered={true}
         onCancel={() => {
-          setOpenModal(false);
-          setDataToDelete();
+          flushSync(() => setFieldId());
+          setOpenDeleteModal(false);
         }}
         onOk={() => {
-          setOpenModal(false);
-          handleDeleteProduct(dataToDelete?.id);
+          handleDeleteProduct(fieldId?.id);
         }}
       />
+      <Modal
+        width={1200}
+        title={`Edit ${fieldId?.title}?`}
+        open={openEditModal}
+        centered={true}
+        onCancel={() => {
+          flushSync(() => {
+            setImageList([]);
+          });
+          setOpenEditModal(false);
+        }}
+        footer={false}
+      >
+        <Form layout="horizontal" onFinish={handleEditData} className="w-auto" form={formEdit}>
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Title</div>
+              <Form.Item name="title">
+                <Input className="!w-[720px] h-10 text-base" />
+              </Form.Item>
+            </div>
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Author</div>
+              <Form.Item name="author">
+                <Input className="!w-[360px] h-10 text-base" />
+              </Form.Item>
+            </div>
+          </div>
+          <div className="px-2 pb-1 font-medium text-base">Description</div>
+          <Form.Item name="description">
+            <TextArea className="!w-full h-10 text-base" />
+          </Form.Item>
+          <div className="px-2 pb-1 font-medium text-base">Image</div>
+          <div className="flex flex-col">
+            <div className="flex flex-row">
+              {imageList?.map((imgageUrl, index) => {
+                return <img key={index} src={imgageUrl} className="w-40 h-40 rounded-xl" />;
+              })}
+            </div>
+            {imageList.length == 0 ? <div className="px-2 pb-1 font-light text-base">Don't have image!</div> : null}
+            <div className="py-5 flex flex-row w-full">
+              <label htmlFor="fileInput" className="cursor-pointer bg-sky-300 !text-white py-2 px-4 rounded mr-5">
+                Add image
+              </label>
+              <input id="fileInput" type="file" className="!hidden" onChange={handleFileChange} />
+              {selectedFile && <p> {selectedFile.name}</p>}
+              <button type="button" className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded" onClick={handleUploadImage}>
+                Upload
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Quantity</div>
+              <Form.Item name="quantity">
+                <InputNumber className="!w-28 h-10 text-base" />
+              </Form.Item>
+            </div>
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Cost price</div>
+              <Form.Item name="costPrice">
+                <InputNumber className="!w-80 h-10 text-base" />
+              </Form.Item>
+            </div>
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Selling price</div>
+              <Form.Item name="sellingPrice">
+                <InputNumber className="!w-80 h-10 text-base" />
+              </Form.Item>
+            </div>
+          </div>
+          <Form.Item>
+            <Button
+              className="w-52 h-12 z-10 bg-sky-300 !text-white relative font-semibold after:-z-20 after:absolute after:h-1 after:w-1 after:bg-sky-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 [text-shadow:3px_5px_2px_#075985;] hover:[text-shadow:2px_2px_2px_#7dd4fc] text-2xl"
+              htmlType="submit"
+            >
+              Save
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Add book */}
+      <Modal
+        width={1200}
+        title={`Add new book`}
+        open={openAddBookModal}
+        centered={true}
+        onCancel={() => {
+          setOpenAddBookModal(false);
+          setImageList([]);
+          form.resetFields();
+        }}
+        footer={false}
+      >
+        <Form layout="horizontal" onFinish={handleAddBoook} className="w-auto" form={form}>
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Title</div>
+              <Form.Item name="title">
+                <Input className="!w-[720px] h-10 text-base" />
+              </Form.Item>
+            </div>
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Author</div>
+              <Form.Item name="author">
+                <Input className="!w-[360px] h-10 text-base" />
+              </Form.Item>
+            </div>
+          </div>
+          <div className="px-2 pb-1 font-medium text-base">Description</div>
+          <Form.Item name="description">
+            <TextArea className="!w-full h-10 text-base" />
+          </Form.Item>
+          <div className="px-2 pb-1 font-medium text-base">Image</div>
+          <div className="flex flex-col">
+            <div className="flex flex-row">
+              {imageList.map((imgageUrl, index) => {
+                return <img key={index} src={imgageUrl} className="w-40 h-40 rounded-xl" />;
+              })}
+            </div>
+            {imageList == [] ? <div className="px-2 pb-1 font-light text-base">{"Don't have image!"}</div> : null}
+            <div className="py-5 flex flex-row w-full">
+              <label htmlFor="fileInput" className="cursor-pointer bg-sky-300 !text-white py-2 px-4 rounded mr-5">
+                Add image
+              </label>
+              <input id="fileInput" type="file" className="!hidden" onChange={handleFileChange} />
+              {selectedFile && <p> {selectedFile.name}</p>}
+              <button type="button" className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded" onClick={handleUploadImage}>
+                Upload
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Quantity</div>
+              <Form.Item name="quantity">
+                <InputNumber className="!w-28 h-10 text-base" />
+              </Form.Item>
+            </div>
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Cost price</div>
+              <Form.Item name="costPrice">
+                <InputNumber className="!w-80 h-10 text-base" />
+              </Form.Item>
+            </div>
+            <div className="flex flex-col">
+              <div className="px-2 pb-1 font-medium text-base">Selling price</div>
+              <Form.Item name="sellingPrice">
+                <InputNumber className="!w-80 h-10 text-base" />
+              </Form.Item>
+            </div>
+          </div>
+          <Form.Item>
+            <Button
+              className="w-52 h-12 z-10 bg-sky-300 !text-white relative font-semibold after:-z-20 after:absolute after:h-1 after:w-1 after:bg-sky-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 [text-shadow:3px_5px_2px_#075985;] hover:[text-shadow:2px_2px_2px_#7dd4fc] text-2xl"
+              htmlType="submit"
+            >
+              Add
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

@@ -10,62 +10,34 @@ const SiderPage = (role) => {
     if (role.role == "admin")
       setItems([
         {
-          label: (
-            <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Dashboard
-            </div>
-          ),
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Dashboard</div>,
           key: "dashboard",
         },
         {
-          label: (
-            <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Customers
-            </div>
-          ),
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Customers</div>,
           key: "users",
         },
         {
-          label: (
-            <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Orders
-            </div>
-          ),
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Orders</div>,
           key: "orders",
         },
         {
-          label: (
-            <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Storage
-            </div>
-          ),
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Storage</div>,
           key: "products",
         },
       ]);
     if (role.role == "user")
       setItems([
         {
-          label: (
-            <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Tổng quan
-            </div>
-          ),
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Tổng quan</div>,
           key: "dashboard",
         },
         {
-          label: (
-            <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Quản lý người dùng
-            </div>
-          ),
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Quản lý người dùng</div>,
           key: "users",
         },
         {
-          label: (
-            <div className="h-9 text-sky-800 text-lg font-bold py-2">
-              Quản lý đơn hàng
-            </div>
-          ),
+          label: <div className="h-9 text-sky-800 text-lg font-bold py-2">Quản lý đơn hàng</div>,
           key: "orders",
         },
       ]);
@@ -74,13 +46,6 @@ const SiderPage = (role) => {
   const onClickMenuItem = (value) => {
     navigate(value.key);
   };
-  return (
-    <Menu
-      mode="inline"
-      className="h-4/5 py-4 shadow-md pl-2"
-      items={items}
-      onClick={onClickMenuItem}
-    />
-  );
+  return <Menu mode="inline" className="h-4/5 py-4 shadow-md pl-2 rounded-e-xl" items={items} onClick={onClickMenuItem} />;
 };
 export default SiderPage;
