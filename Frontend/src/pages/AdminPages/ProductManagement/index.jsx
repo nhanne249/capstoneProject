@@ -280,7 +280,7 @@ const ProductManagement = () => {
           </Form.Item>
           <div className="px-2 pb-1 font-medium text-base">Image</div>
           <div className="flex flex-col">
-            <div className="flex flex-row">
+            <div className="flex flex-row gap-2">
               {imageList?.map((imgageUrl, index) => {
                 return <img key={index} src={imgageUrl} className="w-40 h-40 rounded-xl" />;
               })}

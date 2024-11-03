@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getUserProfileThunk, updateUserProfileThunk } from "../../../redux/action/user";
+import { toast } from "react-toastify";
 import { Button, Input, Form } from "antd";
 
 const Profile = () => {
@@ -18,7 +19,34 @@ const Profile = () => {
   }, [isReceived]);
 
   const handleEditData = (values) => {
-    console.log(values);
+    dispatch(updateUserProfileThunk(values)).then((res) => {
+      console.log(res.payload);
+      if (res.payload.error) {
+        toast.error(res.payload.error, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else if (res.payload.message == "Your profile has been updated!") {
+        toast.success(res.payload.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setIsEditBtnClicked(false);
+        setIsReceived(false);
+      }
+    });
   };
   return (
     isReceived && (

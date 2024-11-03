@@ -1,4 +1,5 @@
 import LayoutPage from "../../layouts";
+import Dashboard from "../../pages/AdminPages/Dashboard";
 import UserManagement from "../../pages/AdminPages/UserManagement"
 import ProductManagement from "../../pages/AdminPages/ProductManagement";
 
@@ -14,7 +15,7 @@ const adminRouter =
       },
       {
         subPath: "dashboard",
-        Component: UserManagement,
+        Component: Dashboard,
       },
       {
         subPath: "products",

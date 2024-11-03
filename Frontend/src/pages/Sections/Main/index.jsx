@@ -74,22 +74,25 @@ const Main = () => {
           </div>
         </div>
       </div>
-      <div className="w-auto h-auto ml-5 flex flex-col self-center mt-5">
-        <div className="grid grid-cols-4 gap-10 w-full">
-          {dataReceived?.data.map((book) => {
-            return <Card key={book.id} link={book.image == null ? "" : book.image[0]} title={book.title} sellingPrice={book.sellingPrice} />;
-          })}
+      <div className="flex flex-col w-full mx-5 mb-5">
+        <h1 className="text-5xl font-bold h-auto mb-5 mt-4 text-sky-800">Our Product</h1>
+        <div className="w-auto h-auto ml-5 flex flex-col self-center mt-5">
+          <div className="grid grid-cols-4 gap-10 w-full">
+            {dataReceived?.data.map((book) => {
+              return <Card key={book.id} link={book.image == null ? "" : book.image[0]} title={book.title} sellingPrice={book.sellingPrice} />;
+            })}
+          </div>
+          {dataReceived && dataReceived?.totalPages > 1 ? (
+            <Pagination
+              defaultCurrent={1}
+              total={dataReceived?.total || 0}
+              current={page}
+              pageSize={dataReceived?.pageSize || 12}
+              onChange={handlePageChange}
+              className="self-end mt-10"
+            />
+          ) : null}
         </div>
-        {dataReceived && dataReceived?.totalPages > 1 ? (
-          <Pagination
-            defaultCurrent={1}
-            total={dataReceived?.total || 0}
-            current={page}
-            pageSize={dataReceived?.pageSize || 12}
-            onChange={handlePageChange}
-            className="self-center mt-10"
-          />
-        ) : null}
       </div>
     </div>
   );
