@@ -1,9 +1,9 @@
 export class BookDto {
   title: string;
-  quantity: number;
+  quantity?: number;
   author: string;
   image?: string[];
   description?: string;
-  costPrice: number;
+  costPrice?: number;
   sellingPrice: number;
 }

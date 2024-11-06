@@ -1,5 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Role } from './enums/role.enum';
+import { Review } from '../review/review.entity';
+import { CartItem } from '../cart-item/cart-item.entity';
+import { OrderDetail } from '../order-detail/order-detail.entity';
 
 @Entity()
 export class User {
@@ -27,4 +30,13 @@ export class User {
         default: Role.User
     })
     role: Role;
+
+    @OneToMany(() => Review, review => review.user)
+    review: Review[];
+    
+    @OneToMany(() => CartItem, cartItem => cartItem.user)
+    cart_item: CartItem[]
+    
+    @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.user)
+    orderDetail: OrderDetail[];
 }

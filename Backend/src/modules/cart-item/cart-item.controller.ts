@@ -1,29 +1,39 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Post, Param, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Param, UsePipes, ValidationPipe, ParseIntPipe, SetMetadata, Req, UseGuards } from '@nestjs/common';
 import { CartItemService } from './cart-item.service';
 import { AddCartDto } from './dto/add-to-cart.dto';
+import { DeleteBookFromCartDto } from './dto/delete-to-cart.dto';
+import { AuthGuard, RolesGuard } from '../auth/auth.guard';
 
-@Controller('api/cart-item')
+const Roles = (...role: string[]) => SetMetadata('role', role);
+
+@UseGuards(AuthGuard, RolesGuard)
+@Controller('api/cart')
 export class CartItemController {
-  constructor(private readonly cartItemService: CartItemService) {}
+  constructor(private readonly cartItemService: CartItemService) { }
 
-    @Get('cart')
-    getAllCartItems() {
-      return this.cartItemService.getAllCartItems();  
-    }
+  @Get()
+  getAllCartItems(@Req() request: Request) {
+    const userPayload = request['user'];
+    console.log(userPayload)
+    const userId = userPayload.sub;
+    return this.cartItemService.getAllCartItems(userId);
+  }
 
-    @Post('add')
-    @UsePipes(ValidationPipe)
-    AddBookToCart(@Body() addCartDto: AddCartDto) {
-        return this.cartItemService.AddBookToCart(
-            addCartDto.userId, 
-            addCartDto.bookId, 
-            addCartDto.quantity
-        );
-    }
+  @Post()
+  @UsePipes(ValidationPipe)
+  AddBookToCart(@Body() addCartDto: AddCartDto, @Req() request: Request) {
+    const userPayload = request['user'];
+    console.log(userPayload)
+    const userId = userPayload.sub;
+    return this.cartItemService.AddBookToCart(userId, addCartDto.bookId, addCartDto.quantity);
+  }
 
-    @Delete(':id')
-    deleteBookFromCart(@Param('id', ParseIntPipe) cartItemId: number): Promise<void> {
-        return this.cartItemService.deleteBookFromCart(cartItemId);
-    }
+  @Delete()
+  async deleteBookFromCart(@Body() deleteBookFromCartDto: DeleteBookFromCartDto, @Req() request: Request) {
+    const userPayload = request['user'];
+    console.log(userPayload)
+    const userId = userPayload.sub;
+    return this.cartItemService.deleteBookFromCart(userId, deleteBookFromCartDto.bookId);
+  }
 }

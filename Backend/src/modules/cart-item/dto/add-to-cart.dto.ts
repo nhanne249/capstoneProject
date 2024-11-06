@@ -6,10 +6,10 @@ export class AddCartDto {
     @IsPositive()
     bookId: number;
 
-    @IsNotEmpty()
-    @IsNumber()
-    @IsPositive()
-    userId: number;
+    // @IsNotEmpty()
+    // @IsNumber()
+    // @IsPositive()
+    // userId: number;
 
     @IsNotEmpty()
     @IsNumber()

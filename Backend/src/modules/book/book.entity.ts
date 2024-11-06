@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { CartItem } from '../cart-item/cart-item.entity';
+import { Review } from '../review/review.entity';
 
 @Entity()
 export class Book {
@@ -26,4 +28,10 @@ export class Book {
 
   @Column('decimal', { precision: 10, scale: 0 })
   sellingPrice: number;
+  
+  @OneToMany(() => Review, review => review.book)
+  review: Review[];
+  
+  @OneToMany(() => CartItem, cartItem => cartItem.book)
+  cart_item: CartItem[]
 }

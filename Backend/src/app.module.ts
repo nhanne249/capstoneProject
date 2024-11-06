@@ -10,6 +10,8 @@ import { CartItemModule } from './modules/cart-item/cart-item.module';
 import { CartItem } from './modules/cart-item/cart-item.entity';
 import { ReviewModule } from './modules/review/review.module';
 import { Review } from './modules/review/review.entity';
+import { OrderDetail } from './modules/order-detail/order-detail.entity';
+import { OrderDetailModule } from './modules/order-detail/order-detail.module';
 
 @Module({
   imports: [
@@ -20,10 +22,10 @@ import { Review } from './modules/review/review.entity';
     username: 'avnadmin',
     password: 'AVNS_Rb6CTJ22C4e_O8CDMSz',
     database: 'defaultdb',
-    entities: [User, Book, CartItem, Review],
+    entities: [User, Book, CartItem, Review, OrderDetail],
     synchronize: true,
   }),
-  AuthModule, UsersModule, BookModule, CartItemModule, ReviewModule],
+  AuthModule, UsersModule, BookModule, CartItemModule, ReviewModule, OrderDetailModule],
   controllers: [],
   providers: [],
 })

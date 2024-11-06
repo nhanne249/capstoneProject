@@ -16,13 +16,13 @@ export class Review {
   @Column('datetime', { default: () => 'CURRENT_TIMESTAMP' })
   reviewDate: Date;  
 
-  /*@ManyToOne(() => User, user => user.review, { eager: true })  
+  @ManyToOne(() => User, user => user.review, { eager: true })  
   @JoinColumn({ name: 'userId' })  
   user: User;
 
   @ManyToOne(() => Book, book => book.review, { eager: true })  
   @JoinColumn({ name: 'bookId' })  
-  book: Book;*/
+  book: Book;
   
   @Column('int')
   userId: number;  
