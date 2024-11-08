@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, Get, Put, Delete, Query, Param, SetMetadata, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, Put, Delete, Query, SetMetadata, UseGuards } from '@nestjs/common';
 import { BookService } from './book.service';
-import { BookDto } from './dto/book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
 import { AuthGuard, RolesGuard } from '../auth/auth.guard';
@@ -115,13 +114,11 @@ export class BooksController {
         try {
             const pageNumber = page ? parseInt(page, 10) : 1;
             const books = await this.bookService.searchBooks(search, pageNumber);
-            console.log(books)
             return {
                 message: 'Search books successfully',
                 data: books,
             };
         } catch (error) {
-            console.log(page);
             return {
                 message: 'Error search books',
                 error: error.message,

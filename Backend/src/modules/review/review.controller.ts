@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Post, Param, UseGuards, SetMetadata, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, SetMetadata, Req } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { postReview } from './dto/post-review.dto';
 import { RolesGuard, AuthGuard } from '../auth/auth.guard';

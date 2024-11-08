@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Post, Param, UsePipes, ValidationPipe, ParseIntPipe, SetMetadata, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UsePipes, ValidationPipe, ParseIntPipe, SetMetadata, Req, UseGuards } from '@nestjs/common';
 import { CartItemService } from './cart-item.service';
 import { AddCartDto } from './dto/add-to-cart.dto';
 import { DeleteBookFromCartDto } from './dto/delete-to-cart.dto';

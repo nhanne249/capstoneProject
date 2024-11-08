@@ -9,7 +9,7 @@ const book = {
         return transport.get(`${url}s?search=${data.search}&page=${data.page}`);
     },
     getBook: (data) => {
-        return transport.get(`${url}/${data.id}`);
+        return transport.get(`${url}`,data.id);
     },
     createBook: (data) => {
         // cosnt data = {
@@ -25,6 +25,7 @@ const book = {
     },
     updateBook: (data) => {
         const dataSend = {
+            id: data.id,
             title: data.title,
             quantity: data.quantity,
             author: data.author,
@@ -33,13 +34,16 @@ const book = {
             costPrice: data.costPrice,
             sellingPrice: data.sellingPrice
         }
-        return transport.put(`${url}/${data.id}`,dataSend);
+        return transport.put(`${url}`,dataSend);
     },
     deleteBook: (data) => {
-        return transport.delete(`${url}/${data}`);
+        return transport.delete(`${url}`,data.id);
     },
     getNewestBook: () => {
         return transport.get(`${url}s/newest`);
+    },
+    filterBookByPrice: (data) => {
+        return transport.get(`${url}s/sort?order=${data.order}&page=${data.page}`)
      }
 }
 export default book;
