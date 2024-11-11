@@ -1,5 +1,5 @@
 export class UpdateBookDto {
-    bookId: number;
+    // bookId: number;
     title?: string;
     author?: string;
     quantity?: number;

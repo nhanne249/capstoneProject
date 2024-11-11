@@ -6,10 +6,11 @@ import { OrderDetail } from './order-detail.entity';
 import { CartItem } from '../cart-item/cart-item.entity';
 import { User } from '../auth/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { Book } from '../book/book.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([OrderDetail, CartItem, User]),
+    TypeOrmModule.forFeature([OrderDetail, CartItem, User, Book]),
     JwtModule.register({
       secret: process.env.JWT_SECRET
     })

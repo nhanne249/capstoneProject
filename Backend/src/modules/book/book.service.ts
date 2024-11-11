@@ -16,11 +16,11 @@ export class BookService {
     ) { }
 
     async getBookByTitle(title: string): Promise<Book> {
-        return this.bookRepository.findOne({ where: { title: title }, select: ['title', 'quantity', 'author', 'description', 'costPrice', 'sellingPrice'] });
+        return this.bookRepository.findOne({ where: { title: title }});
     }
 
     async getBookById(bookId: number): Promise<Book> {
-        return this.bookRepository.findOne({ where: { id: bookId }, select: ['title', 'quantity', 'author', 'description', 'costPrice', 'sellingPrice'] });
+        return this.bookRepository.findOne({ where: { id: bookId }});
     }
     async getAllBooks(page: number): Promise<PaginationResponse<BookDto>> {
         const pageSize = 12;
@@ -34,12 +34,7 @@ export class BookService {
         const hasNextPage = page < totalPages;
         const hasPreviousPage = page > 1;
         return {
-            data: books.map(book => ({
-                title: book.title,
-                author: book.author,
-                description: book.description,
-                sellingPrice: book.sellingPrice
-            })),
+            data: books,
             pageNumber: page,
             pageSize: pageSize,
             total: total,
