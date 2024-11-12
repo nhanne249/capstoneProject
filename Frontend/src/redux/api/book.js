@@ -9,7 +9,7 @@ const book = {
         return transport.get(`${url}s?search=${data.search}&page=${data.page}`);
     },
     getBook: (data) => {
-        return transport.get(`${url}`,data.id);
+        return transport.get(`${url}`,data);
     },
     createBook: (data) => {
         // cosnt data = {

@@ -3,6 +3,7 @@ import Main from "../../pages/Sections/Main";
 import SignIn from "../../pages/Sections/SignIn";
 import SignUp from "../../pages/Sections/SignUp";
 import UploadImage from "../../pages/test";
+import Product from "../../pages/Sections/Product";
 
 const mainRouter ={ 
     path: "",
@@ -19,6 +20,10 @@ const mainRouter ={
       {
         path: "signup",
         Component: SignUp,
+      },
+      {
+        path: "product/:id",
+        Component: Product,
       },
       {
         path: "test",
