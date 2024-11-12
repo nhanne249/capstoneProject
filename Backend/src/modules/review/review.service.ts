@@ -65,4 +65,19 @@ export class ReviewService {
 
     return this.reviewRepository.save(review);
   }
+
+  async deleteReview(reviewId: number, userId: number) {
+    const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+
+    if (!review) {
+        return { message: 'Review not found' };
+    }
+
+    if (review.userId !== userId) {
+        return { message: 'You are not authorized to delete this review' };
+    }
+
+    await this.reviewRepository.delete({ id: reviewId });
+    return { message: 'Review deleted successfully' };
+  }
 }

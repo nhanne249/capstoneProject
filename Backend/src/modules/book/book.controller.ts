@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, Get, Put, Delete, Query, SetMetadata, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, Put, Delete, Query, SetMetadata, UseGuards, Param } from '@nestjs/common';
 import { BookService } from './book.service';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -7,15 +7,15 @@ import { AuthGuard, RolesGuard } from '../auth/auth.guard';
 
 const Roles = (...role: string[]) => SetMetadata('role', role);
 
-@UseGuards(AuthGuard, RolesGuard)
 @Controller('api/book')
 export class BookController {
     constructor(private readonly bookService: BookService) { }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
-    @Get()
-    async getBook(
-        @Body('bookId') bookId: number,) {
+    @Get('/admin/:bookId')
+    async getBookByAdmin(
+        @Param('bookId') bookId: number,) {
         const book = await this.bookService.getBookById(bookId);
 
         if (!book) {
@@ -25,17 +25,40 @@ export class BookController {
         return { message: 'Book retrieved successfully', data: book };
     }
 
+    @Get(':bookId')
+    async getBookByUser(
+        @Param('bookId') bookId: number,) {
+        const book = await this.bookService.getBookById(bookId);
+
+        if (!book) {
+            return { message: 'Book not found' };
+        }
+
+        const { title, author,  sellingPrice, description } = book;
+
+        return { message: 'Book retrieved successfully',
+            data: {
+                title,
+                author,
+                sellingPrice,
+                description
+            }
+         };
+    }
+
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
-    @Put()
+    @Put('bookId')
     async updateBook(
-        @Body() updateBookDto: UpdateBookDto  ) {
+        @Param('bookId') bookId: number,
+        @Body() updateBookDto: UpdateBookDto ) {
         try {
-            const updatedBook = await this.bookService.getBookById(updateBookDto.bookId);
+            const updatedBook = await this.bookService.getBookById(bookId);
 
             if (!updatedBook) {
                 return { message: 'Book not found', data: null };
             }
-            const result = await this.bookService.updateBook(updateBookDto, updateBookDto.bookId);
+            const result = await this.bookService.updateBook(updateBookDto, bookId);
 
 
             return { message: 'Book updated successfully', data: result };
@@ -46,10 +69,11 @@ export class BookController {
         }
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
-    @Delete()
+    @Delete('bookId')
     async deleteBook(
-        @Body('bookId') bookId: number) {
+        @Param('bookId') bookId: number) {
         try {
             const deletedBook = await this.bookService.deleteBook(bookId);
 
@@ -66,6 +90,7 @@ export class BookController {
         }
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
     @Post()
     async addBook(@Body() createBookDto: CreateBookDto) {
@@ -90,7 +115,10 @@ export class BookController {
 @Controller('api/books')
 export class BooksController {
     constructor(private readonly bookService: BookService) { }
-    @Get()
+
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('Admin')
+    @Get('/admin')
     async getAllBooks(@Query('page') page: string) {
         try {
             const pageNumber = page ? parseInt(page, 10) : 1;
@@ -98,6 +126,37 @@ export class BooksController {
             return {
                 message: 'Find all books successfully',
                 response: books,
+            };
+        } catch (error) {
+            return {
+                message: 'Error get all books',
+                error: error.message,
+            };
+        }
+    }
+
+    @Get()
+    async getAllBooksByUser(@Query('page') page: string) {
+        try {
+            const pageNumber = page ? parseInt(page, 10) : 1;
+            const books = await this.bookService.getAllBooks(pageNumber);const transformedBooks = books.data.map(book => ({
+                title: book.title,
+                author: book.author,
+                sellingPrice: book.sellingPrice,
+                description: book.description
+            }));
+        
+            return {
+                message: 'Find all books successfully',
+                response: {
+                    data: transformedBooks,
+                    pageNumber: books.pageNumber,
+                    pageSize: books.pageSize,
+                    total: books.total,
+                    totalPages: books.totalPages,
+                    hasNextPage: books.hasNextPage,
+                    hasPreviousPage: books.hasPreviousPage
+                }
             };
         } catch (error) {
             return {

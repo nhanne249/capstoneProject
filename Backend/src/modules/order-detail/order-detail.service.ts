@@ -5,6 +5,7 @@ import { OrderDetail } from './order-detail.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { CartItem } from '../cart-item/cart-item.entity';
+import { Book } from '../book/book.entity';
 
 @Injectable()
 export class OrderDetailService {
@@ -13,6 +14,8 @@ export class OrderDetailService {
         private orderDetailRepository: Repository<OrderDetail>,
         @InjectRepository(CartItem)
         private cartItemRepository: Repository<CartItem>,
+        @InjectRepository(Book)
+        private bookRepository: Repository<Book>,
     ) { }
 
     async createOrder(createOrderDto: CreateOrderDto, userId: number) {
@@ -49,7 +52,14 @@ export class OrderDetailService {
             cartItem: transformedCartItems,
         };
 
-        // await this.cartItemRepository.delete({ userId: userId });
+        for (const item of cartItems) {
+            const book = await this.bookRepository.findOne({ where: { id: item.bookId } });
+            if (book) {
+                book.quantity -= item.quantity;
+                await this.bookRepository.save(book);
+            }
+        }
+        await this.cartItemRepository.delete({ userId: userId });
 
         return data;
     }
