@@ -25,7 +25,7 @@ export class ReviewService {
     });
 
     if (reviews.length === 0) {
-      throw new NotFoundException('No reviews found for this book');
+      return { error: new NotFoundException('No reviews found for this book') } as any;
     }
 
     return reviews.map(reviews => ({
@@ -60,7 +60,7 @@ export class ReviewService {
       return {message: ('You can only review books you have purchased.')};
     }
 
-    let review = this.reviewRepository.create({userId, bookId, rating, content});
+    const review = this.reviewRepository.create({userId, bookId, rating, content});
     review.reviewDate = new Date();
 
     return this.reviewRepository.save(review);

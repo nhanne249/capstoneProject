@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Input, Menu, Button, Tooltip } from "antd";
 import { UserOutlined, ShoppingCartOutlined, LogoutOutlined, DesktopOutlined, LoginOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
@@ -11,33 +10,32 @@ const menuItemClassName = "w-24 flex justify-center items-center text-suitable f
 
 const HeaderPage = (role) => {
   const navigate = useNavigate();
-  const [itemClicked, setItemClicked] = useState("main");
+  const location = useLocation();
 
   const items = [
     {
       key: "main",
       label: <div className={menuItemClassName}>Home</div>,
-      disabled: itemClicked == "main",
+      disabled: location.pathname == "/main",
     },
     {
       key: "about",
       label: <div className={menuItemClassName}>About us</div>,
-      disabled: itemClicked == "about",
+      disabled: location.pathname == "/about",
     },
     {
       key: "events",
       label: <div className={menuItemClassName}>Events</div>,
-      disabled: itemClicked == "events",
+      disabled: location.pathname == "/events",
     },
     {
       key: "contact",
       label: <div className={menuItemClassName}>Contact us</div>,
-      disabled: itemClicked == "contact",
+      disabled: location.pathname == "/contact",
     },
   ];
 
   const onItemClick = (value) => {
-    setItemClicked(value.key);
     navigate(`/${value.key}`, { replace: true });
   };
 
@@ -45,15 +43,16 @@ const HeaderPage = (role) => {
     console.log(value);
   };
   const handleSignInClick = () => {
-    setItemClicked("");
     navigate("/signin");
+  };
+  const handleCartClick = () => {
+    navigate("/cart");
   };
   const handleProfileClick = () => {
     role = "/" + role.role;
     navigate(role + "/profile");
   };
   const handleSettingsClick = () => {
-    setItemClicked("");
     role = "/" + role.role;
     navigate(role + "/dashboard");
   };
@@ -84,11 +83,9 @@ const HeaderPage = (role) => {
             <Button icon={<UserOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleProfileClick()} />
           </Tooltip>
         )}
-        {role.role == "user" && (
-          <Tooltip placement="bottom" title={"Cart"}>
-            <Button icon={<ShoppingCartOutlined />} className="border-none text-teal-600 shadow-none" />
-          </Tooltip>
-        )}
+        <Tooltip placement="bottom" title={"Cart"}>
+          <Button icon={<ShoppingCartOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleCartClick()} />
+        </Tooltip>
         {role.role && (
           <Tooltip placement="bottom" title={"Sign out"}>
             <Button icon={<LogoutOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleSignOutClick()} />

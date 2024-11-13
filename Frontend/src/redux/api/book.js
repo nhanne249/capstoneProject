@@ -5,11 +5,17 @@ const book = {
     getAllBooks: (data) => {
         return transport.get(`${url}s?page=${data}`);
     },
+    getAllBooksPublic: (data) => {
+        return transport.get(`${url}s/public?page=${data}`);
+    },
     searchBook: (data) => {
         return transport.get(`${url}s?search=${data.search}&page=${data.page}`);
     },
+    getBookPublic: (data) => {
+        return transport.get(`${url}/public/${data}`,);
+    },
     getBook: (data) => {
-        return transport.get(`${url}`,data);
+        return transport.get(`${url}/${data}`,);
     },
     createBook: (data) => {
         // cosnt data = {
@@ -34,10 +40,10 @@ const book = {
             costPrice: data.costPrice,
             sellingPrice: data.sellingPrice
         }
-        return transport.put(`${url}`,dataSend);
+        return transport.put(`${url}/${dataSend.id}`,dataSend);
     },
     deleteBook: (data) => {
-        return transport.delete(`${url}`,data.id);
+        return transport.delete(`${url}/${data.id}`,);
     },
     getNewestBook: () => {
         return transport.get(`${url}s/newest`);

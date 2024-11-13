@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAllBooksThunk, getNewestBookThunk } from "../../../redux/action/book";
+import { getAllBooksPublicThunk, getNewestBookThunk } from "../../../redux/action/book";
 import { Pagination } from "antd";
 import anime from "animejs";
 import "./styles.scss";
@@ -46,7 +46,7 @@ const Main = () => {
 
   //fetch all books by page
   useEffect(() => {
-    dispatch(getAllBooksThunk(page)).then((res) => {
+    dispatch(getAllBooksPublicThunk(page)).then((res) => {
       setDataReceived(res.payload.response);
       setIsReceived(true);
     });

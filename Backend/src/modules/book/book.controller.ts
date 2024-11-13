@@ -13,7 +13,7 @@ export class BookController {
 
     @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
-    @Get('/admin/:bookId')
+    @Get(':bookId')
     async getBookByAdmin(
         @Param('bookId') bookId: number,) {
         const book = await this.bookService.getBookById(bookId);
@@ -25,7 +25,7 @@ export class BookController {
         return { message: 'Book retrieved successfully', data: book };
     }
 
-    @Get(':bookId')
+    @Get('/public/:bookId')
     async getBookByUser(
         @Param('bookId') bookId: number,) {
         const book = await this.bookService.getBookById(bookId);
@@ -34,14 +34,15 @@ export class BookController {
             return { message: 'Book not found' };
         }
 
-        const { title, author,  sellingPrice, description } = book;
+        const { title, author,  sellingPrice, description,image,quantity } = book;
 
         return { message: 'Book retrieved successfully',
             data: {
+                image,
                 title,
                 author,
                 sellingPrice,
-                description
+                description,quantity
             }
          };
     }
@@ -118,7 +119,7 @@ export class BooksController {
 
     @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
-    @Get('/admin')
+    @Get()
     async getAllBooks(@Query('page') page: string) {
         try {
             const pageNumber = page ? parseInt(page, 10) : 1;
@@ -135,11 +136,13 @@ export class BooksController {
         }
     }
 
-    @Get()
+    @Get('/public')
     async getAllBooksByUser(@Query('page') page: string) {
         try {
             const pageNumber = page ? parseInt(page, 10) : 1;
-            const books = await this.bookService.getAllBooks(pageNumber);const transformedBooks = books.data.map(book => ({
+            const books = await this.bookService.getAllBooks(pageNumber);
+            const transformedBooks = books.data.map(book => ({
+                id:book.id,
                 title: book.title,
                 author: book.author,
                 sellingPrice: book.sellingPrice,

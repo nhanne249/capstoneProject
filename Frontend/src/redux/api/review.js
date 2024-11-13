@@ -6,7 +6,7 @@ const review = {
         // const data = {
         //     bookId: number
         // }
-        return transport.get(`${url}`, data);
+        return transport.get(`${url}/${data}` );
     },
     postReview: (data) => {
         // const data = {

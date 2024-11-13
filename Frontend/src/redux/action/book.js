@@ -1,12 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import book from '../api/book'
 
-const { getAllBooks, searchBook,getBook,createBook,updateBook,deleteBook,getNewestBook,filterBookByPrice, } = book;
+const { getAllBooks,getAllBooksPublic, searchBook,getBook,getBookPublic,createBook,updateBook,deleteBook,getNewestBook,filterBookByPrice, } = book;
 
 export const getAllBooksThunk = createAsyncThunk(
     'getAllBooks',
     async (data) => {
         const res = await getAllBooks(data);
+        return res;
+    }
+)
+export const getAllBooksPublicThunk = createAsyncThunk(
+    'getAllBooksPublic',
+    async (data) => {
+        const res = await getAllBooksPublic(data);
         return res;
     }
 )
@@ -21,6 +28,13 @@ export const getBookThunk = createAsyncThunk(
     'getBook',
     async (data) => {
         const res = await getBook(data);
+        return res;
+    }
+)
+export const getBookPublicThunk = createAsyncThunk(
+    'getBookPublic',
+    async (data) => {
+        const res = await getBookPublic(data);
         return res;
     }
 )
