@@ -31,7 +31,7 @@ const Product = () => {
   }, [cart]);
 
   useEffect(() => {
-    setThumbnail(book?.image ? book.image[0] : noImage);
+    setThumbnail(book?.image ? base64ToFile("data:image/webp;base64," + book.image[0]) : noImage);
   }, [book]);
 
   const handleClickAddToCartBtn = () => {
@@ -50,7 +50,7 @@ const Product = () => {
       <div className="w-full h-3/5 grid grid-cols-2 grid-rows-1 gap-5 pt-4 px-5">
         <div className="w-full h-full flex flex-row gap-2">
           <div className="w-4/5 h-auto">
-            <img className="w-full h-auto rounded-lg" src={base64ToFile("data:image/webp;base64," + thumbnail)} alt="thumbnail" />
+            <img className="w-full aspect-[1/1] rounded-lg" src={thumbnail} alt="thumbnail" />
           </div>
           <div className="w-1/5 h-fit">
             {book?.image?.map((img, index) => (
@@ -58,7 +58,7 @@ const Product = () => {
                 key={index}
                 src={base64ToFile("data:image/webp;base64," + img)}
                 alt="img"
-                className="w-full h-full rounded-lg"
+                className="w-full aspect-[1/1] rounded-lg"
                 onClick={() => setThumbnail(img)}
               />
             ))}
@@ -72,7 +72,7 @@ const Product = () => {
             icon={<ShoppingCartOutlined />}
             onClick={() => handleClickAddToCartBtn()}
             iconPosition="end"
-            disabled={cart.find((item) => item.id === params.id).quantity >= book?.quantity ? true : false}
+            disabled={cart.find((item) => item.id === params.id)?.quantity >= book?.quantity ? true : false}
             className="w-52 h-12 z-10 bg-green-500 !text-white relative font-semibold after:-z-20 after:absolute after:h-1 after:w-1 after:bg-green-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 [text-shadow:3px_5px_2px_#075985;] hover:[text-shadow:2px_2px_2px_#7dd4fc] text-2xl disabled:bg-green-800"
           >
             Add to cart
