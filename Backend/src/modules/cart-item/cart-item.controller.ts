@@ -15,7 +15,6 @@ export class CartItemController {
   @Get()
   getAllCartItems(@Req() request: Request) {
     const userPayload = request['user'];
-    console.log(userPayload)
     const userId = userPayload.sub;
     return this.cartItemService.getAllCartItems(userId);
   }
@@ -24,7 +23,6 @@ export class CartItemController {
   @UsePipes(ValidationPipe)
   AddBookToCart(@Body() addCartDto: AddCartDto, @Req() request: Request) {
     const userPayload = request['user'];
-    console.log(userPayload)
     const userId = userPayload.sub;
     return this.cartItemService.AddBookToCart(userId, addCartDto.bookId, addCartDto.quantity);
   }
@@ -32,7 +30,6 @@ export class CartItemController {
   @Delete()
   async deleteBookFromCart(@Body() deleteBookFromCartDto: DeleteBookFromCartDto, @Req() request: Request) {
     const userPayload = request['user'];
-    console.log(userPayload)
     const userId = userPayload.sub;
     return this.cartItemService.deleteBookFromCart(userId, deleteBookFromCartDto.bookId);
   }

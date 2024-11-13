@@ -5,6 +5,7 @@ import { Pagination } from "antd";
 import anime from "animejs";
 import "./styles.scss";
 import Card from "../../../utils/components/card";
+import base64ToFile from "../../../utils/functions/base64ToFile";
 import publicationImage from "../../../assets/images/publications-image.png";
 
 const Main = () => {
@@ -69,7 +70,15 @@ const Main = () => {
           </h1>
           <div className="grid grid-cols-4 gap-10 w-full mt-5">
             {newestBookList?.map((book) => {
-              return <Card id={book.id} key={book.id} link={book.image == null ? "" : book.image[0]} title={book.title} sellingPrice={book.sellingPrice} />;
+              return (
+                <Card
+                  id={book.id}
+                  key={book.id}
+                  link={book.image == null ? "" : base64ToFile("data:image/webp;base64," + book.image[0])}
+                  title={book.title}
+                  sellingPrice={book.sellingPrice}
+                />
+              );
             })}
           </div>
         </div>
@@ -79,7 +88,15 @@ const Main = () => {
         <div className="w-auto h-auto ml-5 flex flex-col self-center mt-5">
           <div className="grid grid-cols-4 gap-10 w-full">
             {dataReceived?.data.map((book) => {
-              return <Card id={book.id} key={book.id} link={book.image == null ? "" : book.image[0]} title={book.title} sellingPrice={book.sellingPrice} />;
+              return (
+                <Card
+                  id={book.id}
+                  key={book.id}
+                  link={book.image == null ? "" : base64ToFile("data:image/webp;base64," + book.image[0])}
+                  title={book.title}
+                  sellingPrice={book.sellingPrice}
+                />
+              );
             })}
           </div>
           {dataReceived && dataReceived?.totalPages > 1 ? (

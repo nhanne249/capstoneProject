@@ -5,6 +5,7 @@ import { Button } from "antd";
 import { getBookPublicThunk } from "../../../redux/action/book";
 import { getReviewByBookIdThunk } from "./../../../redux/action/review";
 import { ShoppingCartOutlined } from "@ant-design/icons";
+import base64ToFile from "../../../utils/functions/base64ToFile";
 import noImage from "../../../assets/images/no-mage.png";
 
 const Product = () => {
@@ -49,11 +50,17 @@ const Product = () => {
       <div className="w-full h-3/5 grid grid-cols-2 grid-rows-1 gap-5 pt-4 px-5">
         <div className="w-full h-full flex flex-row gap-2">
           <div className="w-4/5 h-auto">
-            <img className="w-full h-auto rounded-lg" src={thumbnail} alt="thumbnail" />
+            <img className="w-full h-auto rounded-lg" src={base64ToFile("data:image/webp;base64," + thumbnail)} alt="thumbnail" />
           </div>
           <div className="w-1/5 h-fit">
             {book?.image?.map((img, index) => (
-              <img key={index} src={img} alt="img" className="w-full h-full rounded-lg" onClick={() => setThumbnail(img)} />
+              <img
+                key={index}
+                src={base64ToFile("data:image/webp;base64," + img)}
+                alt="img"
+                className="w-full h-full rounded-lg"
+                onClick={() => setThumbnail(img)}
+              />
             ))}
           </div>
         </div>

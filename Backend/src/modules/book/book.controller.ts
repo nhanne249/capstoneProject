@@ -49,7 +49,7 @@ export class BookController {
 
     @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
-    @Put('bookId')
+    @Put(':bookId')
     async updateBook(
         @Param('bookId') bookId: number,
         @Body() updateBookDto: UpdateBookDto ) {
@@ -72,7 +72,7 @@ export class BookController {
 
     @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
-    @Delete('bookId')
+    @Delete(':bookId')
     async deleteBook(
         @Param('bookId') bookId: number) {
         try {

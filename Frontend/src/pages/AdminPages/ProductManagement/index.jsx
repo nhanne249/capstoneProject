@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { flushSync } from "react-dom";
 import { useDispatch } from "react-redux";
 import { getAllBooksThunk, deleteBookThunk, updateBookThunk, createBookThunk } from "../../../redux/action/book";
+import base64ToFile from "../../../utils/functions/base64ToFile";
+import fileToBase64 from "../../../utils/functions/fileToBase64";
 import { Table, Pagination, Button, Modal, Tooltip, Form, Input, InputNumber } from "antd";
-import axios from "axios";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import "./styles.scss";
@@ -45,7 +46,7 @@ const ProductManagement = () => {
       title: "Image",
       dataIndex: "image",
       width: "10%",
-      render: (value) => <img src={value ? value[0] : ""} className="w-[100px] h-[100px]" />,
+      render: (value) => <img src={value ? base64ToFile("data:image/webp;base64," + value[0]) : ""} className="w-[100px] h-[100px]" />,
     },
     {
       title: "Title",
@@ -142,17 +143,12 @@ const ProductManagement = () => {
   };
 
   const handleUploadImage = () => {
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-    axios
-      .post(`${import.meta.env.VITE_IMG_STORAGE_LINK}`, formData)
-      .then(({ data }) => {
-        setImageList((prevState) => [...(prevState || []), data.data.url]);
-        setSelectedFile(null);
+    flushSync(() =>
+      fileToBase64(selectedFile).then((res) => {
+        setImageList((prevState) => [...(prevState || []), res.toString().split(",")[1]]);
       })
-      .catch((e) => {
-        console.error(e);
-      });
+    );
+    setSelectedFile(null);
   };
 
   const handleFileChange = (event) => {
@@ -185,6 +181,7 @@ const ProductManagement = () => {
         setOpenEditModal(false);
         setImageList([]);
         setFieldId();
+        setIsReceived(false);
       }
     });
   };
@@ -281,11 +278,14 @@ const ProductManagement = () => {
           <div className="px-2 pb-1 font-medium text-base">Image</div>
           <div className="flex flex-col">
             <div className="flex flex-row gap-2">
-              {imageList?.map((imgageUrl, index) => {
-                return <img key={index} src={imgageUrl} className="w-40 h-40 rounded-xl" />;
-              })}
+              {imageList.length != 0 ? (
+                imageList.map((imgageUrl, index) => {
+                  return <img key={index} src={base64ToFile("data:image/webp;base64," + imgageUrl)} className="w-40 h-40 rounded-xl" />;
+                })
+              ) : (
+                <div className="px-2 pb-1 font-light text-base">Don't have image!</div>
+              )}
             </div>
-            {imageList.length == 0 ? <div className="px-2 pb-1 font-light text-base">Don't have image!</div> : null}
             <div className="py-5 flex flex-row w-full">
               <label htmlFor="fileInput" className="cursor-pointer bg-sky-300 !text-white py-2 px-4 rounded mr-5">
                 Add image
@@ -363,11 +363,14 @@ const ProductManagement = () => {
           <div className="px-2 pb-1 font-medium text-base">Image</div>
           <div className="flex flex-col">
             <div className="flex flex-row">
-              {imageList.map((imgageUrl, index) => {
-                return <img key={index} src={imgageUrl} className="w-40 h-40 rounded-xl" />;
-              })}
+              {imageList.length != 0 ? (
+                imageList.map((imgageUrl, index) => {
+                  return <img key={index} src={base64ToFile("data:image/webp;base64," + imgageUrl)} className="w-40 h-40 rounded-xl" />;
+                })
+              ) : (
+                <div className="px-2 pb-1 font-light text-base">Don't have image!</div>
+              )}
             </div>
-            {imageList == [] ? <div className="px-2 pb-1 font-light text-base">{"Don't have image!"}</div> : null}
             <div className="py-5 flex flex-row w-full">
               <label htmlFor="fileInput" className="cursor-pointer bg-sky-300 !text-white py-2 px-4 rounded mr-5">
                 Add image

@@ -4,6 +4,7 @@ import SignIn from "../../pages/Sections/SignIn";
 import SignUp from "../../pages/Sections/SignUp";
 import UploadImage from "../../pages/test";
 import Product from "../../pages/Sections/Product";
+import Cart from "../../pages/Sections/Cart";
 
 const mainRouter ={ 
     path: "",
@@ -20,6 +21,10 @@ const mainRouter ={
       {
         path: "signup",
         Component: SignUp,
+      },
+      {
+        path: "cart",
+        Component: Cart,
       },
       {
         path: "product/:id",

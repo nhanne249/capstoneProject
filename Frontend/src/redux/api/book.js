@@ -43,7 +43,7 @@ const book = {
         return transport.put(`${url}/${dataSend.id}`,dataSend);
     },
     deleteBook: (data) => {
-        return transport.delete(`${url}/${data.id}`,);
+        return transport.delete(`${url}/${data}`,);
     },
     getNewestBook: () => {
         return transport.get(`${url}s/newest`);
