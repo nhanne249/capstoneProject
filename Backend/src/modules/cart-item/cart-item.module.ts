@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { CartItemController } from './cart-item.controller';
 import { CartItemService } from './cart-item.service';
 import { CartItem } from './cart-item.entity';
-import { Book } from '../book/book.entity';
+import { Book } from '../book/entity/book.entity';
 import { User } from '../auth/user.entity';
 import { OrderDetail } from '../order-detail/order-detail.entity';
 

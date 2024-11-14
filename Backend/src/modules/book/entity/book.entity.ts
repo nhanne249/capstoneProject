@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { CartItem } from '../cart-item/cart-item.entity';
-import { Review } from '../review/review.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
+import { CartItem } from '../../cart-item/cart-item.entity';
+import { Review } from '../../review/review.entity';
+import { Image } from './image.entity';
 
 @Entity()
 export class Book {
@@ -17,9 +18,6 @@ export class Book {
   @Column()
   author: string;
 
-  @Column('longtext', { nullable: true })
-  image: string[];
-
   @Column('text', { nullable: true })
   description: string;
 
@@ -34,4 +32,10 @@ export class Book {
   
   @OneToMany(() => CartItem, cartItem => cartItem.book)
   cart_item: CartItem[]
+
+  @OneToMany(() => Image, image => image.book)
+  image: Image[]
+
+  @Column('simple-array', { nullable: true })
+  image_id: number[];
 }

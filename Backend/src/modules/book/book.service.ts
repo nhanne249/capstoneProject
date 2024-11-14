@@ -2,7 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
-import { Book } from './book.entity';
+import { Book } from './entity/book.entity';
+import { Image } from './entity/image.entity';
 import { BookDto } from './dto/book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -16,11 +17,11 @@ export class BookService {
     ) { }
 
     async getBookByTitle(title: string): Promise<Book> {
-        return this.bookRepository.findOne({ where: { title: title }});
+        return this.bookRepository.findOne({ where: { title: title } });
     }
 
     async getBookById(bookId: number): Promise<Book> {
-        return this.bookRepository.findOne({ where: { id: bookId }});
+        return this.bookRepository.findOne({ where: { id: bookId } });
     }
     async getAllBooks(page: number): Promise<PaginationResponse<BookDto>> {
         const pageSize = 12;
@@ -48,7 +49,7 @@ export class BookService {
         return await this.bookRepository.delete(bookId);
     }
 
-    async updateBook(updateBookDto: UpdateBookDto,bookId: number ): Promise<Book> {
+    async updateBook(updateBookDto: UpdateBookDto, bookId: number): Promise<Book> {
         const book = await this.bookRepository.findOne({ where: { id: bookId } });
         const updatedBook = this.bookRepository.merge(book, updateBookDto);
         return this.bookRepository.save(updatedBook);  // Save the updated book
@@ -75,7 +76,7 @@ export class BookService {
         });
         return {
             data: books.map(book => ({
-                image: book.image.map((item)=>item.toString()),
+                image: book.image.map((item) => item.toString()),
                 title: book.title,
                 author: book.author,
                 description: book.description,
@@ -101,7 +102,7 @@ export class BookService {
 
         return {
             data: books.map(book => ({
-                image: book.image.map((item)=>item.toString()),
+                image: book.image.map((item) => item.toString()),
                 title: book.title,
                 author: book.author,
                 description: book.description,
@@ -119,5 +120,45 @@ export class BookService {
             take: 4,
         });
         return books;
+    }
+}
+
+@Injectable()
+export class ImageService {
+    constructor(
+        @InjectRepository(Image)
+        private readonly imageRepository: Repository<Image>,
+        @InjectRepository(Book)
+        private readonly bookRepository: Repository<Book>,
+    ) { }
+
+    async createImage(imageData: { image: string }) {
+        return await this.imageRepository.save(imageData);
+    }
+
+    async getImageById(id: number) {
+        return await this.imageRepository.findOne({ where: { id } });
+    }
+
+    async updateImage(bookId: number, imageIds: number[]) {
+        await this.imageRepository.update({ bookId: bookId }, { bookId: null });
+    
+        const updatedImages = [];
+        for (const id of imageIds) {
+            const image = await this.imageRepository.findOne({ where: { id } });
+    
+            if (image) {
+                image.bookId = bookId;
+                const updatedImage = await this.imageRepository.save(image);
+                updatedImages.push(updatedImage);
+            } else {
+                console.log(`Image with id ${id} not found`);
+            }
+        }
+    
+        return {
+            message: 'Images updated successfully',
+            data: updatedImages,
+        };
     }
 }

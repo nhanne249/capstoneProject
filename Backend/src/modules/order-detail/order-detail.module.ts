@@ -6,7 +6,7 @@ import { OrderDetail } from './order-detail.entity';
 import { CartItem } from '../cart-item/cart-item.entity';
 import { User } from '../auth/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { Book } from '../book/book.entity';
+import { Book } from '../book/entity/book.entity';
 
 @Module({
   imports: [

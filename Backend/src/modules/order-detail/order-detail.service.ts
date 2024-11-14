@@ -5,7 +5,7 @@ import { OrderDetail } from './order-detail.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { CartItem } from '../cart-item/cart-item.entity';
-import { Book } from '../book/book.entity';
+import { Book } from '../book/entity/book.entity';
 
 @Injectable()
 export class OrderDetailService {

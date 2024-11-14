@@ -3,7 +3,7 @@ export class UpdateBookDto {
     title?: string;
     author?: string;
     quantity?: number;
-    image?: string[];
+    image_id?: number[];
     description?: string;
     costPrice?: number;
     sellingPrice?: number;

@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ReviewService } from './review.service';
 import { ReviewController } from './review.controller';
 import { Review } from './review.entity';
-import { Book } from '../book/book.entity';
+import { Book } from '../book/entity/book.entity';
 import { User } from '../auth/user.entity';
 import { OrderDetail } from '../order-detail/order-detail.entity';
 

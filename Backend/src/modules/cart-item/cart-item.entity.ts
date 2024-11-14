@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../auth/user.entity';
-import { Book } from '../book/book.entity';
+import { Book } from '../book/entity/book.entity';
 import { OrderDetail } from '../order-detail/order-detail.entity';
 
 @Entity('cart_item')

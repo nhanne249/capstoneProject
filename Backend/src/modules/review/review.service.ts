@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Review } from './review.entity';
 import { User } from '../auth/user.entity';
-import { Book } from '../book/book.entity';
+import { Book } from '../book/entity/book.entity';
 import { OrderDetail } from '../order-detail/order-detail.entity';
 import { OrderStatus } from '../order-detail/enum';
 import { format } from 'date-fns';

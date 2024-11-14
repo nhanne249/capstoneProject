@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Post, Get, Put, Delete, Query, SetMetadata, UseGuards, Param } from '@nestjs/common';
 import { BookService } from './book.service';
+import { ImageService } from './book.service';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
 import { AuthGuard, RolesGuard } from '../auth/auth.guard';
@@ -9,7 +10,11 @@ const Roles = (...role: string[]) => SetMetadata('role', role);
 
 @Controller('api/book')
 export class BookController {
-    constructor(private readonly bookService: BookService) { }
+    constructor(
+        private readonly bookService: BookService,
+        private readonly imageService: ImageService
+    ) { }
+
 
     @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
@@ -34,17 +39,18 @@ export class BookController {
             return { message: 'Book not found' };
         }
 
-        const { title, author,  sellingPrice, description,image,quantity } = book;
+        const { title, author, sellingPrice, description, image, quantity } = book;
 
-        return { message: 'Book retrieved successfully',
+        return {
+            message: 'Book retrieved successfully',
             data: {
-                image,
+                // image,
                 title,
                 author,
                 sellingPrice,
-                description,quantity
+                description, quantity
             }
-         };
+        };
     }
 
     @UseGuards(AuthGuard, RolesGuard)
@@ -52,7 +58,7 @@ export class BookController {
     @Put(':bookId')
     async updateBook(
         @Param('bookId') bookId: number,
-        @Body() updateBookDto: UpdateBookDto ) {
+        @Body() updateBookDto: UpdateBookDto) {
         try {
             const updatedBook = await this.bookService.getBookById(bookId);
 
@@ -61,9 +67,12 @@ export class BookController {
             }
             const result = await this.bookService.updateBook(updateBookDto, bookId);
 
+            if (updateBookDto.image_id) {
+                await this.imageService.updateImage(bookId, updateBookDto.image_id);
+            }
 
             return { message: 'Book updated successfully', data: result };
-        } catch (e){
+        } catch (e) {
             return {
                 message: 'Error updating book',
                 error: e
@@ -84,7 +93,7 @@ export class BookController {
             }
 
             return { message: 'Book deleted successfully' };
-        } catch (e){
+        } catch (e) {
             return {
                 message: 'Error delete book',
                 error: e.message,
@@ -143,13 +152,13 @@ export class BooksController {
             const pageNumber = page ? parseInt(page, 10) : 1;
             const books = await this.bookService.getAllBooks(pageNumber);
             const transformedBooks = books.data.map(book => ({
-                id:book.id,
+                id: book.id,
                 title: book.title,
                 author: book.author,
                 sellingPrice: book.sellingPrice,
                 description: book.description
             }));
-        
+
             return {
                 message: 'Find all books successfully',
                 response: {
@@ -191,8 +200,8 @@ export class BooksController {
 
     @Get('sort')
     async sortByPrice(
-    @Query('order') order: 'asc' | 'desc' = 'asc',
-    @Query('page') page: string) {
+        @Query('order') order: 'asc' | 'desc' = 'asc',
+        @Query('page') page: string) {
         const pageNumber = page ? parseInt(page, 10) : 1;
         return this.bookService.sortBooksByPrice(order, pageNumber);
     }
@@ -200,5 +209,31 @@ export class BooksController {
     @Get("newest")
     getNewestBook() {
         return this.bookService.getNewestBooks();
+    }
+}
+
+@UseGuards(AuthGuard, RolesGuard)
+@Roles('Admin')
+@Controller('api/image')
+export class ImageController {
+    constructor(private readonly imageService: ImageService) { }
+    @Post()
+    async createImage(@Body() body: { image: string }) {
+        if (!body.image) {
+            return { message: "Error create book." }
+        }
+        const imageEntity = { image: body.image }; // Create an object that matches the Image entity
+        const image = await this.imageService.createImage(imageEntity);
+
+        return { message: "Create image successfully.", image_id: image.id };
+    }
+
+    @Get(':id')
+    async getImageById(@Param('id') id: number) {
+        const image = await this.imageService.getImageById(id);
+        if (!image) {
+            return { message: "Image not found." };  // If the returned value is a message, return it
+        }
+        return image;
     }
 }
