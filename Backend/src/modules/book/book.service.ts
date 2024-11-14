@@ -75,6 +75,7 @@ export class BookService {
         });
         return {
             data: books.map(book => ({
+                image: book.image.map((item)=>item.toString()),
                 title: book.title,
                 author: book.author,
                 description: book.description,
@@ -100,6 +101,7 @@ export class BookService {
 
         return {
             data: books.map(book => ({
+                image: book.image.map((item)=>item.toString()),
                 title: book.title,
                 author: book.author,
                 description: book.description,

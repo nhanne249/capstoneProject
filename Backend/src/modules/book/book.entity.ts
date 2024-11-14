@@ -17,7 +17,7 @@ export class Book {
   @Column()
   author: string;
 
-  @Column('simple-array', { nullable: true })
+  @Column('longtext', { nullable: true })
   image: string[];
 
   @Column('text', { nullable: true })

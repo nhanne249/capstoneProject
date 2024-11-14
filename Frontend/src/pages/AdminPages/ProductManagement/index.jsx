@@ -46,7 +46,9 @@ const ProductManagement = () => {
       title: "Image",
       dataIndex: "image",
       width: "10%",
-      render: (value) => <img src={value ? base64ToFile("data:image/webp;base64," + value[0]) : ""} className="w-[100px] h-[100px]" />,
+      render: (value) => {
+        return <img src={value ? base64ToFile("data:image/webp;base64," + value) : ""} className="w-[100px] h-[100px]" />;
+      },
     },
     {
       title: "Title",
@@ -95,7 +97,7 @@ const ProductManagement = () => {
                 flushSync(() => {
                   setFieldId({ id: values.id, title: values.title });
                 });
-                setImageList(values?.image === null ? [] : values.image);
+                setImageList(values?.image === null ? [] : [values.image]);
                 formEdit.setFieldValue("title", values.title);
                 formEdit.setFieldValue("author", values.author);
                 formEdit.setFieldValue("description", values.description);
@@ -212,7 +214,7 @@ const ProductManagement = () => {
       setIsReceived(false);
     });
   };
-
+  console.log(imageList);
   return (
     <div className="flex flex-col w-auto">
       <h1 className="text-3xl font-bold h-auto mb-5 mt-4 text-sky-800">Product management</h1>

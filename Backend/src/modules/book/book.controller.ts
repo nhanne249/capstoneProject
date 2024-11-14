@@ -63,9 +63,10 @@ export class BookController {
 
 
             return { message: 'Book updated successfully', data: result };
-        } catch {
+        } catch (e){
             return {
-                message: 'Error updating book'
+                message: 'Error updating book',
+                error: e
             };
         }
     }
