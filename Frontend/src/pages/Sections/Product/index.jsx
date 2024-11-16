@@ -58,7 +58,7 @@ const Product = () => {
                 src={`${import.meta.env.VITE_BACKEND_API}/api/image/${img}`}
                 alt="img"
                 className="w-full aspect-[1/1] rounded-lg"
-                onClick={() => setThumbnail(img)}
+                onClick={() => setThumbnail(`${import.meta.env.VITE_BACKEND_API}/api/image/${img}`)}
               />
             ))}
           </div>

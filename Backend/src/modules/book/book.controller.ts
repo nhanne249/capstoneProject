@@ -40,12 +40,12 @@ export class BookController {
             return { message: 'Book not found' };
         }
 
-        const { title, author, sellingPrice, description, quantity } = book;
+        const { title, author, sellingPrice, description, quantity, image_id } = book;
 
         return {
             message: 'Book retrieved successfully',
             data: {
-                // image,
+                image_id,
                 title,
                 author,
                 sellingPrice,
