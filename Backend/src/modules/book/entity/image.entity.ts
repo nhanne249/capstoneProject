@@ -10,7 +10,7 @@ export class Image {
   @Column('longblob') 
   image: Buffer;
 
-  @ManyToOne(() => Book, (book) => book.image)
+  @ManyToOne(() => Book, (book) => book.image, { onDelete: 'CASCADE'})
   @JoinColumn({ name: 'bookId' })
   book: Book;
 

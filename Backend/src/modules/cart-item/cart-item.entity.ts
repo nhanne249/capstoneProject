@@ -15,15 +15,15 @@ export class CartItem {
     @Column('int') 
     quantity: number;
 
-    @ManyToOne(() => User, user => user.cart_item, { eager: true })  
+    @ManyToOne(() => User, user => user.cart_item, { eager: true, onDelete: 'CASCADE' })  
     @JoinColumn({ name: 'userId' })  
     user: User;
 
-    @ManyToOne(() => Book, book => book.cart_item, { eager: true })  
+    @ManyToOne(() => Book, book => book.cart_item, { eager: true, onDelete: 'CASCADE' })  
     @JoinColumn({ name: 'bookId' })  
     book: Book;
-    
-    @ManyToOne(() => OrderDetail, orderDetail => orderDetail.cartItem)
+
+    @ManyToOne(() => OrderDetail, orderDetail => orderDetail.cartItem, { onDelete: 'SET NULL' })
     @JoinColumn({ name: 'orderDetailId' })
     orderDetail: OrderDetail;
 
