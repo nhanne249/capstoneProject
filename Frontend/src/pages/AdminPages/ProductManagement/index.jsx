@@ -6,6 +6,7 @@ import { uploadImageThunk } from "../../../redux/action/image";
 import { Table, Pagination, Button, Modal, Tooltip, Form, Input, InputNumber } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
+import Progress from "../../../utils/components/progress";
 import "./styles.scss";
 
 const { TextArea } = Input;
@@ -23,6 +24,7 @@ const ProductManagement = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageIdList, setImageIdList] = useState([]);
   const [isReceived, setIsReceived] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
   const [page, setPage] = useState(1);
   useEffect(() => {
     dispatch(getAllBooksThunk(page)).then((res) => {
@@ -148,8 +150,12 @@ const ProductManagement = () => {
   };
 
   const handleUploadImage = () => {
+    setInProgress(true);
     flushSync(() => {
-      dispatch(uploadImageThunk(selectedFile)).then((response) => setImageIdList((prevState) => [...(prevState || []), response.payload.data.image_id]));
+      dispatch(uploadImageThunk(selectedFile)).then((response) => {
+        setImageIdList((prevState) => [...(prevState || []), response.payload.data.image_id]);
+        setInProgress(false);
+      });
     });
     setSelectedFile();
   };
@@ -217,6 +223,7 @@ const ProductManagement = () => {
       setIsReceived(false);
     });
   };
+  console.log(selectedFile);
   return (
     <div className="flex flex-col w-auto">
       <h1 className="text-3xl font-bold h-auto mb-5 mt-4 text-sky-800">Product management</h1>
@@ -296,8 +303,13 @@ const ProductManagement = () => {
               </label>
               <input id="fileInput" type="file" className="!hidden" onChange={handleFileChange} />
               {selectedFile && <p> {selectedFile.name}</p>}
-              <button type="button" className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded" onClick={handleUploadImage}>
-                Upload
+              <button
+                type="button"
+                className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded disabled:cursor-not-allowed"
+                disabled={selectedFile == null ? true : false}
+                onClick={handleUploadImage}
+              >
+                {inProgress ? <Progress /> : "Upload"}
               </button>
             </div>
           </div>
@@ -381,8 +393,13 @@ const ProductManagement = () => {
               </label>
               <input id="fileInput" type="file" className="!hidden" onChange={handleFileChange} />
               {selectedFile && <p> {selectedFile.name}</p>}
-              <button type="button" className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded" onClick={handleUploadImage}>
-                Upload
+              <button
+                type="button"
+                className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded disabled:cursor-not-allowed"
+                disabled={selectedFile == null ? true : false}
+                onClick={handleUploadImage}
+              >
+                {inProgress ? <Progress /> : "Upload"}
               </button>
             </div>
           </div>
