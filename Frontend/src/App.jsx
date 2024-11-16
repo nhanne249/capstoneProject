@@ -16,7 +16,6 @@ function App() {
               routers.role == role && (
                 <Route path={routers.path} key={key} element={<routers.element />}>
                   {routers.children.map(({ subPath, Component }, index) => {
-                    console.log(subPath);
                     return <Route path={subPath} key={index} element={<Component />} />;
                   })}
                 </Route>

@@ -5,7 +5,6 @@ import { Pagination } from "antd";
 import anime from "animejs";
 import "./styles.scss";
 import Card from "../../../utils/components/card";
-import base64ToFile from "../../../utils/functions/base64ToFile";
 import publicationImage from "../../../assets/images/publications-image.png";
 
 const Main = () => {
@@ -74,7 +73,7 @@ const Main = () => {
                 <Card
                   id={book.id}
                   key={book.id}
-                  link={book.image == null ? "" : base64ToFile("data:image/webp;base64," + book.image[0])}
+                  link={book.image_id != null && book.image_id.length != 0 ? `${import.meta.env.VITE_BACKEND_API}/api/image/${book.image_id[0]}` : ""}
                   title={book.title}
                   sellingPrice={book.sellingPrice}
                 />
@@ -92,7 +91,7 @@ const Main = () => {
                 <Card
                   id={book.id}
                   key={book.id}
-                  link={book.image == null ? "" : base64ToFile("data:image/webp;base64," + book.image[0])}
+                  link={book.image_id != null && book.image_id.length != 0 ? `${import.meta.env.VITE_BACKEND_API}/api/image/${book.image_id[0]}` : ""}
                   title={book.title}
                   sellingPrice={book.sellingPrice}
                 />

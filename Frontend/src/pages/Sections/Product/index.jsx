@@ -5,7 +5,6 @@ import { Button } from "antd";
 import { getBookPublicThunk } from "../../../redux/action/book";
 import { getReviewByBookIdThunk } from "./../../../redux/action/review";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import base64ToFile from "../../../utils/functions/base64ToFile";
 import noImage from "../../../assets/images/no-mage.png";
 
 const Product = () => {
@@ -31,7 +30,7 @@ const Product = () => {
   }, [cart]);
 
   useEffect(() => {
-    setThumbnail(book?.image ? base64ToFile("data:image/webp;base64," + book.image[0]) : noImage);
+    setThumbnail(book?.image_id ? `${import.meta.env.VITE_BACKEND_API}/api/image/${book.image_id[0]}` : noImage);
   }, [book]);
 
   const handleClickAddToCartBtn = () => {
@@ -53,10 +52,10 @@ const Product = () => {
             <img className="w-full aspect-[1/1] rounded-lg" src={thumbnail} alt="thumbnail" />
           </div>
           <div className="w-1/5 h-fit">
-            {book?.image?.map((img, index) => (
+            {book?.image_id?.map((img, index) => (
               <img
                 key={index}
-                src={base64ToFile("data:image/webp;base64," + img)}
+                src={`${import.meta.env.VITE_BACKEND_API}/api/image/${img}`}
                 alt="img"
                 className="w-full aspect-[1/1] rounded-lg"
                 onClick={() => setThumbnail(img)}

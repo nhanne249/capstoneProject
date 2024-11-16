@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, Get, Put, Delete, Query, SetMetadata, UseGuards, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, Put, Delete, Query, SetMetadata, UseGuards, Param, UseInterceptors, UploadedFile,Response } from '@nestjs/common';
 import { BookService } from './book.service';
 import { ImageService } from './book.service';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { CreateBookDto } from './dto/create-book.dto';
 import { AuthGuard, RolesGuard } from '../auth/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 const Roles = (...role: string[]) => SetMetadata('role', role);
 
@@ -39,7 +40,7 @@ export class BookController {
             return { message: 'Book not found' };
         }
 
-        const { title, author, sellingPrice, description, image, quantity } = book;
+        const { title, author, sellingPrice, description, quantity } = book;
 
         return {
             message: 'Book retrieved successfully',
@@ -156,7 +157,8 @@ export class BooksController {
                 title: book.title,
                 author: book.author,
                 sellingPrice: book.sellingPrice,
-                description: book.description
+                description: book.description,
+                image_id: book.image_id,
             }));
 
             return {
@@ -212,28 +214,29 @@ export class BooksController {
     }
 }
 
-@UseGuards(AuthGuard, RolesGuard)
-@Roles('Admin')
 @Controller('api/image')
 export class ImageController {
     constructor(private readonly imageService: ImageService) { }
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('Admin')
     @Post()
-    async createImage(@Body() body: { image: string }) {
-        if (!body.image) {
-            return { message: "Error create book." }
-        }
-        const imageEntity = { image: body.image }; // Create an object that matches the Image entity
-        const image = await this.imageService.createImage(imageEntity);
-
-        return { message: "Create image successfully.", image_id: image.id };
+    @UseInterceptors(FileInterceptor('file')) 
+    async uploadImage(@UploadedFile() file: Express.Multer.File) {
+        const savedImage = await this.imageService.saveImageFile(file); 
+        return {
+            message: 'Upload image successfully.',
+            image_id: savedImage.id,
+        };
     }
 
+
     @Get(':id')
-    async getImageById(@Param('id') id: number) {
+    async getImageById(@Param('id') id: number, @Response() res) {
         const image = await this.imageService.getImageById(id);
-        if (!image) {
-            return { message: "Image not found." };  // If the returned value is a message, return it
-        }
-        return image;
+        res.set({
+            'Content-Type': image.mimeType,
+            'Content-Disposition': `inline; filename="${image.fileName}"`,
+        });
+        res.send(image.image);
     }
 }
