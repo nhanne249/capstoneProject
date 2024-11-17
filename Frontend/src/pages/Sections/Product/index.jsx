@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
@@ -6,10 +6,15 @@ import { getBookPublicThunk } from "../../../redux/action/book";
 import { getReviewByBookIdThunk } from "./../../../redux/action/review";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import noImage from "../../../assets/images/no-mage.png";
+import { MyCart } from "../../../layouts";
 
 const Product = () => {
   const params = useParams();
   const dispatch = useDispatch();
+
+  const { cartQuantity, setCartQuantity } = useContext(MyCart);
+
+  const [count, setCount] = useState(cartQuantity);
 
   const [book, setBook] = useState();
   const [reviews, setReviews] = useState();
@@ -30,6 +35,10 @@ const Product = () => {
   }, [cart]);
 
   useEffect(() => {
+    setCartQuantity(count);
+  }, [count]);
+
+  useEffect(() => {
     setThumbnail(book?.image_id ? `${import.meta.env.VITE_BACKEND_API}/api/image/${book.image_id[0]}` : noImage);
   }, [book]);
 
@@ -43,6 +52,7 @@ const Product = () => {
         return [...prevCart, { id: params.id, quantity: 1 }];
       }
     });
+    setCount(cartQuantity + 1);
   };
   return (
     <div className="w-full h-full flex flex-col px-5 gap-5">
