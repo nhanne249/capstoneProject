@@ -44,41 +44,37 @@ export class CartItemService {
         }
     }
 
-    async AddBookToCart(userId: number, bookId: number, quantity: number) {
+    async AddBooksToCart(userId: number, books: { bookId: number; quantity: number }[]) {
         const user = await this.userRepository.findOne({ where: { id: userId } });
         if (!user) {
-            throw new NotFoundException('User not found');
+          throw new NotFoundException('User not found');
         }
-
-        const book = await this.bookRepository.findOne({ where: { id: bookId } });
-        if (!book) {
-            throw new NotFoundException('Book not found');
-        }
-
-        if (quantity <= 0) {
+      
+        await this.cartItemRepository.delete({ user: { id: userId } });
+      
+        const newCartItems = [];
+        for (const { bookId, quantity } of books) { 
+          const book = await this.bookRepository.findOne({ where: { id: bookId } });
+          if (!book) {
+            throw new NotFoundException(`Book with ID ${bookId} not found`);
+          }
+      
+          if (quantity <= 0) {
             throw new Error('Quantity must be greater than 0');
+          }
+      
+          const newCartItem = this.cartItemRepository.create({
+            user,
+            book,
+            price: book.sellingPrice * quantity,
+            quantity,
+          });
+      
+          newCartItems.push(newCartItem);
         }
-
-        const existingCartItem = await this.cartItemRepository.findOne({
-            where: { user: { id: userId }, book: { id: bookId } },
-        });
-
-        if (existingCartItem) {
-            existingCartItem.quantity += quantity;
-            existingCartItem.price = book.sellingPrice * existingCartItem.quantity;
-            await this.cartItemRepository.save(existingCartItem);
-            return existingCartItem;
-        } else {
-            const newCartItem = this.cartItemRepository.create({
-                user,
-                book,
-                price: book.sellingPrice * quantity,
-                quantity,
-            });
-            await this.cartItemRepository.save(newCartItem);
-            return newCartItem;
-        }
-    }
+      
+        return await this.cartItemRepository.save(newCartItems);
+      }
 
     async deleteBookFromCart(userId: number, bookId: number) {
         const cartItem = await this.cartItemRepository.findOne({
