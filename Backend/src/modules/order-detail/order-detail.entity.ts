@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, CreateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+/* eslint-disable prettier/prettier */
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { CartItem } from '../cart-item/cart-item.entity';
 import { User } from '../auth/user.entity';
 import { OrderStatus, PaymentMethod } from './enum';

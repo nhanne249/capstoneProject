@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Body, Req, Param, UseGuards, Put, Delete, SetMetadata } from '@nestjs/common';
 import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -56,7 +57,6 @@ export class OrderDetailController {
         try {
             const userPayload = request['user'];
             const userId = userPayload.sub;
-            console.log(userId)
             const orders = await this.orderDetailService.getAllOrders(userId);
 
             return {

@@ -35,7 +35,8 @@ export class CartItemService {
                         quantity: item.quantity,
                         author: item.book.author,
                         description: item.book.description,
-                        sellingPrice: item.book.sellingPrice
+                        sellingPrice: item.book.sellingPrice,
+                        image_id: item.book.image_id
                     }
                 }))
             };

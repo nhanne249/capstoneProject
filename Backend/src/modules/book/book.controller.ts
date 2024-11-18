@@ -229,7 +229,6 @@ export class ImageController {
         };
     }
 
-
     @Get(':id')
     async getImageById(@Param('id') id: number, @Response() res) {
         const image = await this.imageService.getImageById(id);
