@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Review } from './review.entity';
@@ -20,64 +20,72 @@ export class ReviewService {
 
   async getReviewsByBookId(bookId: number): Promise<any[]> {
     const reviews = await this.reviewRepository.find({
-      where: { bookId },
-      relations: ['user', 'book'], 
+      where: { book: { id: bookId } },
+      relations: ['user', 'book'],
     });
 
     if (reviews.length === 0) {
-      return { error: new NotFoundException('No reviews found for this book') } as any;
+      throw new NotFoundException('No reviews found for this book');
     }
 
-    return reviews.map(reviews => ({
-      rating: reviews.rating,
-      content: reviews.content,
-      reviewDate: format(new Date(reviews.reviewDate), 'HH:mm dd/MM/yyyy'),
-      name: reviews.user.name
+    return reviews.map((review) => ({
+      rating: review.rating,
+      content: review.content,
+      reviewDate: format(new Date(review.reviewDate), 'HH:mm dd/MM/yyyy'),
+      name: review.user.name,
     }));
   }
 
   async postReview(bookId: number, userId: number, rating: number, content: string) {
-    const user = await this.userRepository.findOneBy({ id: userId });
+    const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    const book = await this.bookRepository.findOneBy({ id: bookId });
+    const book = await this.bookRepository.findOne({ where: { id: bookId } });
     if (!book) {
       throw new NotFoundException('Book not found');
     }
 
     const orderDetail = await this.orderDetailRepository.findOne({
       where: {
-        userId: userId,
+        user: { id: userId },
         status: OrderStatus.SUCCESS,
       },
       relations: ['cartItem'],
     });
 
-    const hasPurchasedBook = orderDetail?.cartItem.some((item) => item.bookId === bookId);
-    if (!hasPurchasedBook) {
-      return {message: ('You can only review books you have purchased.')};
-    }
+    // const hasPurchasedBook = orderDetail?.cartItem.some((item) => item.bookId === bookId);
+    // if (!hasPurchasedBook) {
+    //   throw new UnauthorizedException('You can only review books you have purchased.');
+    // }
 
-    const review = this.reviewRepository.create({userId, bookId, rating, content});
-    review.reviewDate = new Date();
+    const review = this.reviewRepository.create({
+      user,
+      book,
+      rating,
+      content,
+      reviewDate: new Date(),
+    });
 
-    return this.reviewRepository.save(review);
+    return await this.reviewRepository.save(review);
   }
 
   async deleteReview(reviewId: number, userId: number) {
-    const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+    const review = await this.reviewRepository.findOne({
+      where: { id: reviewId },
+      relations: ['user'],
+    });
 
     if (!review) {
-        return { message: 'Review not found' };
+      throw new NotFoundException('Review not found');
     }
 
-    if (review.userId !== userId) {
-        return { message: 'You are not authorized to delete this review' };
+    if (review.user.id !== userId) {
+      throw new UnauthorizedException('You are not authorized to delete this review');
     }
 
-    await this.reviewRepository.delete({ id: reviewId });
+    await this.reviewRepository.remove(review);
     return { message: 'Review deleted successfully' };
   }
 }

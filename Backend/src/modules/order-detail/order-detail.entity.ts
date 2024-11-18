@@ -40,7 +40,7 @@ export class OrderDetail {
   @Column()
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.orderDetail, { eager: true })
+  @ManyToOne(() => User, (user) => user.orderDetail, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 

@@ -16,11 +16,11 @@ export class Review {
   @Column('datetime', { default: () => 'CURRENT_TIMESTAMP' })
   reviewDate: Date;  
 
-  @ManyToOne(() => User, user => user.review, { eager: true })  
+  @ManyToOne(() => User, user => user.review, { eager: true, onDelete: 'CASCADE' })  
   @JoinColumn({ name: 'userId' })  
   user: User;
 
-  @ManyToOne(() => Book, book => book.review, { eager: true })  
+  @ManyToOne(() => Book, book => book.review, { eager: true, onDelete: 'CASCADE' })  
   @JoinColumn({ name: 'bookId' })  
   book: Book;
   
