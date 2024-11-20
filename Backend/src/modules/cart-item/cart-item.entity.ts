@@ -10,7 +10,7 @@ export class CartItem {
     cartId: number;
 
     @Column('decimal', { precision: 10, scale: 2 }) 
-    price: number;
+    sellingPrice: number;
 
     @Column('int') 
     quantity: number;

@@ -52,6 +52,6 @@ export class OrderDetail {
   // @BeforeInsert()
   // @BeforeUpdate()
   calculateTotalPrice() {
-    this.totalPrice = this.cartItem.reduce((sum, item) => sum + Number(item.price), 0);
+    this.totalPrice = this.cartItem.reduce((sum, item) => sum + Number(item.sellingPrice), 0);
   }
 }

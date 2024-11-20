@@ -50,6 +50,7 @@ const LayoutPage = () => {
   useEffect(() => {
     if (isLogin) {
       dispatch(addBookToCartThunk(cartClient)).then((res) => {
+        console.log(res);
         setCartServer(res.payload);
         setIsFetch(true);
       });

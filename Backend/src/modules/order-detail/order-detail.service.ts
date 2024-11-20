@@ -39,7 +39,7 @@ export class OrderDetailService {
         const transformedCartItems = cartItems.map(item => ({
             title: item.book.title,
             quantity: item.quantity,
-            price: item.price,
+            price: item.sellingPrice,
         }));
     
         const data = {
@@ -79,7 +79,7 @@ export class OrderDetailService {
         const transformedCartItems = order.cartItem.map(item => ({
             title: item.book.title,
             quantity: item.quantity,
-            price: item.price,
+            price: item.sellingPrice,
         }));
     
         return {
@@ -113,7 +113,7 @@ export class OrderDetailService {
             cartItem: order.cartItem.map(item => ({
                 title: item.book.title,
                 quantity: item.quantity,
-                price: item.price,
+                price: item.sellingPrice,
             })),
         }));
     }

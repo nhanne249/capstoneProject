@@ -53,6 +53,7 @@ export class CartItemService {
         await this.cartItemRepository.delete({ user: { id: userId } });
       
         const newCartItems = [];
+        const result = [];
         for (const { id, quantity } of books) { 
           const book = await this.bookRepository.findOne({ where: { id: id } });
           if (!book) {
@@ -66,14 +67,15 @@ export class CartItemService {
           const newCartItem = this.cartItemRepository.create({
             user,
             book,
-            price: book.sellingPrice,
+            sellingPrice: book.sellingPrice,
             quantity: quantity,
           });
-          const cartItem={...newCartItem,image_id:book.image_id, id:book.id}
-          newCartItems.push(cartItem);
+            const cartItem = { quantity: newCartItem.quantity, title: book.title, image_id: book.image_id, id: book.id, sellingPrice: book.sellingPrice }
+            result.push(cartItem)
+          newCartItems.push(newCartItem);
         }
-      
-        return await this.cartItemRepository.save(newCartItems);
+        await this.cartItemRepository.save(newCartItems)
+        return result;
       }
 
     async deleteBookFromCart(userId: number, id: number) {
