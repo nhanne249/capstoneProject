@@ -30,17 +30,7 @@ const book = {
         return transport.post(`${url}`,data);
     },
     updateBook: (data) => {
-        const dataSend = {
-            id: data.id,
-            title: data.title,
-            quantity: data.quantity,
-            author: data.author,
-            image: data.image,
-            description: data.description,
-            costPrice: data.costPrice,
-            sellingPrice: data.sellingPrice
-        }
-        return transport.put(`${url}/${dataSend.id}`,dataSend);
+        return transport.put(`${url}/${data.id}`,data);
     },
     deleteBook: (data) => {
         return transport.delete(`${url}/${data}`,);

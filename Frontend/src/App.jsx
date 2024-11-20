@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { publicRouter, privateRouter } from "./configs/routes";
 import Cookies from "js-cookie";
@@ -5,8 +6,9 @@ import "./App.scss";
 
 const userPresent = !!Cookies.get("userPresent");
 const role = Cookies.get("role");
-
 function App() {
+  useEffect(() => {}, [role]);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -16,7 +18,6 @@ function App() {
               routers.role == role && (
                 <Route path={routers.path} key={key} element={<routers.element />}>
                   {routers.children.map(({ subPath, Component }, index) => {
-                    console.log(subPath);
                     return <Route path={subPath} key={index} element={<Component />} />;
                   })}
                 </Route>

@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { flushSync } from "react-dom";
 import { useDispatch } from "react-redux";
 import { getAllBooksThunk, deleteBookThunk, updateBookThunk, createBookThunk } from "../../../redux/action/book";
-import base64ToFile from "../../../utils/functions/base64ToFile";
-import fileToBase64 from "../../../utils/functions/fileToBase64";
+import { uploadImageThunk } from "../../../redux/action/image";
 import { Table, Pagination, Button, Modal, Tooltip, Form, Input, InputNumber } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
+import Progress from "../../../utils/components/progress";
 import "./styles.scss";
 
 const { TextArea } = Input;
@@ -22,8 +22,9 @@ const ProductManagement = () => {
   const [openAddBookModal, setOpenAddBookModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [imageList, setImageList] = useState([]);
+  const [imageIdList, setImageIdList] = useState([]);
   const [isReceived, setIsReceived] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
   const [page, setPage] = useState(1);
   useEffect(() => {
     dispatch(getAllBooksThunk(page)).then((res) => {
@@ -44,10 +45,14 @@ const ProductManagement = () => {
     },
     {
       title: "Image",
-      dataIndex: "image",
+      dataIndex: "image_id",
       width: "10%",
       render: (value) => {
-        return <img src={value ? base64ToFile("data:image/webp;base64," + value) : ""} className="w-[100px] h-[100px]" />;
+        return value != null && value.length > 0 ? (
+          <img src={`${import.meta.env.VITE_BACKEND_API}/api/image/${value[0]}`} className="w-[100px] h-[100px]" />
+        ) : (
+          <p className="text-xs text-slate-400">Not have image yet</p>
+        );
       },
     },
     {
@@ -97,7 +102,7 @@ const ProductManagement = () => {
                 flushSync(() => {
                   setFieldId({ id: values.id, title: values.title });
                 });
-                setImageList(values?.image === null ? [] : [values.image]);
+                if (values.image_id != null) setImageIdList(values.image_id);
                 formEdit.setFieldValue("title", values.title);
                 formEdit.setFieldValue("author", values.author);
                 formEdit.setFieldValue("description", values.description);
@@ -145,12 +150,14 @@ const ProductManagement = () => {
   };
 
   const handleUploadImage = () => {
-    flushSync(() =>
-      fileToBase64(selectedFile).then((res) => {
-        setImageList((prevState) => [...(prevState || []), res.toString().split(",")[1]]);
-      })
-    );
-    setSelectedFile(null);
+    setInProgress(true);
+    flushSync(() => {
+      dispatch(uploadImageThunk(selectedFile)).then((response) => {
+        setImageIdList((prevState) => [...(prevState || []), response.payload.data.image_id]);
+        setInProgress(false);
+      });
+    });
+    setSelectedFile();
   };
 
   const handleFileChange = (event) => {
@@ -166,7 +173,7 @@ const ProductManagement = () => {
       costPrice: parseFloat(values.costPrice),
       sellingPrice: parseFloat(values.sellingPrice),
       description: values.description,
-      image: imageList,
+      image_id: imageIdList,
     };
     dispatch(updateBookThunk(dataSend)).then((res) => {
       if (res.payload.message == "Book updated successfully") {
@@ -181,7 +188,8 @@ const ProductManagement = () => {
           theme: "colored",
         });
         setOpenEditModal(false);
-        setImageList([]);
+        setImageIdList([]);
+        [];
         setFieldId();
         setIsReceived(false);
       }
@@ -196,7 +204,7 @@ const ProductManagement = () => {
       costPrice: parseFloat(values.costPrice),
       sellingPrice: parseFloat(values.sellingPrice),
       description: values.description,
-      image: imageList,
+      image_id: imageIdList,
     };
     dispatch(createBookThunk(dataSend)).then((res) => {
       toast.success(res.payload.message, {
@@ -210,11 +218,12 @@ const ProductManagement = () => {
         theme: "colored",
       });
       setOpenAddBookModal(false);
-      setImageList([]);
+      setImageIdList([]);
+      [];
       setIsReceived(false);
     });
   };
-  console.log(imageList);
+  console.log(selectedFile);
   return (
     <div className="flex flex-col w-auto">
       <h1 className="text-3xl font-bold h-auto mb-5 mt-4 text-sky-800">Product management</h1>
@@ -252,7 +261,7 @@ const ProductManagement = () => {
         centered={true}
         onCancel={() => {
           flushSync(() => {
-            setImageList([]);
+            setImageIdList([]);
           });
           setOpenEditModal(false);
         }}
@@ -280,9 +289,9 @@ const ProductManagement = () => {
           <div className="px-2 pb-1 font-medium text-base">Image</div>
           <div className="flex flex-col">
             <div className="flex flex-row gap-2">
-              {imageList.length != 0 ? (
-                imageList.map((imgageUrl, index) => {
-                  return <img key={index} src={base64ToFile("data:image/webp;base64," + imgageUrl)} className="w-40 h-40 rounded-xl" />;
+              {imageIdList.length != 0 ? (
+                imageIdList.map((imageId, index) => {
+                  return <img key={index} src={`${import.meta.env.VITE_BACKEND_API}/api/image/${imageId}`} className="w-40 h-40 rounded-xl" />;
                 })
               ) : (
                 <div className="px-2 pb-1 font-light text-base">Don't have image!</div>
@@ -294,8 +303,13 @@ const ProductManagement = () => {
               </label>
               <input id="fileInput" type="file" className="!hidden" onChange={handleFileChange} />
               {selectedFile && <p> {selectedFile.name}</p>}
-              <button type="button" className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded" onClick={handleUploadImage}>
-                Upload
+              <button
+                type="button"
+                className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded disabled:cursor-not-allowed"
+                disabled={selectedFile == null ? true : false}
+                onClick={handleUploadImage}
+              >
+                {inProgress ? <Progress /> : "Upload"}
               </button>
             </div>
           </div>
@@ -338,7 +352,7 @@ const ProductManagement = () => {
         centered={true}
         onCancel={() => {
           setOpenAddBookModal(false);
-          setImageList([]);
+          setImageIdList([]);
           form.resetFields();
         }}
         footer={false}
@@ -365,9 +379,9 @@ const ProductManagement = () => {
           <div className="px-2 pb-1 font-medium text-base">Image</div>
           <div className="flex flex-col">
             <div className="flex flex-row">
-              {imageList.length != 0 ? (
-                imageList.map((imgageUrl, index) => {
-                  return <img key={index} src={base64ToFile("data:image/webp;base64," + imgageUrl)} className="w-40 h-40 rounded-xl" />;
+              {imageIdList.length != 0 ? (
+                imageIdList.map((imageId, index) => {
+                  return <img key={index} src={`${import.meta.env.VITE_BACKEND_API}/api/image/${imageId}`} className="w-40 h-40 rounded-xl" />;
                 })
               ) : (
                 <div className="px-2 pb-1 font-light text-base">Don't have image!</div>
@@ -379,8 +393,13 @@ const ProductManagement = () => {
               </label>
               <input id="fileInput" type="file" className="!hidden" onChange={handleFileChange} />
               {selectedFile && <p> {selectedFile.name}</p>}
-              <button type="button" className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded" onClick={handleUploadImage}>
-                Upload
+              <button
+                type="button"
+                className="cursor-pointer bg-white !text-sky-800 py-2 px-4 rounded disabled:cursor-not-allowed"
+                disabled={selectedFile == null ? true : false}
+                onClick={handleUploadImage}
+              >
+                {inProgress ? <Progress /> : "Upload"}
               </button>
             </div>
           </div>

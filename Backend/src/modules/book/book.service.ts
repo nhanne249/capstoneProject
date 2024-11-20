@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { Book } from './entity/book.entity';
@@ -132,12 +132,24 @@ export class ImageService {
         private readonly bookRepository: Repository<Book>,
     ) { }
 
-    async createImage(imageData: { image: string }) {
-        return await this.imageRepository.save(imageData);
+    async saveImageFile(file: Express.Multer.File) {
+        const imageEntity = this.imageRepository.create({
+                image: file.buffer,
+                mimeType: file.mimetype,
+                fileName: file.originalname,
+                size: file.size,
+            });
+        return await this.imageRepository.save(imageEntity);
     }
 
     async getImageById(id: number) {
-        return await this.imageRepository.findOne({ where: { id } });
+        const image = await this.imageRepository.findOne({ where: { id } });
+
+        if (!image) {
+            throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
+        }
+
+        return image;
     }
 
     async updateImage(bookId: number, imageIds: number[]) {

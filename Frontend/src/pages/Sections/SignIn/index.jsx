@@ -31,11 +31,11 @@ const SignIn = () => {
         });
         Cookies.set("userPresent", `${res?.payload.token}`, {
           expires: 7,
-          path: "",
+          path: "/",
         });
         Cookies.set("role", `${res?.payload.role.toLowerCase()}`, {
           expires: 7,
-          path: "",
+          path: "/",
         });
         navigate(`/${res?.payload.role.toLowerCase()}`, { replace: true });
       }

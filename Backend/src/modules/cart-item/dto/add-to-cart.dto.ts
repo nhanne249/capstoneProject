@@ -1,19 +1,18 @@
-import { IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsInt, IsPositive, IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class BookItemDto {
+  @IsInt()
+  bookId: number;
+
+  @IsPositive()
+  quantity: number;
+}
 
 export class AddCartDto {
-    @IsNotEmpty() 
-    @IsNumber() 
-    @IsPositive()
-    bookId: number;
-
-    // @IsNotEmpty()
-    // @IsNumber()
-    // @IsPositive()
-    // userId: number;
-
-    @IsNotEmpty()
-    @IsNumber()
-    @IsPositive()
-    quantity: number;
-
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => BookItemDto)
+  books: BookItemDto[]; 
 }
+
