@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CartItem } from './cart-item.entity';
 import { Book } from '../book/entity/book.entity';
 import { User } from '../auth/user.entity';
+import { BookItemDto } from './dto/book-item.dto';
 
 @Injectable()
 export class CartItemService {
@@ -33,8 +34,6 @@ export class CartItemService {
                     book: {
                         title: item.book.title,
                         quantity: item.quantity,
-                        author: item.book.author,
-                        description: item.book.description,
                         sellingPrice: item.book.sellingPrice,
                         image_id: item.book.image_id
                     }
@@ -45,50 +44,57 @@ export class CartItemService {
         }
     }
 
-    async AddBookToCart(userId: number, bookId: number, quantity: number) {
+    async AddBooksToCart(userId: number, books: { id: number; quantity: number }[]) {
         const user = await this.userRepository.findOne({ where: { id: userId } });
         if (!user) {
-            throw new NotFoundException('User not found');
+          throw new NotFoundException('User not found');
         }
-
-        const book = await this.bookRepository.findOne({ where: { id: bookId } });
-        if (!book) {
-            throw new NotFoundException('Book not found');
-        }
-
-        if (quantity <= 0) {
+      
+        await this.cartItemRepository.delete({ user: { id: userId } });
+      
+        const newCartItems = [];
+        for (const { id, quantity } of books) { 
+          const book = await this.bookRepository.findOne({ where: { id: id } });
+          if (!book) {
+            throw new NotFoundException(`Book with ID ${id} not found`);
+          }
+      
+          if (quantity <= 0) {
             throw new Error('Quantity must be greater than 0');
+          }
+      
+          const newCartItem = this.cartItemRepository.create({
+            user,
+            book,
+            price: book.sellingPrice,
+            quantity: quantity,
+          });
+          const cartItem={...newCartItem,image_id:book.image_id, id:book.id}
+          newCartItems.push(cartItem);
         }
+      
+        return await this.cartItemRepository.save(newCartItems);
+      }
 
-        const existingCartItem = await this.cartItemRepository.findOne({
-            where: { user: { id: userId }, book: { id: bookId } },
-        });
-
-        if (existingCartItem) {
-            existingCartItem.quantity += quantity;
-            existingCartItem.price = book.sellingPrice * existingCartItem.quantity;
-            await this.cartItemRepository.save(existingCartItem);
-            return existingCartItem;
-        } else {
-            const newCartItem = this.cartItemRepository.create({
-                user,
-                book,
-                price: book.sellingPrice * quantity,
-                quantity,
-            });
-            await this.cartItemRepository.save(newCartItem);
-            return newCartItem;
-        }
-    }
-
-    async deleteBookFromCart(userId: number, bookId: number) {
+    async deleteBookFromCart(userId: number, id: number) {
         const cartItem = await this.cartItemRepository.findOne({
-            where: { user: { id: userId }, book: { id: bookId } },
+            where: { user: { id: userId }, book: { id: id } },
         });
         if (!cartItem) {
             throw new NotFoundException('CartItem not found');
         }
         await this.cartItemRepository.remove(cartItem);
         return { message: 'CartItem removed successfully' };
+    }
+    async getCart(cartDto: BookItemDto[]) {
+        const cart = await Promise.all(
+            cartDto.map(async (item) => {
+                return await this.bookRepository.findOne({
+                    where: { id: item.id },
+                    select: ['title', 'sellingPrice', 'image_id','id'],
+                });
+            })
+        );
+        return cart;
     }
 }

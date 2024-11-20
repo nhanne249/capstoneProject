@@ -14,7 +14,7 @@ const HeaderPage = (role) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [roleNow, setRoleNow] = useState(role.role);
-  const { cartQuantity } = useContext(MyCart);
+  const { cartQuantity, setIsLogin, setIsFetch } = useContext(MyCart);
   useEffect(() => {
     setRoleNow(role.role);
   }, [role]);
@@ -52,6 +52,7 @@ const HeaderPage = (role) => {
     navigate("/signin");
   };
   const handleCartClick = () => {
+    setIsFetch(false);
     navigate("/cart");
   };
   const handleProfileClick = () => {
@@ -65,6 +66,7 @@ const HeaderPage = (role) => {
   const handleSignOutClick = () => {
     Cookies.remove("role", { path: "/" });
     Cookies.remove("userPresent", { path: "/" });
+    setIsLogin(false);
     setRoleNow();
     navigate("/main", { replace: true });
   };

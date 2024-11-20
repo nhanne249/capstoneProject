@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { CartItem } from '../../cart-item/cart-item.entity';
 import { Review } from '../../review/review.entity';
 import { Image } from './image.entity';

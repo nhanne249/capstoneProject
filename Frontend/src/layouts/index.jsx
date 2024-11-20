@@ -1,5 +1,7 @@
 import { useEffect, createContext, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getCartThunk, addBookToCartThunk } from "../redux/action/cart.js";
 import { Layout } from "antd";
 import HeaderPage from "./Header";
 import FooterPage from "./Footer/index";
@@ -12,22 +14,62 @@ export const MyCart = createContext();
 
 const LayoutPage = () => {
   const location = useLocation();
-  const [cartQuantity, setCartQuantity] = useState(0);
+  const dispatch = useDispatch();
+  const [cartServer, setCartServer] = useState([]);
+  const [cartClient, setCartClient] = useState(localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []);
+  const [isLogin, setIsLogin] = useState(!!Cookies.get("userPresent"));
+  const [isFetch, setIsFetch] = useState(false);
+  const [cartQuantity, setCartQuantity] = useState(
+    localStorage.getItem("cart")
+      ? JSON.parse(localStorage.getItem("cart")).reduce((sum, item) => {
+          return sum + (item.quantity || 0);
+        }, 0)
+      : 0
+  );
 
   useEffect(() => {
-    const data = localStorage.getItem("cart");
-    const parsedData = JSON.parse(data);
-    const total = parsedData.reduce((sum, item) => {
-      return sum + (item.quantity || 0);
-    }, 0);
+    localStorage.setItem("cart", JSON.stringify(cartClient));
 
-    setCartQuantity(total);
-  }, [localStorage]);
+    setCartServer((prevCartServer) =>
+      prevCartServer
+        .map((item, index) => {
+          if (!cartClient[index]) {
+            return null;
+          }
+          return { ...item, quantity: cartClient[index].quantity };
+        })
+        .filter(Boolean)
+    );
+    setCartQuantity(
+      cartClient.reduce((sum, item) => {
+        return sum + (item.quantity || 0);
+      }, 0)
+    );
+  }, [cartClient]);
+
+  useEffect(() => {
+    if (isLogin) {
+      dispatch(addBookToCartThunk(cartClient)).then((res) => {
+        setCartServer(res.payload);
+        setIsFetch(true);
+      });
+    } else {
+      dispatch(getCartThunk(cartClient)).then((res) => {
+        setCartServer(
+          res.payload.map((item, index) => {
+            return { ...item, quantity: cartClient[index].quantity };
+          })
+        );
+        setIsFetch(true);
+      });
+    }
+  }, [isLogin, isFetch]);
 
   const role = Cookies.get("role") ? Cookies.get("role") : undefined;
   useEffect(() => {}, [role]);
+
   return (
-    <MyCart.Provider value={{ cartQuantity, setCartQuantity }}>
+    <MyCart.Provider value={{ isLogin, cartQuantity, setCartQuantity, setIsLogin, cartServer, cartClient, setCartClient, setIsFetch }}>
       <Layout
         className={`min-h-screen w-full ${
           location.pathname.split("/")[1] == "signin" || location.pathname.split("/")[1] == "signup" ? "h-screen" : "h-auto"

@@ -125,7 +125,7 @@ export class OrderDetailService {
         if (updateOrderDto.cartItem) {
             const cartItems = await Promise.all(
                 updateOrderDto.cartItem.map(async (itemId) => 
-                    this.cartItemRepository.findOne({ where: { id: itemId } })
+                    this.cartItemRepository.findOne({ where: { cartId: itemId } })
                 )
             );
 
