@@ -52,13 +52,13 @@ export class ReviewService {
         user: { id: userId },
         status: OrderStatus.SUCCESS,
       },
-      relations: ['cartItem'],
+      // relations: ['cartItem'],
     });
 
-    // const hasPurchasedBook = orderDetail?.cartItem.some((item) => item.bookId === bookId);
-    // if (!hasPurchasedBook) {
-    //   throw new UnauthorizedException('You can only review books you have purchased.');
-    // }
+    const hasPurchasedBook = orderDetail?.books.some((item) => item.bookId === bookId);
+    if (!hasPurchasedBook) {
+      return {message: ('You can only review books you have purchased.')};
+    }
 
     const review = this.reviewRepository.create({
       user,

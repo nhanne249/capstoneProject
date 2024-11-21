@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany } from 'typeorm';
 import { CartItem } from '../../cart-item/cart-item.entity';
 import { Review } from '../../review/review.entity';
 import { Image } from './image.entity';
+import { OrderDetail } from 'src/modules/order-detail/order-detail.entity';
 
 @Entity()
 export class Book {
