@@ -1,9 +1,11 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Input } from "antd";
 import { useDispatch } from "react-redux";
 import { signInThunk } from "../../../redux/action/signIn";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import { MyCart } from "../../../layouts";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -11,6 +13,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { setIsLogin } = useContext(MyCart);
   const handleChangeMode = () => {
     navigate("/signup");
   };
@@ -38,6 +41,7 @@ const SignIn = () => {
           path: "/",
         });
         navigate(`/${res?.payload.role.toLowerCase()}`, { replace: true });
+        setIsLogin(true);
       }
       //Handle sigin error
       if (res?.payload.error) {

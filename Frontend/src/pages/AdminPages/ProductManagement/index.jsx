@@ -223,7 +223,6 @@ const ProductManagement = () => {
       setIsReceived(false);
     });
   };
-  console.log(selectedFile);
   return (
     <div className="flex flex-col w-auto">
       <h1 className="text-3xl font-bold h-auto mb-5 mt-4 text-sky-800">Product management</h1>

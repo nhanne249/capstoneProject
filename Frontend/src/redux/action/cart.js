@@ -1,12 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import cart from '../api/cart'
 
-const { getCart, addBookToCart,deleteBookInCart } = cart;
+const { getCart, addBookToCart,deleteBookInCart,getUserCart } = cart;
 
 export const getCartThunk = createAsyncThunk(
     'getCart',
     async (data) => {
         const res = await getCart(data);
+        return res;
+    }
+)
+export const getUserCartThunk = createAsyncThunk(
+    'getUserCart',
+    async (data) => {
+        const res = await getUserCart(data);
         return res;
     }
 )

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, Get, Put, Delete, Query, SetMetadata, UseGuards, Param, UseInterceptors, UploadedFile,Response } from '@nestjs/common';
+import { Body, Controller, Post, Get, Put, Delete, Query, SetMetadata, UseGuards, Param, UseInterceptors, UploadedFile, Response } from '@nestjs/common';
 import { BookService } from './book.service';
 import { ImageService } from './book.service';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -220,15 +220,14 @@ export class ImageController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles('Admin')
     @Post()
-    @UseInterceptors(FileInterceptor('file')) 
+    @UseInterceptors(FileInterceptor('file'))
     async uploadImage(@UploadedFile() file: Express.Multer.File) {
-        const savedImage = await this.imageService.saveImageFile(file); 
+        const savedImage = await this.imageService.saveImageFile(file);
         return {
             message: 'Upload image successfully.',
             image_id: savedImage.id,
         };
     }
-
 
     @Get(':id')
     async getImageById(@Param('id') id: number, @Response() res) {
@@ -238,5 +237,18 @@ export class ImageController {
             'Content-Disposition': `inline; filename="${image.fileName}"`,
         });
         res.send(image.image);
+    }
+
+    @Delete(':id')
+    async deleteImage(@Param('id') id: number) {
+        try {
+            const result = await this.imageService.deleteImage(id); // Call the service to delete the image
+            return result;
+        } catch (error) {
+            return {
+                message: error.message || 'An error occurred while deleting the image',
+                data: null,
+            };
+        }
     }
 }

@@ -7,10 +7,10 @@ import { OrderDetail } from '../order-detail/order-detail.entity';
 @Entity('cart_item')
 export class CartItem {
     @PrimaryGeneratedColumn()  
-    id: number;
+    cartId: number;
 
     @Column('decimal', { precision: 10, scale: 2 }) 
-    price: number;
+    sellingPrice: number;
 
     @Column('int') 
     quantity: number;

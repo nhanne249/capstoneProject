@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
@@ -6,15 +6,17 @@ import { getBookPublicThunk } from "../../../redux/action/book";
 import { getReviewByBookIdThunk } from "./../../../redux/action/review";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import noImage from "../../../assets/images/no-mage.png";
+import { MyCart } from "../../../layouts";
 
 const Product = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
+  const { cartQuantity, setCartQuantity, cartClient, setCartClient } = useContext(MyCart);
+
   const [book, setBook] = useState();
   const [reviews, setReviews] = useState();
   const [thumbnail, setThumbnail] = useState();
-  const [cart, setCart] = useState(localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []);
 
   useEffect(() => {
     dispatch(getBookPublicThunk(params.id)).then((res) => {
@@ -26,23 +28,20 @@ const Product = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
-  useEffect(() => {
     setThumbnail(book?.image_id ? `${import.meta.env.VITE_BACKEND_API}/api/image/${book.image_id[0]}` : noImage);
   }, [book]);
 
   const handleClickAddToCartBtn = () => {
-    setCart((prevCart) => {
-      const existingProduct = prevCart.find((item) => item.id === params.id);
+    setCartClient((prevCart) => {
+      const existingProduct = prevCart.find((item) => item.id === parseInt(params.id));
 
       if (existingProduct) {
-        return prevCart.map((item) => (item.id === params.id ? { ...item, quantity: item.quantity + 1 } : item));
+        return prevCart.map((item) => (item.id === parseInt(params.id) ? { ...item, quantity: item.quantity + 1 } : item));
       } else {
-        return [...prevCart, { id: params.id, quantity: 1 }];
+        return [...prevCart, { id: parseInt(params.id), quantity: 1 }];
       }
     });
+    setCartQuantity(cartQuantity + 1);
   };
   return (
     <div className="w-full h-full flex flex-col px-5 gap-5">
@@ -71,7 +70,7 @@ const Product = () => {
             icon={<ShoppingCartOutlined />}
             onClick={() => handleClickAddToCartBtn()}
             iconPosition="end"
-            disabled={cart.find((item) => item.id === params.id)?.quantity >= book?.quantity ? true : false}
+            disabled={cartClient.find((item) => item.id === params.id)?.quantity >= book?.quantity ? true : false}
             className="w-52 h-12 z-10 bg-green-500 !text-white relative font-semibold after:-z-20 after:absolute after:h-1 after:w-1 after:bg-green-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 [text-shadow:3px_5px_2px_#075985;] hover:[text-shadow:2px_2px_2px_#7dd4fc] text-2xl disabled:bg-green-800"
           >
             Add to cart

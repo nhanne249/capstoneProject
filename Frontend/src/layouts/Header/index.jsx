@@ -1,7 +1,9 @@
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Input, Menu, Button, Tooltip } from "antd";
+import { Input, Menu, Button, Tooltip, Badge } from "antd";
 import { UserOutlined, ShoppingCartOutlined, LogoutOutlined, DesktopOutlined, LoginOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
+import { MyCart } from "..";
 import "./styles.scss";
 
 const { Search } = Input;
@@ -11,7 +13,11 @@ const menuItemClassName = "w-24 flex justify-center items-center text-suitable f
 const HeaderPage = (role) => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [roleNow, setRoleNow] = useState(role.role);
+  const { cartQuantity, setIsLogin, setIsFetch } = useContext(MyCart);
+  useEffect(() => {
+    setRoleNow(role.role);
+  }, [role]);
   const items = [
     {
       key: "main",
@@ -46,6 +52,7 @@ const HeaderPage = (role) => {
     navigate("/signin");
   };
   const handleCartClick = () => {
+    setIsFetch(false);
     navigate("/cart");
   };
   const handleProfileClick = () => {
@@ -59,6 +66,8 @@ const HeaderPage = (role) => {
   const handleSignOutClick = () => {
     Cookies.remove("role", { path: "/" });
     Cookies.remove("userPresent", { path: "/" });
+    setIsLogin(false);
+    setRoleNow();
     navigate("/main", { replace: true });
   };
   return (
@@ -67,26 +76,28 @@ const HeaderPage = (role) => {
 
       <div className="w-1/4 flex items-center justify-between">
         <Search onSearch={onSearch} className="w-52" />
-        {!role.role && (
+        {!roleNow && (
           <Tooltip placement="bottom" title={"Sign in"}>
             <Button icon={<LoginOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleSignInClick()} />
           </Tooltip>
         )}
 
-        {role.role == "admin" && (
+        {roleNow == "admin" && (
           <Tooltip placement="bottom" title={"Dasbooad"}>
             <Button icon={<DesktopOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleSettingsClick()} />
           </Tooltip>
         )}
-        {role.role == "user" && (
+        {roleNow == "user" && (
           <Tooltip placement="bottom" title={"Profile"}>
             <Button icon={<UserOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleProfileClick()} />
           </Tooltip>
         )}
         <Tooltip placement="bottom" title={"Cart"}>
-          <Button icon={<ShoppingCartOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleCartClick()} />
+          <Badge count={cartQuantity}>
+            <Button icon={<ShoppingCartOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleCartClick()} />
+          </Badge>
         </Tooltip>
-        {role.role && (
+        {roleNow && (
           <Tooltip placement="bottom" title={"Sign out"}>
             <Button icon={<LogoutOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleSignOutClick()} />
           </Tooltip>

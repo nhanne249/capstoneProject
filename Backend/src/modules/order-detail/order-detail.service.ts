@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
@@ -33,14 +34,31 @@ export class OrderDetailService {
 
         order.calculateTotalPrice();
 
+        const books = cartItems.map(item => ({
+            bookId: item.bookId,
+            quantity: item.quantity,
+        }));
+
+        order.books = books;
+
         const savedOrder = await this.orderDetailRepository.save(order);
+
+        for (const item of cartItems) {
+            const book = await this.bookRepository.findOne({ where: { id: item.bookId } });
+            if (book) {
+                book.quantity -= item.quantity;
+                await this.bookRepository.save(book);
+            }
+        }
+
+        await this.cartItemRepository.delete({ userId: userId });
 
         const transformedCartItems = cartItems.map(item => ({
             title: item.book.title,
             quantity: item.quantity,
-            price: item.price,
+            price: item.sellingPrice,
         }));
-    
+
         const data = {
             paymentMethod: savedOrder.paymentMethod,
             rAddress: savedOrder.rAddress,
@@ -51,36 +69,36 @@ export class OrderDetailService {
             orderDate: savedOrder.orderDate,
             cartItem: transformedCartItems,
         };
-
-        for (const item of cartItems) {
-            const book = await this.bookRepository.findOne({ where: { id: item.bookId } });
-            if (book) {
-                book.quantity -= item.quantity;
-                await this.bookRepository.save(book);
-            }
-        }
-        await this.cartItemRepository.delete({ userId: userId });
-
         return data;
     }
 
     async getOrderById(id: number, userId: number): Promise<any> {
-        const order = await this.orderDetailRepository.findOne({ 
-            where: { id, userId }, 
-            relations: ['cartItem'] 
+        const order = await this.orderDetailRepository.findOne({
+            where: { id, userId },
         });
-    
+
         if (!order) {
             throw new NotFoundException('Order not found');
         }
-    
-        // Transforming the cart items for the response
-        const transformedCartItems = order.cartItem.map(item => ({
-            title: item.book.title,
-            quantity: item.quantity,
-            price: item.price,
-        }));
-    
+
+        const books: Book[] = [];
+
+        for (const el of order.books) {
+            const book = await this.bookRepository.findOne({
+                where: { id: Number(el.bookId) },
+                select: ['title', 'sellingPrice', 'image_id'],
+            });
+
+            if (book) {
+                books.push({
+                    ...book,
+                    quantity: el.quantity,
+                });
+            } else {
+                console.log(`Book with id ${id} not found`);
+            }
+        }
+
         return {
             paymentMethod: order.paymentMethod,
             rAddress: order.rAddress,
@@ -89,42 +107,108 @@ export class OrderDetailService {
             status: order.status,
             totalPrice: order.totalPrice,
             orderDate: order.orderDate,
-            cartItem: transformedCartItems,
+            cartItem: books,
         };
     }
 
     async getAllOrders(userId: number): Promise<any[]> {
-        const orders = await this.orderDetailRepository.find({ 
-            where: { userId }, 
-            relations: ['cartItem'] 
+        const orders = await this.orderDetailRepository.find({
+            where: { userId },
+            // relations: ['cartItem']
         });
 
-        // Transforming all orders to include cart items in a simpler structure
-        return orders.map(order => ({
-            id: order.id,
-            paymentMethod: order.paymentMethod,
-            rAddress: order.rAddress,
-            rName: order.rName,
-            rPhone: order.rPhone,
-            status: order.status,
-            totalPrice: order.totalPrice,
-            orderDate: order.orderDate,
-            cartItem: order.cartItem.map(item => ({
-                title: item.book.title,
-                quantity: item.quantity,
-                price: item.price,
-            })),
+        return await Promise.all(orders.map(async (order) => {
+            const books: any[] = [];
+
+            for (const el of order.books) {
+                const book = await this.bookRepository.findOne({
+                    where: { id: Number(el.bookId) },
+                    select: ['title', 'sellingPrice', 'image_id'],
+                });
+
+                if (book) {
+                    books.push({
+                        ...book,
+                        quantity: el.quantity,
+                    });
+                } else {
+                    console.log(`Book with id ${el.bookId} not found`);
+                }
+            }
+
+            return {
+                id: order.id,
+                paymentMethod: order.paymentMethod,
+                rAddress: order.rAddress,
+                rName: order.rName,
+                rPhone: order.rPhone,
+                status: order.status,
+                totalPrice: order.totalPrice,
+                orderDate: order.orderDate,
+                books: books,
+            };
         }));
     }
 
+    async getAllOrdersByAdmin(page: number) {
+        const pageSize = 10;
+        const offset = (page - 1) * pageSize;
+        
+        const [orders, total] = await this.orderDetailRepository.findAndCount({
+            relations: ['user'],
+            skip: offset,
+            take: pageSize,
+            order: {
+                id: 'DESC',
+            },
+        });
+    
+        return {
+            data: await Promise.all(orders.map(async (order) => {
+                const books: any[] = [];
+    
+                for (const el of order.books) {
+                    const book = await this.bookRepository.findOne({
+                        where: { id: Number(el.bookId) },
+                        select: ['title', 'sellingPrice', 'image_id'],
+                    });
+    
+                    if (book) {
+                        books.push({
+                            ...book,
+                            quantity: el.quantity,
+                        });
+                    } else {
+                        console.log(`Book with id ${el.bookId} not found`);
+                    }
+                }
+    
+                return {
+                    id: order.id,
+                    paymentMethod: order.paymentMethod,
+                    rAddress: order.rAddress,
+                    rName: order.rName,
+                    rPhone: order.rPhone,
+                    status: order.status,
+                    totalPrice: order.totalPrice,
+                    orderDate: order.orderDate,
+                    cartItem: books, // Return the books array
+                };
+            })),
+            pageNumber: page,
+            pageSize: pageSize,
+            total: total,
+        };
+    }
+    
     async updateOrder(id: number, updateOrderDto: UpdateOrderDto, userId: number): Promise<OrderDetail> {
         const order = await this.getOrderById(id, userId);
 
         // If cartItem IDs are provided, fetch the corresponding CartItem entities
         if (updateOrderDto.cartItem) {
             const cartItems = await Promise.all(
-                updateOrderDto.cartItem.map(async (itemId) => 
-                    this.cartItemRepository.findOne({ where: { id: itemId } })
+                updateOrderDto.cartItem.map(async (itemId) =>
+                    this.cartItemRepository.findOne({ where: { cartId: itemId } })
                 )
             );
 

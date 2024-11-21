@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, CreateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+/* eslint-disable prettier/prettier */
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { CartItem } from '../cart-item/cart-item.entity';
 import { User } from '../auth/user.entity';
 import { OrderStatus, PaymentMethod } from './enum';
+import { Book } from '../book/entity/book.entity';
 
 @Entity('order-detail')
 export class OrderDetail {
@@ -48,9 +50,12 @@ export class OrderDetail {
   // @JoinColumn({})
   cartItem: CartItem[];
 
+  @Column('json', { nullable: true })
+  books: { bookId: number, quantity: number }[];
+
   // @BeforeInsert()
   // @BeforeUpdate()
   calculateTotalPrice() {
-    this.totalPrice = this.cartItem.reduce((sum, item) => sum + Number(item.price), 0);
+    this.totalPrice = this.cartItem.reduce((sum, item) => sum + Number(item.sellingPrice)* item.quantity, 0);
   }
 }

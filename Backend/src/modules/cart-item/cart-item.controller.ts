@@ -1,18 +1,17 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Post, UsePipes, ValidationPipe, ParseIntPipe, SetMetadata, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UsePipes, ValidationPipe, Req, UseGuards } from '@nestjs/common';
 import { CartItemService } from './cart-item.service';
-import { AddCartDto } from './dto/add-to-cart.dto';
 import { DeleteBookFromCartDto } from './dto/delete-to-cart.dto';
 import { AuthGuard, RolesGuard } from '../auth/auth.guard';
 import { BookItemDto } from './dto/book-item.dto';
 
-const Roles = (...role: string[]) => SetMetadata('role', role);
-
-@UseGuards(AuthGuard, RolesGuard)
 @Controller('api/cart')
 export class CartItemController {
-  constructor(private readonly cartItemService: CartItemService) { }
+  constructor(private readonly cartItemService: CartItemService,
+  ) { }
 
+  
+  @UseGuards(AuthGuard, RolesGuard)
   @Get()
   getAllCartItems(@Req() request: Request) {
     const userPayload = request['user'];
@@ -20,6 +19,13 @@ export class CartItemController {
     return this.cartItemService.getAllCartItems(userId);
   }
 
+  @Post('/sync')
+  getCart(@Body() cartDto: BookItemDto[]) {
+    return this.cartItemService.getCart(cartDto);
+  }
+
+  
+  @UseGuards(AuthGuard, RolesGuard)
   @UsePipes(ValidationPipe)
   @Post() 
   AddBooksToCart(@Body(new ValidationPipe({ transform: true })) addCartDto: BookItemDto[], @Req() request: Request,) {
@@ -28,6 +34,8 @@ export class CartItemController {
     return this.cartItemService.AddBooksToCart(userId, addCartDto);
   }
 
+  
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete()
   async deleteBookFromCart(@Body() deleteBookFromCartDto: DeleteBookFromCartDto, @Req() request: Request) {
     const userPayload = request['user'];

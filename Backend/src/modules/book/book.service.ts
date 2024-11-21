@@ -173,4 +173,20 @@ export class ImageService {
             data: updatedImages,
         };
     }
+
+    async deleteImage(id: number) {
+        const image = await this.imageRepository.findOne({ where: { id } });
+    
+        if (!image) {
+            throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
+        }
+    
+        await this.imageRepository.remove(image);
+    
+        return {
+            message: 'Image deleted successfully',
+            data: { id },
+        };
+    }
+    
 }

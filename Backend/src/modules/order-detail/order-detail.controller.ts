@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Req, Param, UseGuards, Put, Delete, SetMetadata } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Controller, Get, Post, Body, Req, Param, UseGuards, Put, Delete, SetMetadata, Query } from '@nestjs/common';
 import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -19,7 +20,6 @@ export class OrderDetailController {
         try {
             const userPayload = request['user'];
             const userId = userPayload.sub;
-            console.log(userId)
             return {
                 message: "Create order succesfully",
                 data: this.orderDetailService.createOrder(createOrderDto, userId)
@@ -31,6 +31,24 @@ export class OrderDetailController {
             }
         }
     }
+    
+    @Roles('Admin')
+    @Get('admin')
+    async getAllOrdersByAdmin(@Query('page') page: string) {
+        try {
+            const pageNumber = page ? parseInt(page, 10) : 1;
+            const orders = await this.orderDetailService.getAllOrdersByAdmin(pageNumber);
+            return {
+                message: "Retrieve all orders by Admin successfully",
+                data: orders,
+            };
+        } catch (error) {
+            return {
+                message: "Failed to retrieve all orders by Admin.",
+                error: error.message,
+            };
+        }
+    }
 
     @Get(':id')
     async getOrderById(@Param('id') id: number, @Req() request: Request): Promise<any> {
@@ -38,7 +56,6 @@ export class OrderDetailController {
             const userPayload = request['user'];
             const userId = userPayload.sub;
             const order = await this.orderDetailService.getOrderById(id, userId);
-
             return {
                 message: "Order retrieved successfully",
                 data: order,
@@ -56,20 +73,20 @@ export class OrderDetailController {
         try {
             const userPayload = request['user'];
             const userId = userPayload.sub;
-            console.log(userId)
             const orders = await this.orderDetailService.getAllOrders(userId);
 
             return {
-                message: "Orders retrieved successfully",
+                message: "Retrieve all orders successfully",
                 data: orders,
             };
         } catch (error) {
             return {
-                message: "Failed to retrieve orders.",
+                message: "Failed to retrieve all orders.",
                 error: error.message,
             };
         }
     }
+
 
     @Roles('Admin')
     @Put(':id')
