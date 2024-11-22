@@ -51,7 +51,7 @@ export class OrderDetail {
   cartItem: CartItem[];
 
   @Column('json', { nullable: true })
-  books: { bookId: number, quantity: number }[];
+  books: { bookId: number; quantity: number }[];
 
   // @BeforeInsert()
   // @BeforeUpdate()
