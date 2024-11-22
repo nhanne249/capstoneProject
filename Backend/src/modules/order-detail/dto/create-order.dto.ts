@@ -3,11 +3,12 @@ import { OrderStatus, PaymentMethod } from '../enum';
 import { Type } from 'class-transformer';
 import { CartItem } from 'src/modules/cart-item/cart-item.entity';
 
+
 export class CreateOrderDto {
-  @IsArray()
-  // @IsNotEmpty()
-  @Type(() => CartItem)
-  cartItem: number[];
+  // @IsArray()
+  // // @IsNotEmpty()
+  // @Type(() => CartItem)
+  // cartItem: number[];
 
   @IsEnum(OrderStatus)
   status: OrderStatus;
