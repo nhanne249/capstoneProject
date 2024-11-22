@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { CartItem } from '../cart-item/cart-item.entity';
 import { User } from '../auth/user.entity';
 import { OrderStatus, PaymentMethod } from './enum';
-import { Book } from '../book/entity/book.entity';
 
 @Entity('order-detail')
 export class OrderDetail {
