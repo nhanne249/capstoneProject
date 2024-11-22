@@ -20,7 +20,6 @@ const Profile = () => {
 
   const handleEditData = (values) => {
     dispatch(updateUserProfileThunk(values)).then((res) => {
-      console.log(res.payload);
       if (res.payload.error) {
         toast.error(res.payload.error, {
           position: "top-right",

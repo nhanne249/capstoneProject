@@ -73,7 +73,7 @@ const Cart = () => {
   };
 
   const handleClickCheckout = () => {
-    if (isLogin) console.log("navigate here");
+    if (isLogin) navigate("/order");
     else {
       toast.warning("You need to signin before checkout!", {
         position: "top-right",

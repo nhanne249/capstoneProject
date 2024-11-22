@@ -3,10 +3,7 @@ import { Controller, Get, Post, Body, Req, Param, UseGuards, Put, Delete, SetMet
 import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { AuthGuard, RolesGuard } from '../auth/auth.guard';
-import { OrderDetail } from './order-detail.entity';
-import { log } from 'console';
-import { Role } from '../auth/enums/role.enum';
+import { AuthGuard, RolesGuard } from '../auth/auth.guard'
 
 const Roles = (...role: string[]) => SetMetadata('role', role);
 

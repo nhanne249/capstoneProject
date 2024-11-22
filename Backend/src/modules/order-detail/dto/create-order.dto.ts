@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { IsEnum, IsNotEmpty, IsNumber, IsString, IsArray } from 'class-validator';
 import { OrderStatus, PaymentMethod } from '../enum';
 import { Type } from 'class-transformer';
