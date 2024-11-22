@@ -1,5 +1,6 @@
 import LayoutPage from "../../layouts";
 import Profile from "../../pages/UserPages/Profile";
+import BuyingLog from "../../pages/UserPages/BuyingLog";
 
 const userRouter = 
   {
@@ -16,8 +17,8 @@ const userRouter =
         Component: Profile,
       },
       {
-        subPath: "",
-        Component: Profile,
+        subPath: "orders",
+        Component: BuyingLog,
       },
     ],
   }

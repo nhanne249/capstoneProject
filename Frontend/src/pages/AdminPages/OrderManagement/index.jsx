@@ -14,14 +14,19 @@ const columns = [
     // render: (text) => <a>{text}</a>,
   },
   {
+    title: 'Date',
+    dataIndex: 'date',
+    key: 'date',
+  },
+  {
     title: 'Total',
     dataIndex: 'total',
     key: 'total',
   },
   {
-    title: 'Date',
-    dataIndex: 'date',
-    key: 'date',
+    title: 'Payment method',
+    dataIndex: 'method',
+    key: 'method',
   },
   {
     title: 'Paid',
@@ -61,39 +66,41 @@ const columns = [
 
 
 
-const BuyingLog = () => {
+const OrderManagement = () => {
   const dispatch = useDispatch();
   const [orders, setOrders] = useState();
   const [isReceived, setIsReceived] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    dispatch(getAllOrdersByAdminThunk())
+    dispatch(getAllOrdersByAdminThunk(page))
     .then((res) => {
       setOrders(res.payload.response);
       setIsReceived(true);
-      console.log(res.payload.response);
+      console.log(res);
     });
   }, [isReceived]);
 
   const data = [
     {
       key: '1',
-      name: 'John Brown',
-      total: 32,
+      method: 'MoMo',
+      total: `$${32}`,
       date: '2024-10-27',
+
       tags: [false],
     },
     {
       key: '2',
-      name: 'Jim Green',
-      total: 42,
+      method: 'MoMo',
+      total: `$${32}`,
       date: '2024-10-27',
       tags: [true],
     },
     {
-      key: '3',
-      name: 'Joe Black',
-      total: 32,
+      key: '3',      
+      method: 'MoMo',
+      total: `$${32}`,
       date: '2024-10-27',
       tags: [true],
     },
@@ -105,4 +112,4 @@ const BuyingLog = () => {
     </div>
   );
 };
-export default BuyingLog;
+export default OrderManagement;

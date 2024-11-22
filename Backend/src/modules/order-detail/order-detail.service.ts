@@ -162,6 +162,8 @@ export class OrderDetailService {
                 id: 'DESC',
             },
         });
+
+        console.log(orders)
     
         return {
             data: await Promise.all(orders.map(async (order) => {
