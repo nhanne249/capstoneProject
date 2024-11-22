@@ -2,9 +2,10 @@ import LayoutPage from "../../layouts";
 import Main from "../../pages/Sections/Main";
 import SignIn from "../../pages/Sections/SignIn";
 import SignUp from "../../pages/Sections/SignUp";
-import UploadImage from "../../pages/test";
+// import UploadImage from "../../pages/test";
 import Product from "../../pages/Sections/Product";
 import Cart from "../../pages/Sections/Cart";
+import Order from "../../pages/Sections/Order";
 
 const mainRouter ={ 
     path: "",
@@ -31,9 +32,13 @@ const mainRouter ={
         Component: Product,
       },
       {
-        path: "test",
-        Component: UploadImage,
+        path: "order",
+        Component: Order,
       },
+      // {
+      //   path: "test",
+      //   Component: UploadImage,
+      // },
       {
         path: "", 
         Component: Main,
