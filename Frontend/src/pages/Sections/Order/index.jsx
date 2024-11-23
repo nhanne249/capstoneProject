@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, Select } from "antd";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -7,81 +8,81 @@ import { createOrderThunk } from "./../../../redux/action/order";
 import { MyCart } from "../../../layouts";
 
 const { Option } = Select;
+
+
 const Order = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleAddBoook = (values) => {
     console.log(values);
     const dataSend = {
-      // title: values.title,
-      // author: values.author,
-      // quantity: values.quantity,
-      // costPrice: parseFloat(values.costPrice),
-      // sellingPrice: parseFloat(values.sellingPrice),
-      // description: values.description,
-      // image_id: imageIdList,
-      // cartItem: cartSe
+      paymentMethod: values.paymentMethod, // string
+      rAddress: values.rAddress, // string
+      rName: values.rName, //string
+      rPhone: values.rPhone, // string
+      cartItem: cartServer
     };
-    // dispatch(createOrderThunk(dataSend)).then((res) => {
-    //   toast.success(res.payload.message, {
-    //     position: "top-right",
-    //     autoClose: 3000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "colored",
-    //   });
-    // });
+    
+    dispatch(createOrderThunk(dataSend))
+    .then((res) => {
+      toast.success(res.payload.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    });
+    
+    navigate('/profile')
   };
-
-  const { cartServer } = useContext(MyCart);
-  console.log(cartServer)
   
+  
+  const { cartServer } = useContext(MyCart);
+  console.log(cartServer);
 
   return (
     <div className="w-full h-full px-10 py-5 justify-center flex">
-      <Form
-        layout="vertical"
-        onFinish={handleAddBoook}
-      >
+      <Form layout="vertical" onFinish={handleAddBoook}>
         <div className="flex flex-col">
           <div className="px-2 pb-1 font-medium text-base">Receiver's name</div>
           <Form.Item name="rName">
             <Input className="!w-[720px] h-10 tsext-base" />
           </Form.Item>
 
-          <div className="px-2 pb-1 font-medium text-base">Receiver's address</div>
+          <div className="px-2 pb-1 font-medium text-base">
+            Receiver's address
+          </div>
           <Form.Item name="rAddress">
             <Input className="!w-[720px] h-10 tsext-base" />
           </Form.Item>
 
-          <div className="px-2 pb-1 font-medium text-base">Receiver's phone number</div>
+          <div className="px-2 pb-1 font-medium text-base">
+            Receiver's phone number
+          </div>
           <Form.Item name="rPhone">
             <Input className="!w-[720px] h-10 tsext-base" />
           </Form.Item>
 
           <div className="px-2 pb-1 font-medium text-base">Payment method</div>
-          <Form.Item 
-        name="paymentMethod" 
-        rules={[{ required: true, message: 'Please select a payment method!' }]}
-      >
-        <Select 
-          className="!w-[720px] h-10 tsext-base" 
-          placeholder="Select a payment method"
-        >
-          <Option value="MoMo">MoMo</Option>
-          <Option value="COD">COD</Option>
-        </Select>
-      </Form.Item>
+          <Form.Item
+            name="paymentMethod"
+            rules={[
+              { required: true, message: "Please select a payment method!" },
+            ]}
+          >
+            <Select
+              className="!w-[720px] h-10 tsext-base"
+              placeholder="Select a payment method"
+            >
+              <Option value="MoMo">MoMo</Option>
+              <Option value="COD">COD</Option>
+            </Select>
+          </Form.Item>
         </div>
-        {/* // const dataSend = {
-        //     paymentMethod: data.paymentMethod, // string
-        //     rAddress: data.rAddress, // string
-        //     rName: data.rName, //string
-        //     rPhone: data.rPhone, // string
-        // } */}
-        
 
         <Form.Item>
           <Button

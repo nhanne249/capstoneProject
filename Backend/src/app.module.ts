@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
@@ -22,7 +23,7 @@ import { Image } from './modules/book/entity/image.entity';
     port: 22337,
     username: 'avnadmin',
     password: 'AVNS_Rb6CTJ22C4e_O8CDMSz',
-    database: 'bookstore',
+    database: 'defaultdb',
     entities: [User, Book, CartItem, Review, OrderDetail, Image],
     synchronize: true,
   }),
