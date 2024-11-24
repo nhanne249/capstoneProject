@@ -2,7 +2,8 @@ import LayoutPage from "../../layouts";
 import Dashboard from "../../pages/AdminPages/Dashboard";
 import UserManagement from "../../pages/AdminPages/UserManagement"
 import ProductManagement from "../../pages/AdminPages/ProductManagement";
-
+import OrderManagement from "../../pages/AdminPages/OrderManagement";
+import OrderDetail from "../../pages/AdminPages/OrderDetail";
 const adminRouter = 
   {
     role: "admin",
@@ -22,8 +23,12 @@ const adminRouter =
         Component: ProductManagement,
       },
       {
-        subPath: "",
-        Component: UserManagement,
+        subPath: "orders",
+        Component: OrderManagement,
+      },
+      {
+        subPath: "orders/:id",
+        Component: OrderDetail,
       },
       {
         subPath: "*",

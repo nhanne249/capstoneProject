@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { OrderDetail } from './order-detail.entity';
@@ -153,7 +153,7 @@ export class OrderDetailService {
     async getAllOrdersByAdmin(page: number) {
         const pageSize = 10;
         const offset = (page - 1) * pageSize;
-        
+
         const [orders, total] = await this.orderDetailRepository.findAndCount({
             relations: ['user'],
             skip: offset,
@@ -162,17 +162,19 @@ export class OrderDetailService {
                 id: 'DESC',
             },
         });
+
+        console.log(orders)
     
         return {
             data: await Promise.all(orders.map(async (order) => {
                 const books: any[] = [];
-    
+
                 for (const el of order.books) {
                     const book = await this.bookRepository.findOne({
                         where: { id: Number(el.bookId) },
                         select: ['title', 'sellingPrice', 'image_id'],
                     });
-    
+
                     if (book) {
                         books.push({
                             ...book,
@@ -182,7 +184,7 @@ export class OrderDetailService {
                         console.log(`Book with id ${el.bookId} not found`);
                     }
                 }
-    
+
                 return {
                     id: order.id,
                     paymentMethod: order.paymentMethod,
@@ -200,40 +202,73 @@ export class OrderDetailService {
             total: total,
         };
     }
-    
+
     async updateOrder(id: number, updateOrderDto: UpdateOrderDto, userId: number): Promise<OrderDetail> {
+        const order = await this.orderDetailRepository.findOne({
+          where: { id, userId },
+          relations: ['cartItem'], // Ensure 'cartItem' is included
+        });
+      
+        if (!order) {
+          throw new NotFoundException('Order not found');
+        }
+      
+        const fieldsToUpdate: DeepPartial<OrderDetail> = {};
+      
+        if (updateOrderDto.status !== undefined) {
+          fieldsToUpdate.status = updateOrderDto.status;
+        }
+      
+        if (updateOrderDto.paymentMethod !== undefined) {
+          fieldsToUpdate.paymentMethod = updateOrderDto.paymentMethod;
+        }
+      
+        if (updateOrderDto.rAddress !== undefined) {
+          fieldsToUpdate.rAddress = updateOrderDto.rAddress;
+        }
+      
+        if (updateOrderDto.rName !== undefined) {
+          fieldsToUpdate.rName = updateOrderDto.rName;
+        }
+      
+        if (updateOrderDto.rPhone !== undefined) {
+          fieldsToUpdate.rPhone = updateOrderDto.rPhone;
+        }
+      
+        if (updateOrderDto.books !== undefined) {
+          fieldsToUpdate.books = updateOrderDto.books.map((book) => ({
+            bookId: book.bookId,
+            quantity: book.quantity,
+          }));
+        }
+      
+        this.orderDetailRepository.merge(order, fieldsToUpdate);
+      
+        if (order.cartItem && order.cartItem.length > 0) {
+          order.calculateTotalPrice();
+        }
+      
+        return await this.orderDetailRepository.save(order);
+      }
+      
+
+
+    async deleteOrder(id: number, userId: number) {
         const order = await this.getOrderById(id, userId);
 
-        // If cartItem IDs are provided, fetch the corresponding CartItem entities
-        if (updateOrderDto.cartItem) {
-            const cartItems = await Promise.all(
-                updateOrderDto.cartItem.map(async (itemId) =>
-                    this.cartItemRepository.findOne({ where: { cartId: itemId } })
-                )
-            );
-
-            order.cartItem = cartItems.filter(item => item !== null); // Filter out any items that weren't found
+        if (!order) {
+            return {
+                message: ('Order not found or you are not authorized to delete this order')
+            }
         }
 
-        // Update other fields
-        const updateData: DeepPartial<OrderDetail> = {
-            ...updateOrderDto,
-            cartItem: order.cartItem,
-        };
-
-        // Remove cartItem from updateData since it's not part of the entity
-        delete updateData.cartItem;
-
-        this.orderDetailRepository.merge(order, updateData);
-        order.calculateTotalPrice();
-        return await this.orderDetailRepository.save(order);
-    }
-
-    async deleteOrder(id: number, userId: number): Promise<void> {
-        const result = await this.orderDetailRepository.delete({ id, userId });
+        const result = await this.orderDetailRepository.delete({ id });
 
         if (result.affected === 0) {
-            throw new NotFoundException('Order not found or not authorized to delete this order');
+            throw new InternalServerErrorException('Failed to delete the order');
         }
+
+        return { message: 'Order deleted successfully' };
     }
+
 }
