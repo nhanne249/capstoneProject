@@ -123,4 +123,17 @@ export class OrderDetailController {
             };
         }
     }
+
+    @Post('revenue')
+    async getRevenueByMonth(@Body() body: { year: number, month: number }, @Req() request: Request) {
+        const { year, month } = body;
+        return this.orderDetailService.getRevenueByMonth(year, month);
+    }
+
+    @Post('quantity-sold')
+    async getTotalQuantitySoldByMonth(@Body() body: { year: number, month: number }) {
+        const { year, month } = body;
+        return this.orderDetailService.getTotalQuantitySoldByMonth(year, month);
+    }
+
 }
