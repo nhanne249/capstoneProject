@@ -7,6 +7,8 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { CartItem } from '../cart-item/cart-item.entity';
 import { Book } from '../book/entity/book.entity';
+import { OrderStatus } from './enum';
+import { parse } from 'date-fns';
 
 @Injectable()
 export class OrderDetailService {
@@ -270,5 +272,58 @@ export class OrderDetailService {
 
         return { message: 'Order deleted successfully' };
     }
+
+    
+    async getRevenueByMonth(year: number, month: number): Promise<any> {
+        try {
+            const result = await this.orderDetailRepository
+                .createQueryBuilder('order')
+                .where('YEAR(order.orderDate) = :year', { year })
+                .andWhere('MONTH(order.orderDate) = :month', { month })
+                .andWhere('order.status = :status', { status: OrderStatus.SUCCESS })
+                .select('SUM(order.totalPrice)', 'totalRevenue') 
+                .getRawOne();
+    
+            return {
+                month,
+                year,
+                totalRevenue: result?.totalRevenue ?? 0, 
+            };
+        } catch (error) {
+            console.error('Error calculating revenue:', error.message);
+            throw new Error('Failed to calculate revenue.');
+        }
+    }
+    
+    
+    async getTotalQuantitySoldByMonth(year: number, month: number): Promise<any> {
+        try {
+            const orders = await this.orderDetailRepository
+                .createQueryBuilder('order')
+                .where('YEAR(order.orderDate) = :year', { year })
+                .andWhere('MONTH(order.orderDate) = :month', { month })
+                .andWhere('order.status = :status', { status: OrderStatus.SUCCESS })
+                .select(['order.books']) 
+                .getMany();
+    
+            const totalQuantitySold = orders.reduce((total, order) => {
+                if (order.books && Array.isArray(order.books)) {
+                    const orderQuantity = order.books.reduce((sum, book) => sum + (book.quantity || 0), 0);
+                    return total + orderQuantity;
+                }
+                return total;
+            }, 0);
+    
+            return {
+                month,
+                year,
+                totalQuantitySold,
+            };
+        } catch (error) {
+            console.error('Error calculating total quantity sold:', error.message);
+            throw new Error('Failed to calculate total quantity sold.');
+        }
+    }    
+      
 
 }

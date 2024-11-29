@@ -6,111 +6,84 @@ import { getAllOrdersByAdminThunk } from "../../../redux/action/order";
 import { toast } from "react-toastify";
 import { Button, Input, Form } from "antd";
 import { useNavigate } from "react-router-dom";
+import order from "../../../redux/api/order";
 
 const OrderManagement = () => {
+  const handleShowDetail = (id) => {
+    console.log(id);
+    navigate(`${id}`)
+  }
+  
   const dispatch = useDispatch();
-  const [orders, setOrders] = useState();
+  const [orders, setOrders] = useState([]);
   const [isReceived, setIsReceived] = useState(false);
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
+
   const columns = [
     {
       title: "ID",
-      dataIndex: "key",
-      key: "key",
-      // render: (text) => <a>{text}</a>,
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
+        title: "Date",
+        dataIndex: "orderDate",
+        key: "orderDate",
+        render: (text) => <a>{text.slice(0,10)}</a>,
     },
     {
       title: "Total",
-      dataIndex: "total",
-      key: "total",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
+      render: (text) => <a>{text} VND</a>,
     },
     {
       title: "Payment method",
-      dataIndex: "method",
-      key: "method",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
     },
     {
-      title: "Paid",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag === false ? "volcano" : "green";
-            return (
-              <Tag color={color} key={tag}>
-                {/* {tag.toUpperCase()} */}
-                isPaid
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text) => {
+        if(text === 'pending')
+          return <Tag color={"orange"}>Pending</Tag>;
+        return <Tag color={"green"}>Done</Tag>;
+      },
     },
     {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
+      title: 'Action',
+      dataIndex: null,
+      render: (values) => (
         <Space size="middle">
-          <Tag color={"geekblue"}>
-            <a
-              onClick={() => {
-                // navigate(`/orders/${record.key}`);
-                console.log(record)
-              }}
-            >
-              Details
-            </a>
+          <Tag color={'geekblue'}>
+            <div className='cursor-pointer' onClick={() => {handleShowDetail(values.id)}}>Details</div>
           </Tag>
         </Space>
       ),
     },
   ];
 
+
   useEffect(() => {
-    dispatch(getAllOrdersByAdminThunk(page)).then((res) => {
-      setOrders(res.payload.response);
+    dispatch(getAllOrdersByAdminThunk(page))
+    .then((res) => {
+      setOrders(res.payload.data.data);
       setIsReceived(true);
-      console.log(res);
+      console.log(res.payload.data.data);
     });
   }, [isReceived]);
 
   const data = [
-    {
-      key: "1",
-      method: "MoMo",
-      total: `$${32}`,
-      date: "2024-10-27",
-      
-      tags: [false],
-    },
-    {
-      key: "2",
-      method: "MoMo",
-      total: `$${32}`,
-      date: "2024-10-27",
-      
-      tags: [true],
-    },
-    {
-      key: "3",
-      method: "MoMo",
-      total: `$${32}`,
-      
-      date: "2024-10-27",
-      tags: [true],
-    },
+    
   ];
 
   return (
     <div>
-      <Table columns={columns} dataSource={data} />;
+      <Table columns={columns} dataSource={orders} />
+      hi mom
     </div>
   );
 };

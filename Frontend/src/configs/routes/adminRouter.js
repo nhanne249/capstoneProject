@@ -3,7 +3,7 @@ import Dashboard from "../../pages/AdminPages/Dashboard";
 import UserManagement from "../../pages/AdminPages/UserManagement"
 import ProductManagement from "../../pages/AdminPages/ProductManagement";
 import OrderManagement from "../../pages/AdminPages/OrderManagement";
-import OrderDetail from "../../pages/AdminPages/OrderDetail";
+import OrderDetail from "../../pages/AdminPages/OrderDetail/index";
 const adminRouter = 
   {
     role: "admin",
