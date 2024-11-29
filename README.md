@@ -1,7 +1,7 @@
 # Book Store Website
 
 ## Description
-This is an **Ecommerce project** for managing and selling books online. The project consists of a backend API built with **NestJS** and a frontend developed using **React** (or whichever framework/library you're using).
+This is an **Ecommerce project** for managing and selling books online. The project consists of a backend API built with **NestJS** and a frontend developed using **React**
 
 ## Features
 - [x] User authentication (sign in, sign up, password reset)

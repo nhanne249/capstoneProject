@@ -91,7 +91,7 @@ const Cart = () => {
 
   return cartServer.length != 0 ? (
     <div className="w-full h-full px-10 py-5 grid grid-cols-5 grid-rows-1 gap-4">
-      <div className="col-span-4 flex flex-col border rounded-lg py-2 h-fit">
+      <div className="col-span-4 flex flex-col border rounded-lg py-5 h-fit bg-white">
         {cartServer.map((item) => {
           return (
             <div key={item.id} className="w-auto h-20 grid grid-cols-10 grid-rows-1 gap-4 mx-3 border-b">
@@ -125,7 +125,7 @@ const Cart = () => {
           );
         })}
       </div>
-      <div className="col-start-5 min-w-80 bg-yellow-50 rounded-xl flex flex-col justify-center p-5 gap-5 border-yellow-500 border">
+      <div className="col-start-5 min-w-80 bg-white rounded-xl flex flex-col justify-center p-5 gap-5 border">
         <div className="w-full flex flex-col justify-center gap-5 pb-5 border-b border-gray-400">
           <div className="text-2xl font-bold text-red-600 text-center">Checkout</div>
           <div className="flex flex-row justify-between gap-5">

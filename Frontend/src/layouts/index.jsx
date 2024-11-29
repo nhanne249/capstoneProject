@@ -90,13 +90,13 @@ const LayoutPage = () => {
         ) : (
           <Content
             className={`h-full ${
-              location.pathname.split("/")[1] == "signin" || location.pathname.split("/")[1] == "signup" ? "backgroundMain" : " mt-5 bg-white pb-5"
+              location.pathname.split("/")[1] == "signin" || location.pathname.split("/")[1] == "signup" ? "backgroundMain" : " mt-5 bg-transparent pb-5"
             }`}
           >
             <Outlet />
           </Content>
         )}
-        <Footer className="h-10 mt-5  bg-white">
+        <Footer className="h-10 mt-2  bg-white">
           <FooterPage />
         </Footer>
       </Layout>

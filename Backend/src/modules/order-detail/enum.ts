@@ -6,6 +6,5 @@ export enum OrderStatus {
   
 export enum PaymentMethod {
     COD = 'COD',
-    MOMO = 'Momo',
-    VNPAY = 'Vnpay',
+    CK = 'CK',
 }

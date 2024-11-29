@@ -78,28 +78,28 @@ const HeaderPage = (role) => {
         <Search onSearch={onSearch} className="w-52" />
         {!roleNow && (
           <Tooltip placement="bottom" title={"Sign in"}>
-            <Button icon={<LoginOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleSignInClick()} />
+            <Button icon={<LoginOutlined />} className="border-none text-teal-600 shadow-none bg-transparent" onClick={() => handleSignInClick()} />
           </Tooltip>
         )}
 
         {roleNow == "admin" && (
           <Tooltip placement="bottom" title={"Dasbooad"}>
-            <Button icon={<DesktopOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleSettingsClick()} />
+            <Button icon={<DesktopOutlined />} className="border-none text-teal-600 shadow-none bg-transparent" onClick={() => handleSettingsClick()} />
           </Tooltip>
         )}
         {roleNow == "user" && (
           <Tooltip placement="bottom" title={"Profile"}>
-            <Button icon={<UserOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleProfileClick()} />
+            <Button icon={<UserOutlined />} className="border-none text-teal-600 shadow-none bg-transparent" onClick={() => handleProfileClick()} />
           </Tooltip>
         )}
         <Tooltip placement="bottom" title={"Cart"}>
           <Badge count={cartQuantity}>
-            <Button icon={<ShoppingCartOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleCartClick()} />
+            <Button icon={<ShoppingCartOutlined />} className="border-none text-teal-600 shadow-none bg-transparent" onClick={() => handleCartClick()} />
           </Badge>
         </Tooltip>
         {roleNow && (
           <Tooltip placement="bottom" title={"Sign out"}>
-            <Button icon={<LogoutOutlined />} className="border-none text-teal-600 shadow-none" onClick={() => handleSignOutClick()} />
+            <Button icon={<LogoutOutlined />} className="border-none text-teal-600 shadow-none bg-transparent" onClick={() => handleSignOutClick()} />
           </Tooltip>
         )}
       </div>

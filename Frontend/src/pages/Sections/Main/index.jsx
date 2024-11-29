@@ -59,7 +59,7 @@ const Main = () => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex flex-row w-full h-full">
+      <div className="flex flex-row w-full h-full pb-5">
         <img src={publicationImage} alt="" className="w-[40%] min-h-full h-full" />
         <div className="w-full h-full flex flex-col ml-5 self-center">
           <h1 className="ml6">
@@ -67,7 +67,7 @@ const Main = () => {
               <p className="letters text-red-600 tracking-widest">Published</p>
             </span>
           </h1>
-          <div className="grid grid-cols-4 gap-10 w-full mt-5">
+          <div className="grid grid-cols-4 gap-9 w-full mt-5">
             {newestBookList?.map((book) => {
               return (
                 <Card
@@ -82,7 +82,7 @@ const Main = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col w-full mx-5 mb-5">
+      <div className="flex flex-col w-full px-5 pb-10 bg-white">
         <h1 className="text-5xl font-bold h-auto mb-5 mt-4 text-sky-800">Our Product</h1>
         <div className="w-auto h-auto ml-5 flex flex-col self-center mt-5">
           <div className="grid grid-cols-4 gap-10 w-full">
