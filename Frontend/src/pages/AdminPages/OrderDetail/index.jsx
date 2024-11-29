@@ -5,7 +5,7 @@ import { getOrderByIdThunk } from "../../../redux/action/order";
 import { MyCart } from "../../../layouts";
 import noImage from "../../../assets/images/no-mage.png";
 import { Button, Col, Row, Grid } from "antd";
-
+import Message from "../../../components/Message";
 const OrderDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -42,16 +42,23 @@ const OrderDetail = () => {
   return (
     <div className="m-6">
       <Row>
-        <Col span={16}>
-          <h1 className="text-4xl font-bold font-sans text-green-600">Shipping:</h1>
-          <p className="text-xl font-sans">
-              Shipping address : {order?.rAddress}
+        <Col className='d-flex flex-column mt-1' span={16}>
+          <h1 className="text-3xl font-medium font-sans text-green-600 mb-4">Shipping:</h1>
+          <p className="text-lg font-sans">
+              Name : {order?.rName}
           </p>
-          <h1 className="text-4xl font-bold font-sans text-green-600">Payment method:</h1>
-          <p className="text-xl font-sans">
+          <p className="text-lg font-sans">
+              Phone : {order?.rPhone}
+          </p>
+          <p className="text-lg font-sans">
+              Shipping : {order?.rAddress}
+          </p>
+          <Message variant="warning" />
+          <h1 className="text-3xl font-medium font-sans text-green-600 mb-4">Payment method:</h1>
+          <p className="text-lg font-sans">
               Method : {order?.paymentMethod}
           </p>
-          <h1 className="text-4xl font-bold font-sans text-green-600">Order Items:</h1>
+          <h1 className="text-3xl font-medium font-sans text-green-600 mb-4 mt-4">Order Items:</h1>
 
           <div className="col-span-4 flex flex-col border rounded-lg py-2 h-fit">
             {cartServer.map((item) => {
@@ -86,7 +93,7 @@ const OrderDetail = () => {
           </div>
         </Col>
         <Col>
-          <div className="col-start-5 min-w-80 bg-yellow-50 rounded-xl flex flex-col justify-center p-5 gap-5 border-yellow-500 border">
+          <div className="col-start-5 min-w-80 bg-yellow-50 rounded-xl flex flex-col justify-center p-5 gap-5 border-yellow-500 w-1/5 border">
             <div className="w-full flex flex-col justify-center gap-5 pb-5 border-b border-gray-400">
               <div className="text-2xl font-bold text-red-600 text-center">
                 Order summary
@@ -96,6 +103,19 @@ const OrderDetail = () => {
                   Quantity:
                 </div>
                 <div className="text-lg font-medium w-32">{cartQuantity}</div>
+              </div>
+              <div className="flex flex-row justify-between gap-5">
+                <div className="text-lg font-medium text-green-800">
+                  Items:
+                </div>
+                <div className="text-lg font-medium w-32">{total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") +
+                    " VND"}</div>
+              </div>
+              <div className="flex flex-row justify-between gap-5">
+                <div className="text-lg font-medium text-green-800">
+                  Tax:
+                </div>
+                <div className="text-lg font-medium w-32">{0 + " VND"}</div>
               </div>
               <div className="flex flex-row justify-between gap-5">
                 <div className="text-lg font-medium text-green-800">Total:</div>

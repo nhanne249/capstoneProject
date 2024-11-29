@@ -23,68 +23,39 @@ const Profile = () => {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      // render: (text) => <a>{text}</a>,
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
+        title: "Date",
+        dataIndex: "orderDate",
+        key: "orderDate",
+        render: (text) => <a>{text.slice(0,10)}</a>,
     },
     {
       title: "Total",
-      dataIndex: "total",
-      key: "total",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
+      render: (text) => <a>{text} VND</a>,
     },
     {
       title: "Payment method",
-      dataIndex: "method",
-      key: "method",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
     },
     {
-      title: "Paid",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag === false ? "volcano" : "green";
-            // let color = tag.length > 5 ? 'geekblue' : 'green';
-            // if (tag === 'loser') {
-            //   color = 'volcano';
-            // }
-            return (
-              <Tag color={color} key={tag}>
-                {/* {tag.toUpperCase()} */}
-                isPaid
-              </Tag>
-            );
-          })}
-        </>
-      ),
-    },
-    {
-      title: "Action",
-      dataIndex: null,
-      render: (values) => (
-        <Space size="middle">
-          <Tag color={"geekblue"}>
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                handleShowDetail(values.id);
-              }}
-            >
-              Details
-            </div>
-          </Tag>
-        </Space>
-      ),
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text) => {
+        if(text === 'pending')
+          return <Tag color={"orange"}>Pending</Tag>;
+        return <Tag color={"green"}>Done</Tag>;
+      },
     },
   ];
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [orders, setOrders] = useState();
+  const [orders, setOrders] = useState([]);
   const [isOrderReceive, setIsOrderReceive] = useState(false);
   const [page, setPage] = useState(1);
   const [formEdit] = Form.useForm();
@@ -99,37 +70,24 @@ const Profile = () => {
     });
   }, [isReceived]);
 
-  // useEffect(() => {
-  //   dispatch(getAllOrdersThunk(page))
-  //   .then((res) => {
-  //     setOrders(res.payload.response);
-  //     setIsOrderReceive(true);
-  //     console.log(res);
-  //   });
-  // }, [isOrderReceive]);
+
+  useEffect(() => {
+    dispatch(getAllOrdersThunk(page))
+    .then((res) => {
+      console.log(res.payload.data);
+      setOrders(res.payload.data);
+      setIsOrderReceive(true);
+      console.log(orders);
+    });
+  }, []);
 
   const data = [
     {
       id: '1',
-      method: 'MoMo',
-      total: `$${32}`,
-      date: '2024-10-27',
-      tags: [false],
-    },
-    {
-      id: '2',
-      method: 'MoMo',
-      total: `$${32}`,
-      date: '2024-10-27',
-      tags: [true],
-    },
-    {
-      id: '3',      
-      method: 'MoMo',
-      total: `$${32}`,
-      date: '2024-10-27',
-      tags: [true],
-    },
+      // paymenMethod: 'MoMo',
+      // totalPrice: `$${32}`,
+      // orderDate: '2024-10-27',
+    }
   ];
 
 
@@ -252,7 +210,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <Table className="w-full lg:w-3/5" columns={columns} dataSource={data} />;
+              <Table className="w-full lg:w-3/5" columns={columns} dataSource={orders} />
 
 
               <div className="w-full lg:w-1/3">

@@ -16,51 +16,38 @@ const BuyingLog = () => {
       console.log(id);
       navigate(`${id}`)
     }
-    
     const columns = [
       {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        // render: (text) => <a>{text}</a>,
+        title: "ID",
+        dataIndex: "id",
+        key: "id",
       },
       {
-        title: 'Date',
-        dataIndex: 'date',
-        key: 'date',
+          title: "Date",
+          dataIndex: "orderDate",
+          key: "orderDate",
+          render: (text) => <a>{text.slice(0,10)}</a>,
       },
       {
-        title: 'Total',
-        dataIndex: 'total',
-        key: 'total',
+        title: "Total",
+        dataIndex: "totalPrice",
+        key: "totalPrice",
+        render: (text) => <a>{text} VND</a>,
       },
       {
-        title: 'Payment method',
-        dataIndex: 'method',
-        key: 'method',
+        title: "Payment method",
+        dataIndex: "paymentMethod",
+        key: "paymentMethod",
       },
       {
-        title: 'Paid',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: (_, { tags }) => (
-          <>
-            {tags.map((tag) => {
-    
-              let color = tag === false ? 'volcano' : 'green';
-              // let color = tag.length > 5 ? 'geekblue' : 'green';
-              // if (tag === 'loser') {
-              //   color = 'volcano';
-              // }
-              return (
-                <Tag color={color} key={tag}>
-                  {/* {tag.toUpperCase()} */}
-                  isPaid
-                </Tag>
-              );
-            })}
-          </>
-        ),
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        render: (text) => {
+          if(text === 'pending')
+            return <Tag color={"orange"}>Pending</Tag>;
+          return <Tag color={"green"}>Done</Tag>;
+        },
       },
       {
         title: 'Action',
@@ -76,46 +63,25 @@ const BuyingLog = () => {
     ];
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [orders, setOrders] = useState();
+  const [orders, setOrders] = useState([]);
   const [isReceived, setIsReceived] = useState(false);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     dispatch(getAllOrdersThunk(page))
     .then((res) => {
-      setOrders(res.payload.response);
+      setOrders(res.payload.data);
       setIsReceived(true);
       console.log(res);
     });
   }, [isReceived]);
 
   const data = [
-    {
-      id: '1',
-      method: 'MoMo',
-      total: `$${32}`,
-      date: '2024-10-27',
-      tags: [false],
-    },
-    {
-      id: '2',
-      method: 'MoMo',
-      total: `$${32}`,
-      date: '2024-10-27',
-      tags: [true],
-    },
-    {
-      id: '3',      
-      method: 'MoMo',
-      total: `$${32}`,
-      date: '2024-10-27',
-      tags: [true],
-    },
   ];
 
   return (
     <div>
-      <Table columns={columns} dataSource={data} />;
+      <Table columns={columns} dataSource={orders} />;
     </div>
   );
 };
