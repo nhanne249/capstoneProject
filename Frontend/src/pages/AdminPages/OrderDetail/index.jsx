@@ -32,9 +32,9 @@ const OrderDetail = () => {
 
   useEffect(() => {
     dispatch(getOrderByIdThunk(id)).then((res) => {
-      setOrder(res?.payload.data);
+      setOrder(res.payload.data);
       // setItems(res?.payload.data.cartItem);
-      setTotal(res?.payload.data.totalPrice);
+      setTotal(res.payload.data.totalPrice);
       console.log(res);
     });
   }, []);
