@@ -7,7 +7,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { CartItem } from '../cart-item/cart-item.entity';
 import { Book } from '../book/entity/book.entity';
-import { OrderStatus } from './enum';
+import { OrderStatus, PaymentMethod } from './enum';
 import { parse } from 'date-fns';
 
 @Injectable()
@@ -28,9 +28,19 @@ export class OrderDetailService {
             throw new NotFoundException('No cart items found for the specified user');
         }
 
+        let defaultStatus: OrderStatus;
+        if (createOrderDto.paymentMethod === PaymentMethod.COD) {
+            defaultStatus = OrderStatus.PENDING;
+        } else if (createOrderDto.paymentMethod === PaymentMethod.CK) {
+            defaultStatus = OrderStatus.TRANSFERRING;
+        } else {
+            throw new BadRequestException('Invalid payment method');
+        }
+
         const order = this.orderDetailRepository.create({
             ...createOrderDto,
             userId: userId,
+            status: defaultStatus,
             cartItem: cartItems,
         });
 
@@ -166,7 +176,7 @@ export class OrderDetailService {
         });
 
         console.log(orders)
-    
+
         return {
             data: await Promise.all(orders.map(async (order) => {
                 const books: any[] = [];
@@ -207,52 +217,52 @@ export class OrderDetailService {
 
     async updateOrder(id: number, updateOrderDto: UpdateOrderDto, userId: number): Promise<OrderDetail> {
         const order = await this.orderDetailRepository.findOne({
-          where: { id, userId },
-          relations: ['cartItem'], // Ensure 'cartItem' is included
+            where: { id, userId },
+            relations: ['cartItem'], // Ensure 'cartItem' is included
         });
-      
+
         if (!order) {
-          throw new NotFoundException('Order not found');
+            throw new NotFoundException('Order not found');
         }
-      
+
         const fieldsToUpdate: DeepPartial<OrderDetail> = {};
-      
+
         if (updateOrderDto.status !== undefined) {
-          fieldsToUpdate.status = updateOrderDto.status;
+            fieldsToUpdate.status = updateOrderDto.status;
         }
-      
+
         if (updateOrderDto.paymentMethod !== undefined) {
-          fieldsToUpdate.paymentMethod = updateOrderDto.paymentMethod;
+            fieldsToUpdate.paymentMethod = updateOrderDto.paymentMethod;
         }
-      
+
         if (updateOrderDto.rAddress !== undefined) {
-          fieldsToUpdate.rAddress = updateOrderDto.rAddress;
+            fieldsToUpdate.rAddress = updateOrderDto.rAddress;
         }
-      
+
         if (updateOrderDto.rName !== undefined) {
-          fieldsToUpdate.rName = updateOrderDto.rName;
+            fieldsToUpdate.rName = updateOrderDto.rName;
         }
-      
+
         if (updateOrderDto.rPhone !== undefined) {
-          fieldsToUpdate.rPhone = updateOrderDto.rPhone;
+            fieldsToUpdate.rPhone = updateOrderDto.rPhone;
         }
-      
+
         if (updateOrderDto.books !== undefined) {
-          fieldsToUpdate.books = updateOrderDto.books.map((book) => ({
-            bookId: book.bookId,
-            quantity: book.quantity,
-          }));
+            fieldsToUpdate.books = updateOrderDto.books.map((book) => ({
+                bookId: book.bookId,
+                quantity: book.quantity,
+            }));
         }
-      
+
         this.orderDetailRepository.merge(order, fieldsToUpdate);
-      
+
         if (order.cartItem && order.cartItem.length > 0) {
-          order.calculateTotalPrice();
+            order.calculateTotalPrice();
         }
-      
+
         return await this.orderDetailRepository.save(order);
-      }
-      
+    }
+
 
 
     async deleteOrder(id: number, userId: number) {
@@ -273,7 +283,7 @@ export class OrderDetailService {
         return { message: 'Order deleted successfully' };
     }
 
-    
+
     async getRevenueByMonth(year: number, month: number): Promise<any> {
         try {
             const result = await this.orderDetailRepository
@@ -281,21 +291,21 @@ export class OrderDetailService {
                 .where('YEAR(order.orderDate) = :year', { year })
                 .andWhere('MONTH(order.orderDate) = :month', { month })
                 .andWhere('order.status = :status', { status: OrderStatus.SUCCESS })
-                .select('SUM(order.totalPrice)', 'totalRevenue') 
+                .select('SUM(order.totalPrice)', 'totalRevenue')
                 .getRawOne();
-    
+
             return {
                 month,
                 year,
-                totalRevenue: result?.totalRevenue ?? 0, 
+                totalRevenue: result?.totalRevenue ?? 0,
             };
         } catch (error) {
             console.error('Error calculating revenue:', error.message);
             throw new Error('Failed to calculate revenue.');
         }
     }
-    
-    
+
+
     async getTotalQuantitySoldByMonth(year: number, month: number): Promise<any> {
         try {
             const orders = await this.orderDetailRepository
@@ -303,9 +313,9 @@ export class OrderDetailService {
                 .where('YEAR(order.orderDate) = :year', { year })
                 .andWhere('MONTH(order.orderDate) = :month', { month })
                 .andWhere('order.status = :status', { status: OrderStatus.SUCCESS })
-                .select(['order.books']) 
+                .select(['order.books'])
                 .getMany();
-    
+
             const totalQuantitySold = orders.reduce((total, order) => {
                 if (order.books && Array.isArray(order.books)) {
                     const orderQuantity = order.books.reduce((sum, book) => sum + (book.quantity || 0), 0);
@@ -313,7 +323,7 @@ export class OrderDetailService {
                 }
                 return total;
             }, 0);
-    
+
             return {
                 month,
                 year,
@@ -323,7 +333,7 @@ export class OrderDetailService {
             console.error('Error calculating total quantity sold:', error.message);
             throw new Error('Failed to calculate total quantity sold.');
         }
-    }    
-      
+    }
+
 
 }

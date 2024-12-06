@@ -14,6 +14,7 @@ import { Review } from './modules/review/review.entity';
 import { OrderDetail } from './modules/order-detail/order-detail.entity';
 import { OrderDetailModule } from './modules/order-detail/order-detail.module';
 import { Image } from './modules/book/entity/image.entity';
+import { PayosModule } from './modules/payos/payos.module';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { Image } from './modules/book/entity/image.entity';
       }),
       inject: [ConfigService],
     }),
-  AuthModule, UsersModule, BookModule, CartItemModule, ReviewModule, OrderDetailModule],
+  AuthModule, UsersModule, BookModule, CartItemModule, ReviewModule, OrderDetailModule, PayosModule],
   controllers: [],
   providers: [],
 })

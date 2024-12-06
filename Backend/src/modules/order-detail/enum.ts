@@ -1,5 +1,6 @@
 export enum OrderStatus {
     SUCCESS = 'success',
+    TRANSFERRING = 'transferring',
     FAILURE = 'failure',
     PENDING = 'pending',
 }
