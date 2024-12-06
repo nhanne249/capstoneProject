@@ -14,6 +14,8 @@ import { Review } from './modules/review/review.entity';
 import { OrderDetail } from './modules/order-detail/order-detail.entity';
 import { OrderDetailModule } from './modules/order-detail/order-detail.module';
 import { Image } from './modules/book/entity/image.entity';
+import { PayosModule } from './payos/payos.module';
+//import { PayosModule } from './payos/payos.module';
 
 @Module({
   imports: [
@@ -23,11 +25,11 @@ import { Image } from './modules/book/entity/image.entity';
     port: 22337,
     username: 'avnadmin',
     password: 'AVNS_Rb6CTJ22C4e_O8CDMSz',
-    database: 'defaultdb',
+    database: 'new_defaultdb',
     entities: [User, Book, CartItem, Review, OrderDetail, Image],
     synchronize: true,
   }),
-  AuthModule, UsersModule, BookModule, CartItemModule, ReviewModule, OrderDetailModule],
+  AuthModule, UsersModule, BookModule, CartItemModule, ReviewModule, OrderDetailModule, PayosModule],
   controllers: [],
   providers: [],
 })

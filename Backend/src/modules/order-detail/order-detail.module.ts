@@ -16,6 +16,7 @@ import { Book } from '../book/entity/book.entity';
     })
   ],
   controllers: [OrderDetailController],
-  providers: [OrderDetailService]
+  providers: [OrderDetailService],
+  exports: [OrderDetailService] 
 })
 export class OrderDetailModule {}
