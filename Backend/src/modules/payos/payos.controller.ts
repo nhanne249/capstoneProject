@@ -7,6 +7,7 @@ import { OrderDetail } from 'src/modules/order-detail/order-detail.entity';
 import { Repository } from 'typeorm';
 import { OrderStatus } from 'src/modules/order-detail/enum';
 
+
 @Controller('api/payos')
 export class PayosController {
   constructor(
@@ -14,7 +15,7 @@ export class PayosController {
     private orderDetailService: OrderDetailService,
     @InjectRepository(OrderDetail)
     private orderDetailRepository: Repository<OrderDetail>
-  ) {}
+  ) { }
 
   @Post('create-payment-link')
   @UseGuards(AuthGuard)
@@ -22,7 +23,7 @@ export class PayosController {
     @Body('orderId') orderId: number,
     @Body('paymentContent') paymentContent: string,
     @Req() request: Request
-) {
+  ) {
     const userPayload = request['user'];
     const userId = userPayload.sub;
     if (!orderId || !paymentContent) {
@@ -46,38 +47,31 @@ export class PayosController {
     };
   }
 
-  @Get('payment-success')
+  @Get('')
   async paymentSuccess(@Query() query: any) {
-    const { code, id, cancel, status, orderCode } = query;
 
-    // Handle the canceled payment here
-    if (cancel === 'false' || status === 'PAID') {
-      const order = await this.orderDetailRepository.findOne({ where: { id: orderCode } });
-      if (order) {
-        order.status = OrderStatus.PENDING; // Update the order status
-        await this.orderDetailRepository.save(order);
-        return { message: 'Payment was success. Order updated to SUCCESS.' };
-      }
-    }
-    
-    return { message: 'Payment status could not be determined.' };
+    const { id } = query;
+
+    const response = await this.paymentService.getPaymentInfo(id);
+
+    return response;
   }
 
-  @Get('payment-cancel')
-  async paymentCancel(@Query() query: any) {
-    const { code, id, cancel, status, orderCode } = query;
+//   @Get('payment-cancel')
+//   async paymentCancel(@Query() query: any) {
+//     const { code, id, cancel, status, orderCode } = query;
 
-    // Handle the canceled payment here
-    if (cancel === 'true' || status === 'CANCELLED') {
-      const order = await this.orderDetailRepository.findOne({ where: { id: orderCode } });
-      if (order) {
-        order.status = OrderStatus.FAILURE; // Update the order status
-        await this.orderDetailRepository.save(order);
-        return { message: 'Payment was canceled. Order updated to CANCELLED.' };
-      }
-    }
-    
-    return { message: 'Payment status could not be determined.' };
-  }
+//     // Handle the canceled payment here
+//     if (cancel === 'true' || status === 'CANCELLED') {
+//       const order = await this.orderDetailRepository.findOne({ where: { id: orderCode } });
+//       if (order) {
+//         order.status = OrderStatus.FAILURE; // Update the order status
+//         await this.orderDetailRepository.save(order);
+//         return { message: 'Payment was canceled. Order updated to CANCELLED.' };
+//       }
+//     }
+
+//     return { message: 'Payment status could not be determined.' };
+//   }
 
 }

@@ -9,6 +9,7 @@ import { CartItem } from '../cart-item/cart-item.entity';
 import { Book } from '../book/entity/book.entity';
 import { OrderStatus, PaymentMethod } from './enum';
 import { parse } from 'date-fns';
+import { error } from 'console';
 
 @Injectable()
 export class OrderDetailService {
@@ -23,11 +24,11 @@ export class OrderDetailService {
 
     async createOrder(createOrderDto: CreateOrderDto, userId: number) {
         const cartItems = await this.cartItemRepository.find({ where: { userId: userId } });
-
+    
         if (cartItems.length === 0) {
             throw new NotFoundException('No cart items found for the specified user');
         }
-
+    
         let defaultStatus: OrderStatus;
         if (createOrderDto.paymentMethod === PaymentMethod.COD) {
             defaultStatus = OrderStatus.PENDING;
@@ -36,41 +37,55 @@ export class OrderDetailService {
         } else {
             throw new BadRequestException('Invalid payment method');
         }
-
+    
+        // Initialize order without saving
         const order = this.orderDetailRepository.create({
             ...createOrderDto,
             userId: userId,
             status: defaultStatus,
             cartItem: cartItems,
         });
-
+    
         order.calculateTotalPrice();
-
-        const books = cartItems.map(item => ({
-            bookId: item.bookId,
-            quantity: item.quantity,
-        }));
-
-        order.books = books;
-
-        const savedOrder = await this.orderDetailRepository.save(order);
-
+    
+        const books = [];
         for (const item of cartItems) {
             const book = await this.bookRepository.findOne({ where: { id: item.bookId } });
-            if (book) {
-                book.quantity -= item.quantity;
-                await this.bookRepository.save(book);
+            if (!book) {
+                throw new NotFoundException(`Book with ID ${item.bookId} not found`);
             }
+    
+            if (book.quantity - item.quantity < 0) {
+                throw new BadRequestException(
+                    `Insufficient stock for book with ID ${item.bookId}: Requested ${item.quantity}, Available ${book.quantity}`
+                );
+            }
+    
+            // Deduct stock
+            book.quantity -= item.quantity;
+            await this.bookRepository.save(book);
+    
+            // Add book to order's books array
+            books.push({
+                bookId: item.bookId,
+                quantity: item.quantity,
+            });
         }
-
+    
+        order.books = books;
+    
+        // Save order
+        const savedOrder = await this.orderDetailRepository.save(order);
+    
+        // Clear cart items for the user
         await this.cartItemRepository.delete({ userId: userId });
-
+    
         const transformedCartItems = cartItems.map(item => ({
             title: item.book.title,
             quantity: item.quantity,
             price: item.sellingPrice,
         }));
-
+    
         const data = {
             paymentMethod: savedOrder.paymentMethod,
             rAddress: savedOrder.rAddress,

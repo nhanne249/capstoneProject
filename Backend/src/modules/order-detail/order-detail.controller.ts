@@ -17,18 +17,20 @@ export class OrderDetailController {
         try {
             const userPayload = request['user'];
             const userId = userPayload.sub;
+            const data = await this.orderDetailService.createOrder(createOrderDto, userId); // Ensure 'await'
             return {
-                message: "Create order succesfully",
-                data: this.orderDetailService.createOrder(createOrderDto, userId)
-            }
+                message: "Create order successfully",
+                data,
+            };
         } catch (error) {
             return {
                 message: "Create order failed.",
-                error: error.message
-            }
+                error: error.message,
+            };
         }
     }
-    
+
+
     @Roles('Admin')
     @Get('admin')
     async getAllOrdersByAdmin(@Query('page') page: string) {
