@@ -30,7 +30,15 @@ export default async function handler(req, res) {
       }),  
     );  
 
-    SwaggerModule.setup('', app, documentFactory);
+    SwaggerModule.setup('', app, documentFactory,{customJs: [
+'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
+'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
+],
+customCssUrl: [
+'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.css',
+'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.css',
+],});
 
     // This is important  
     await app.init();  
