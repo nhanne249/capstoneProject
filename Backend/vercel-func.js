@@ -1,17 +1,15 @@
 /* eslint-disable prettier/prettier */
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';  
 import { ValidationPipe } from '@nestjs/common';  
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';    
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';   
 
 import { AppModule } from './dist/app.module';  
 
 export default async function handler(req, res) { 
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
   if (!app) {  
     app.enableCors({  
-      origin: configService.get<string>('FRONTEND_DOMAIN'),  
+      origin: process.env.FRONTEND_DOMAIN,  
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,  
     });  
