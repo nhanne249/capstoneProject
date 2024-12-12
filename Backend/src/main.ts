@@ -21,18 +21,7 @@ async function bootstrap() {
     .addTag('API')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory,
-      {
-        customJs: [
-          'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui-bundle.js', 
-        ],
-        swaggerUiEnabled: true,
-        customCssUrl: [
-          'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui.min.css',
-          'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui.css',
-        ],
-      });
+  SwaggerModule.setup('api', app, documentFactory);
   await app.listen(3000);
   
   if (module.hot) {
