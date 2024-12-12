@@ -29,7 +29,13 @@ export default async function handler(req, res) {
       }),  
     );  
 
-    SwaggerModule.setup('api', app, document); 
+    SwaggerModule.setup('api', app, document, {
+      customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui.css',
+      customJs: [
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui-bundle.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui-standalone-preset.js',
+      ]
+    }); 
     await app.init();  
   }  
   const adapterHost = app.get(HttpAdapterHost);  
