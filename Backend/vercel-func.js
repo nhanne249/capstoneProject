@@ -5,39 +5,32 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './dist/app.module';  
 
-// Keep the app instance in memory for subsequent requests  
-let app;  
-export default async function handler(req, res) {  
-  // Bootstrap our NestJS app on cold start  
+export default async function handler(req, res) { 
+  const app = await NestFactory.create(AppModule);
   if (!app) {  
-    app = await NestFactory.create(AppModule);  
-
-    // Sử dụng FRONTEND_DOMAIN cho CORS  
     app.enableCors({  
       origin: process.env.FRONTEND_DOMAIN || true,  
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,  
     });  
 
     const config = new DocumentBuilder()  
-      .setTitle('API Documentation') // Cập nhật tiêu đề  
-      .setDescription('API Documentation') // Cập nhật mô tả  
+      .setTitle('API Documentation') 
+      .setDescription('API Documentation')
       .setVersion('1.0')  
-      .addTag('API') // Thêm tag nếu cần  
+      .addTag('API')
       .build();  
-    const document = SwaggerModule.createDocument(app, config);  
+    const documentFactory = () => SwaggerModule.createDocument(app, config);  
 
     app.useGlobalPipes(  
-      new ValidationPipe({  
-        // Require decorator for field to be present  
-        whitelist: true,  
-        // Use class-transformer  
-        transform: true,  
-        // Use validator and transformer in response  
+      new ValidationPipe({ 
+        whitelist: true, 
+        transform: true, 
         always: true,  
       }),  
     );  
 
-    SwaggerModule.setup('', app, document); // Đặt đường dẫn Swagger tương tự như main.ts  
+    SwaggerModule.setup('', app, documentFactory);
 
     // This is important  
     await app.init();  
