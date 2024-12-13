@@ -40,13 +40,9 @@ const SignIn = () => {
           expires: 7,
           path: "/",
         });
-        navigate(`/${res?.payload.role.toLowerCase()}`, { replace: true });
+        navigate(`/`, { replace: true });
         setIsLogin(true);
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
       }
-      //Handle sigin error
       if (res?.payload.error) {
         toast.error("Username hoặc mật khẩu chưa chính xác!", {
           position: "top-right",
