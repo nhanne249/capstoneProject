@@ -16,7 +16,7 @@ const adminRouter =
       },
       {
         subPath: "dashboard",
-        Component: Dashboard,
+        Component: UserManagement,
       },
       {
         subPath: "products",
