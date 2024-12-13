@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { flushSync } from "react-dom";
 import { Button, Form, Input } from "antd";
 import { useDispatch } from "react-redux";
 import { signInThunk } from "../../../redux/action/signIn";
@@ -32,16 +33,20 @@ const SignIn = () => {
           progress: undefined,
           theme: "colored",
         });
-        Cookies.set("userPresent", `${res?.payload.token}`, {
-          expires: 7,
-          path: "/",
-        });
-        Cookies.set("role", `${res?.payload.role.toLowerCase()}`, {
-          expires: 7,
-          path: "/",
-        });
+        flushSync(() => {
+
+          Cookies.set("userPresent", `${res?.payload.token}`, {
+            expires: 7,
+            path: "/",
+          });
+          Cookies.set("role", `${res?.payload.role.toLowerCase()}`, {
+            expires: 7,
+            path: "/",
+          });
+        })
         navigate(`/`, { replace: true });
         setIsLogin(true);
+        window.location.reload();
       }
       if (res?.payload.error) {
         toast.error("Username hoặc mật khẩu chưa chính xác!", {
