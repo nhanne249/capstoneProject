@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Button } from "antd";
+import { Button, Rate } from "antd";
 import { getBookPublicThunk } from "../../../redux/action/book";
 import { getReviewByBookIdThunk } from "./../../../redux/action/review";
 import { ShoppingCartOutlined } from "@ant-design/icons";
@@ -44,11 +44,11 @@ const Product = () => {
     setCartQuantity(cartQuantity + 1);
   };
   return (
-    <div className="w-full h-full flex flex-col px-5 gap-5">
+    <div className="w-full h-auto flex flex-col px-5 gap-5 bg-white">
       <div className="w-full h-3/5 grid grid-cols-2 grid-rows-1 gap-5 pt-4 px-5">
         <div className="w-full h-full flex flex-row gap-2">
           <div className="w-4/5 h-auto">
-            <img className="w-full aspect-[1/1] rounded-lg" src={thumbnail} alt="thumbnail" />
+            <img className="w-full h-auto aspect-[1/1] rounded-lg" src={thumbnail} alt="thumbnail" />
           </div>
           <div className="w-1/5 h-fit">
             {book?.image_id?.map((img, index) => (
@@ -78,12 +78,17 @@ const Product = () => {
           <div className="text-xl text-slate-900 font-medium mt-5">{book?.description}</div>
         </div>
       </div>
-      <div className="w-full h-full flex flex-col">
-        <div className="w-1/2 text-3xl text-green-800 font-semibold border-b border-black">Review</div>
-        {reviews?.error ? (
-          <div className="text-xl text-slate-400 font-semibold">{reviews?.error?.message}</div>
+      <div className="w-full h-full flex-grow flex flex-col">
+        <div className="w-1/2 text-3xl text-green-800 font-semibold border-b border-black mb-5">Review</div>
+        {reviews ? (
+          reviews?.map((review, index) => <div key={index} className="flex flex-col gap-2 w-full border rounded-md p-2">
+            <div className="text-xl font-bold">{review.name}</div>
+            <div className="text-sm text-gray-300">{review.reviewDate}</div>
+            <Rate value={review.rating} disabled={true} />
+            <div className="text-base">{review.content}</div>
+          </div>)
         ) : (
-          reviews?.map((review, index) => <div key={index}>{review}</div>)
+          <div className="text-xl text-slate-400 font-semibold">There are no review for this product!</div>
         )}
       </div>
     </div>

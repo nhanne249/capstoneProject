@@ -5,8 +5,8 @@ const payment = {
     getQRCode: (data) => {
         return transport.post(`${url}/create-payment-link`,data);
     },
-    getPaymentInfo: () => {
-        return transport.get(`${url}`);
+    getPaymentInfo: (data) => {
+        return transport.get(`${url}?id=${data}`);
     },
 }
 export default payment;

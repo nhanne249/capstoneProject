@@ -89,11 +89,9 @@ export class OrderDetailController {
 
     @Roles('Admin')
     @Put(':id')
-    async updateOrder(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto, @Req() request: Request): Promise<any> {
+    async updateOrder(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto): Promise<any> {
         try {
-            const userPayload = request['user'];
-            const userId = userPayload.sub;
-            const updatedOrder = await this.orderDetailService.updateOrder(id, updateOrderDto, userId);
+            const updatedOrder = await this.orderDetailService.updateOrder(id, updateOrderDto);
 
             return {
                 message: "Order updated successfully",

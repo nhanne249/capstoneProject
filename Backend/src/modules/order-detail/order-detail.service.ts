@@ -151,7 +151,7 @@ export class OrderDetailService {
             for (const el of order.books) {
                 const book = await this.bookRepository.findOne({
                     where: { id: Number(el.bookId) },
-                    select: ['title', 'sellingPrice', 'image_id'],
+                    select: ['title', 'sellingPrice', 'image_id', 'id'],
                 });
 
                 if (book) {
@@ -191,8 +191,6 @@ export class OrderDetailService {
             },
         });
 
-        console.log(orders)
-
         return {
             data: await Promise.all(orders.map(async (order) => {
                 const books: any[] = [];
@@ -231,9 +229,10 @@ export class OrderDetailService {
         };
     }
 
-    async updateOrder(id: number, updateOrderDto: UpdateOrderDto, userId: number): Promise<OrderDetail> {
+    async updateOrder(id: number, updateOrderDto: UpdateOrderDto): Promise<OrderDetail> {
+        console.log(updateOrderDto)
         const order = await this.orderDetailRepository.findOne({
-            where: { id, userId },
+            where: { id },
             relations: ['cartItem'], // Ensure 'cartItem' is included
         });
 

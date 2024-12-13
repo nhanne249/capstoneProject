@@ -9,7 +9,7 @@ const book = {
         return transport.get(`${url}s/public?page=${data}`);
     },
     searchBook: (data) => {
-        return transport.get(`${url}s?search=${data.search}&page=${data.page}`);
+        return transport.get(`${url}s/search?search=${data.search}&page=${data.page}`);
     },
     getBookPublic: (data) => {
         return transport.get(`${url}/public/${data}`,);

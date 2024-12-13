@@ -15,7 +15,7 @@ const PaymentResult = () => {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getPaymentInfoThunk()).then(() => {
+        dispatch(getPaymentInfoThunk(orderCode)).then(() => {
             localStorage.removeItem("cart");
         })
     }, [])

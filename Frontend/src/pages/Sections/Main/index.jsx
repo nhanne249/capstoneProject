@@ -6,6 +6,7 @@ import anime from "animejs";
 import "./styles.scss";
 import Card from "../../../utils/components/card";
 import publicationImage from "../../../assets/images/publications-image.png";
+import { searchBookThunk } from "../../../redux/action/book";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const Main = () => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex flex-row w-full h-full pb-5">
+      <div className="flex flex-row w-full h-full pb-5 bg-white">
         <img src={publicationImage} alt="" className="w-[40%] min-h-full h-full" />
         <div className="w-full h-full flex flex-col ml-5 self-center">
           <h1 className="ml6">

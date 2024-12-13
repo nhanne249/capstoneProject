@@ -22,6 +22,11 @@ const HeaderPage = (role) => {
       label: <div className={menuItemClassName}>Home</div>,
       disabled: location.pathname == "/main",
     },
+    {
+      key: "products",
+      label: <div className={menuItemClassName}>Products</div>,
+      disabled: location.pathname == "/products",
+    },
   ];
 
   const onItemClick = (value) => {

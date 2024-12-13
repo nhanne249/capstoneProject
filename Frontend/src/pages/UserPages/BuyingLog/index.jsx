@@ -26,7 +26,7 @@ const BuyingLog = () => {
       title: "Total",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (text) => <div className="text-base text-green-500">{text.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND"}</div>
+      render: (text) => <div className="text-base text-green-500">{text.slice(0, -3).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND"}</div>
     },
     {
       title: "Payment method",
@@ -40,8 +40,9 @@ const BuyingLog = () => {
       render: (text) => {
         if (text === 'pending')
           return <Tag color={"orange"}>Pending</Tag>;
-
-        if (text === 'transferring')
+        else if (text === 'failure')
+          return <Tag color={"red"}>Failure</Tag>;
+        else if (text === 'transferring')
           return <Tag color={"blue"}>Transferring</Tag>;
         return <Tag color={"green"}>Done</Tag>;
       },
@@ -69,10 +70,11 @@ const BuyingLog = () => {
   }, [isReceived]);
 
   const handlePostReview = (values) => {
-    console.log(values);
     const dataSend = {
       bookId: product.id,
-      values
+      rating: values.rating,
+      content: values.content
+
     }
     dispatch(postReviewThunk(dataSend)).then(() => {
       toast.success("Your review has been posted!", {
@@ -162,6 +164,7 @@ const BuyingLog = () => {
         centered={true}
         onCancel={() => {
           setIsReview(false);
+          setDetail();
         }}
         footer={false}>
         <Form

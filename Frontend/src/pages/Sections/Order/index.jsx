@@ -50,6 +50,7 @@ const Order = () => {
           theme: "colored",
         });
         navigate("/profile")
+        localStorage.removeItem("cart");
       };
     });
   };
@@ -57,7 +58,7 @@ const Order = () => {
   const { cartServer, cartQuantity } = useContext(MyCart);
 
   return (
-    <div className="w-full h-full px-10 py-5 justify-center flex">
+    <div className="w-full h-auto px-10 py-5 justify-center flex">
       <Form layout="vertical" onFinish={handleCreateOrder} className="w-full grid grid-cols-5 grid-rows-1 gap-5">
         <div className="col-span-4 flex flex-col gap-5">
           <div className="bg-white h-fit w-full p-5 rounded-xl border-gray-400">

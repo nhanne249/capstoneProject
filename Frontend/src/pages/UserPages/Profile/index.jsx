@@ -27,7 +27,7 @@ const Profile = () => {
       title: "Total",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (text) => <div className="text-base text-green-500">{text.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND"}</div>
+      render: (text) => <div className="text-base text-green-500">{text.slice(0, -3).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VND"}</div>
     },
     {
       title: "Payment method",
@@ -41,10 +41,11 @@ const Profile = () => {
       render: (text) => {
         if (text === 'pending')
           return <Tag color={"orange"}>Pending</Tag>;
-
-        if (text === 'transferring')
+        else if (text === 'failure')
+          return <Tag color={"red"}>Failure</Tag>;
+        else if (text === 'transferring')
           return <Tag color={"blue"}>Transferring</Tag>;
-        return <Tag color={"green"}>Done</Tag>;
+        return <Tag color={"green"}>Success</Tag>;
       },
     },
   ];
@@ -179,40 +180,6 @@ const Profile = () => {
                   <Input className="!w-full h-14 rounded-lg border-gray-600 content-center text-2xl !text-stone-800" />
                 </Form.Item>
               </div>
-              {/* <div className="flex flex-col w-5/12">
-                <div className="px-2 pb-1 font-medium text-2xl">Password</div>
-                <Form.Item
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your Password!",
-                    },
-                    {
-                      validator: (_, value) => {
-                        if (value != undefined && value != null) {
-                          if (!/^.{8,16}$/.test(value)) {
-                            return Promise.reject("Password must have 8-16 symbols!");
-                          } else if (!/(?=.*[A-Z])/.test(value)) {
-                            return Promise.reject("Password must have uppercase letter!");
-                          } else if (!/(?=.*[a-z])/.test(value)) {
-                            return Promise.reject("Password must have lowercase letter!");
-                          } else if (!/(?=.*\d)/.test(value)) {
-                            return Promise.reject("Password must have number!");
-                          } else if (!/(?=.*[!@#$%^&*])/.test(value)) {
-                            return Promise.reject("Password must have special symbol!");
-                          }
-                          return Promise.resolve();
-                        } else {
-                          return Promise.reject();
-                        }
-                      },
-                    },
-                  ]}
-                >
-                  <Input.Password type="password" className="!w-full h-14 rounded-lg border-gray-600 content-center text-2xl !text-stone-800" />
-                </Form.Item>
-              </div> */}
 
             </div>
 

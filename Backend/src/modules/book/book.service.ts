@@ -61,7 +61,7 @@ export class BookService {
     }
 
     async searchBooks(search: string, page: number) {
-        const pageSize = 10;
+        const pageSize = 12;
         const offset = (page - 1) * pageSize;
 
         const [books, total] = await this.bookRepository.findAndCount({
@@ -70,21 +70,17 @@ export class BookService {
                 { author: ILike(`%${search}%`) },
                 { description: ILike(`%${search}%`) }
             ],
-            select: ['title', 'quantity', 'author', 'description', 'costPrice', 'sellingPrice'],
+            select: ['title', 'quantity', 'author', 'description', 'costPrice','image_id','id'],
             skip: offset,
             take: pageSize,
         });
+        const totalPages = Math.ceil(total / pageSize);
         return {
-            data: books.map(book => ({
-                image: book.image.map((item) => item.toString()),
-                title: book.title,
-                author: book.author,
-                description: book.description,
-                sellingPrice: book.sellingPrice
-            })),
+            data: books,
             pageNumber: page,
             pageSize: pageSize,
             total: total,
+            totalPages: totalPages,
         };
     }
 

@@ -7,18 +7,20 @@ import noImage from "../../../assets/images/no-mage.png";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { isLogin, cartServer, setCartClient, cartQuantity } = useContext(MyCart);
+  const { isLogin, cartServer, setCartClient, cartQuantity, cartClient, setIsFetch } = useContext(MyCart);
   const [total, setTotal] = useState(
-    cartServer.reduce((sum, item) => {
-      return sum + item.quantity * Number(item.sellingPrice);
-    }, 0)
+    0
   );
   useEffect(() => {
-    setTotal(
-      cartServer.reduce((sum, item) => {
-        return sum + item.quantity * Number(item.sellingPrice);
-      }, 0)
-    );
+    if (cartClient.length > 0) setIsFetch(true);
+  }, [])
+  useEffect(() => {
+    if (cartServer.length > 0)
+      setTotal(
+        cartServer.reduce((sum, item) => {
+          return sum + item.quantity * Number(item.sellingPrice);
+        }, 0)
+      );
   }, [cartServer]);
   const handleClickAdd = (id) => {
     setCartClient((prevCart) => {
@@ -89,10 +91,10 @@ const Cart = () => {
     }
   };
 
-  return cartServer.length != 0 ? (
+  return cartServer?.length > 0 ? (
     <div className="w-full h-full px-10 py-5 grid grid-cols-5 grid-rows-1 gap-4">
-      <div className="col-span-4 flex flex-col border rounded-lg py-5 h-fit bg-white">
-        {cartServer.map((item) => {
+      <div className="col-span-4 flex flex-col border rounded-lg py-5 h-full bg-white">
+        {cartServer?.map((item) => {
           return (
             <div key={item.id} className="w-auto h-20 grid grid-cols-10 grid-rows-1 gap-4 mx-3 border-b">
               <img className="w-16 min-w-16 h-16" src={item?.image_id ? `${import.meta.env.VITE_BACKEND_API}/api/image/${item.image_id[0]}` : noImage} alt="" />
@@ -125,7 +127,7 @@ const Cart = () => {
           );
         })}
       </div>
-      <div className="col-start-5 min-w-80 bg-white rounded-xl flex flex-col justify-center p-5 gap-5 border">
+      <div className="col-start-5 h-fit min-w-80 bg-white rounded-xl flex flex-col justify-center p-5 gap-5 border">
         <div className="w-full flex flex-col justify-center gap-5 pb-5 border-b border-gray-400">
           <div className="text-2xl font-bold text-red-600 text-center">Checkout</div>
           <div className="flex flex-row justify-between gap-5">

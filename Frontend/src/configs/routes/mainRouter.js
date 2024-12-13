@@ -7,6 +7,7 @@ import Product from "../../pages/Sections/Product";
 import Cart from "../../pages/Sections/Cart";
 import Order from "../../pages/Sections/Order";
 import PaymentResult from "../../pages/Sections/PaymentResult";
+import Products from "../../pages/Sections/Products";
 
 const mainRouter ={ 
     path: "",
@@ -15,6 +16,10 @@ const mainRouter ={
       {
         path: "main",
         Component: Main,
+      },
+      {
+        path: "products",
+        Component: Products,
       },
       {
         path: "signin",
