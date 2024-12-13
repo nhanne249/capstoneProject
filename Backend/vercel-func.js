@@ -2,14 +2,16 @@
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';  
 import { ValidationPipe } from '@nestjs/common';  
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';  
+import { ConfigService } from '@nestjs/config';  
 
 import { AppModule } from './dist/app.module';  
 
 export default async function handler(req, res) {
   const app = await NestFactory.create(AppModule); 
+  const configService = app.get(ConfigService);
   if (app) {  
     app.enableCors({  
-      origin: process.env.FRONTEND_DOMAIN || true,  
+      origin: configService.get<string>('FRONTEND_DOMAIN') || true,  
       credentials: true,  
     });  
 
