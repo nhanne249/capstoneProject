@@ -6,6 +6,7 @@ import SignUp from "../../pages/Sections/SignUp";
 import Product from "../../pages/Sections/Product";
 import Cart from "../../pages/Sections/Cart";
 import Order from "../../pages/Sections/Order";
+import PaymentResult from "../../pages/Sections/PaymentResult";
 
 const mainRouter ={ 
     path: "",
@@ -34,6 +35,10 @@ const mainRouter ={
       {
         path: "order",
         Component: Order,
+      },
+      {
+        path: "payment-result",
+        Component: PaymentResult,
       },
       // {
       //   path: "test",

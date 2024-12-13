@@ -1,14 +1,12 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import PayOS = require('@payos/node');
+import PayOS = require("@payos/node");
 import { OrderDetail } from 'src/modules/order-detail/order-detail.entity';
-import { OrderDetailService } from 'src/modules/order-detail/order-detail.service'; // Đảm bảo inject service OrderDetailService để cập nhật đơn hàng
 import { OrderStatus } from '../order-detail/enum';
-import { retry } from 'rxjs';
 import { Book } from '../book/entity/book.entity';
-const axios = require('axios');
 
 @Injectable()
 export class PayosService {
@@ -29,7 +27,7 @@ export class PayosService {
     }
 
     async createPaymentLink(orderId: number, order: OrderDetail, paymentContent: string) {
-        const YOUR_DOMAIN = this.configService.get<string>('YOUR_DOMAIN');
+        const FRONTEND_DOMAIN = this.configService.get<string>('FRONTEND_DOMAIN');
 
         if (!order.cartItem || order.cartItem.length === 0) {
             throw new Error('Order does not contain any books');
@@ -46,8 +44,8 @@ export class PayosService {
                     price: parseFloat(item.sellingPrice.toString()),
                 };
             })),
-            returnUrl: `${YOUR_DOMAIN}/api/payos/payment-success`,
-            cancelUrl: `${YOUR_DOMAIN}/api/payos/payment-cancel`,
+            returnUrl: `${FRONTEND_DOMAIN}/payment-result`,
+            cancelUrl: `${FRONTEND_DOMAIN}/payment-result`,
         };
 
 

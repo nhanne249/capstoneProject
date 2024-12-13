@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { PayosController } from './payos.controller';
 import { PayosService } from './payos.service';

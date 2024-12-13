@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, Select } from "antd";
+import { Form, Input, Button, Select, Spin } from "antd";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { createOrderThunk } from "./../../../redux/action/order";
+import { getQRCodeThunk } from "../../../redux/action/payment";
 import { MyCart } from "../../../layouts";
 import noImage from "../../../assets/images/no-mage.png";
 
@@ -12,8 +13,21 @@ const { Option } = Select;
 const Order = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleAddBoook = (values) => {
-    console.log(values);
+
+  //handle render QR code
+  const [isCreatingLink, setIsCreatingLink] = useState(false);
+
+  const handleGetPaymentLink = (orderId) => {
+    setIsCreatingLink(true);
+    dispatch(getQRCodeThunk({ orderId, paymentContent: `Don hang ${orderId}` })).then((res) => {
+      window.location.href = res.payload.paymentLink;
+      setIsCreatingLink(false);
+    });
+  };
+
+  ///////////////////////////////////////////////////////
+
+  const handleCreateOrder = (values) => {
     const dataSend = {
       paymentMethod: values.paymentMethod, // string
       rAddress: values.rAddress, // string
@@ -23,26 +37,28 @@ const Order = () => {
     };
 
     dispatch(createOrderThunk(dataSend)).then((res) => {
-      toast.success(res.payload.message, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      if (values.paymentMethod == 'CK') handleGetPaymentLink(res.payload.data.orderId);
+      else {
+        toast.success(res.payload.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        navigate("/profile")
+      };
     });
-
-    navigate("/profile");
   };
 
   const { cartServer, cartQuantity } = useContext(MyCart);
 
   return (
     <div className="w-full h-full px-10 py-5 justify-center flex">
-      <Form layout="vertical" onFinish={handleAddBoook} className="w-full grid grid-cols-5 grid-rows-1 gap-5">
+      <Form layout="vertical" onFinish={handleCreateOrder} className="w-full grid grid-cols-5 grid-rows-1 gap-5">
         <div className="col-span-4 flex flex-col gap-5">
           <div className="bg-white h-fit w-full p-5 rounded-xl border-gray-400">
             <div className="px-2 pb-2 mb-4 font-medium text-4xl border-b w-1/2 text-gray-600">Order's detail</div>
@@ -95,7 +111,7 @@ const Order = () => {
             <div className="px-2 pb-1 font-medium text-base">Payment method</div>
             <Form.Item name="paymentMethod" rules={[{ required: true, message: "Please select a payment method!" }]}>
               <Select className="!w-full h-10 tsext-base" placeholder="Select a payment method">
-                <Option value="MoMo">MoMo</Option>
+                <Option value="CK">QR</Option>
                 <Option value="COD">COD</Option>
               </Select>
             </Form.Item>
@@ -125,7 +141,7 @@ const Order = () => {
               className="w-52 h-12 z-10 bg-green-800 !text-white relative font-semibold after:-z-20 after:absolute after:h-1 after:w-1 after:bg-green-500 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 [text-shadow:3px_5px_2px_#075985;] hover:[text-shadow:2px_2px_2px_#7dd4fc] text-2xl"
               htmlType="submit"
             >
-              Create order
+              {isCreatingLink ? <Spin /> : 'Place order'}
             </Button>
           </Form.Item>
         </div>

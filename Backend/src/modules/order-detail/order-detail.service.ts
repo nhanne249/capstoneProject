@@ -87,6 +87,7 @@ export class OrderDetailService {
         }));
     
         const data = {
+            orderId: savedOrder.id,
             paymentMethod: savedOrder.paymentMethod,
             rAddress: savedOrder.rAddress,
             rName: savedOrder.rName,

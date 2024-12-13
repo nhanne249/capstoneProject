@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Post, Body, BadRequestException, Req, UseGuards, Query, Get } from '@nestjs/common';
 import { PayosService } from './payos.service';
 import { OrderDetailService } from 'src/modules/order-detail/order-detail.service';
@@ -5,7 +6,6 @@ import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderDetail } from 'src/modules/order-detail/order-detail.entity';
 import { Repository } from 'typeorm';
-import { OrderStatus } from 'src/modules/order-detail/enum';
 
 
 @Controller('api/payos')
