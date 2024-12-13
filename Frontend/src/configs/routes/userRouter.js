@@ -14,6 +14,10 @@ const userRouter =
         Component: Profile,
       },
       {
+        subPath: "",
+        Component: Profile,
+      },
+      {
         subPath: "profile",
         Component: Profile,
       },

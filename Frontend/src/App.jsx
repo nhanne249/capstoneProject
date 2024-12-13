@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { publicRouter, privateRouter } from "./configs/routes";
 import Cookies from "js-cookie";
@@ -7,7 +6,6 @@ import "./App.scss";
 const userPresent = !!Cookies.get("userPresent");
 const role = Cookies.get("role");
 function App() {
-  useEffect(() => {}, [role]);
 
   return (
     <BrowserRouter>

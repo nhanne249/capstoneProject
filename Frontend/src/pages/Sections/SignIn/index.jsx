@@ -42,6 +42,9 @@ const SignIn = () => {
         });
         navigate(`/${res?.payload.role.toLowerCase()}`, { replace: true });
         setIsLogin(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       }
       //Handle sigin error
       if (res?.payload.error) {

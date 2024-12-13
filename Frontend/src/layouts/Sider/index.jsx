@@ -42,6 +42,6 @@ const SiderPage = (role) => {
   const onClickMenuItem = (value) => {
     navigate(value.key);
   };
-  return <Menu mode="inline" className="h-4/5 py-4 shadow-md pl-2 rounded-e-xl" items={items} onClick={onClickMenuItem} />;
+  return <Menu mode="inline" className="h-full py-4 shadow-md pl-2 rounded-e-xl" items={items} onClick={onClickMenuItem} />;
 };
 export default SiderPage;

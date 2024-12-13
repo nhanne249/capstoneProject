@@ -4,14 +4,12 @@ import { useParams } from "react-router-dom";
 import { getOrderByIdThunk } from "../../../redux/action/order";
 import { MyCart } from "../../../layouts";
 import noImage from "../../../assets/images/no-mage.png";
-import { Button, Col, Row, Grid } from "antd";
+import { Button, Col, Row } from "antd";
 import Message from "../../../components/Message";
 const OrderDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [order, setOrder] = useState();
-  const [items, setItems] = useState();
-  // const navigate = useNavigate();
   const { cartServer, cartQuantity } = useContext(MyCart);
   const [total, setTotal] = useState(
     cartServer.reduce((sum, item) => {
@@ -23,11 +21,11 @@ const OrderDetail = () => {
     console.log(`Place Order no ${id}`)
   }
   // useEffect(() => {
-    // setTotal(
-    //   cartServer.reduce((sum, item) => {
-    //     return sum + item.quantity * Number(item.sellingPrice);
-    //   }, 0)
-    // );
+  // setTotal(
+  //   cartServer.reduce((sum, item) => {
+  //     return sum + item.quantity * Number(item.sellingPrice);
+  //   }, 0)
+  // );
   // }, [cartServer]);
 
   useEffect(() => {
@@ -45,18 +43,18 @@ const OrderDetail = () => {
         <Col className='d-flex flex-column mt-1' span={16}>
           <h1 className="text-3xl font-medium font-sans text-green-600 mb-4">Shipping:</h1>
           <p className="text-lg font-sans">
-              Name : {order?.rName}
+            Name : {order?.rName}
           </p>
           <p className="text-lg font-sans">
-              Phone : {order?.rPhone}
+            Phone : {order?.rPhone}
           </p>
           <p className="text-lg font-sans">
-              Shipping : {order?.rAddress}
+            Shipping : {order?.rAddress}
           </p>
           <Message variant="warning" />
           <h1 className="text-3xl font-medium font-sans text-green-600 mb-4">Payment method:</h1>
           <p className="text-lg font-sans">
-              Method : {order?.paymentMethod}
+            Method : {order?.paymentMethod}
           </p>
           <h1 className="text-3xl font-medium font-sans text-green-600 mb-4 mt-4">Order Items:</h1>
 
@@ -71,9 +69,8 @@ const OrderDetail = () => {
                     className="w-16 min-w-16 h-16"
                     src={
                       item?.image_id
-                        ? `${import.meta.env.VITE_BACKEND_API}/api/image/${
-                            item.image_id[0]
-                          }`
+                        ? `${import.meta.env.VITE_BACKEND_API}/api/image/${item.image_id[0]
+                        }`
                         : noImage
                     }
                     alt=""
@@ -84,7 +81,7 @@ const OrderDetail = () => {
                     </div>
                     <div className="text-base text-red-600 font-semibold">
                       {item.quantity} x {item.sellingPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ".") +
-                        " = "} {item.quantity*item.sellingPrice} VND
+                        " = "} {item.quantity * item.sellingPrice} VND
                     </div>
                   </div>
                 </div>
@@ -109,7 +106,7 @@ const OrderDetail = () => {
                   Items:
                 </div>
                 <div className="text-lg font-medium w-32">{total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") +
-                    " VND"}</div>
+                  " VND"}</div>
               </div>
               <div className="flex flex-row justify-between gap-5">
                 <div className="text-lg font-medium text-green-800">

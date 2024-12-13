@@ -22,8 +22,8 @@ const LayoutPage = () => {
   const [cartQuantity, setCartQuantity] = useState(
     localStorage.getItem("cart")
       ? JSON.parse(localStorage.getItem("cart")).reduce((sum, item) => {
-          return sum + (item.quantity || 0);
-        }, 0)
+        return sum + (item.quantity || 0);
+      }, 0)
       : 0
   );
 
@@ -66,39 +66,35 @@ const LayoutPage = () => {
   }, [isLogin, isFetch]);
 
   const role = Cookies.get("role") ? Cookies.get("role") : undefined;
-  useEffect(() => {}, [role]);
 
   return (
     <MyCart.Provider value={{ isLogin, cartQuantity, setCartQuantity, setIsLogin, cartServer, cartClient, setCartClient, setIsFetch }}>
       <Layout
-        className={`min-h-screen w-full ${
-          location.pathname.split("/")[1] == "signin" || location.pathname.split("/")[1] == "signup" ? "h-screen" : "h-auto"
-        } bg-slate-200 bg-opacity-30`}
+        className="h-full w-full gap-5 flex flex-col"
       >
-        <Header className="w-full px-12 bg-white h-fit">
+        <Header className="w-full px-12 bg-white h-16">
           <HeaderPage role={role} />
-        </Header>
+        </Header >
         {role == location.pathname.split("/")[1] ? (
-          <Layout className="min-h-full h-full w-full bg-slate-200">
-            <Sider className="!w-64 !max-w-64 !flex-none h-full mr-5 mt-5 bg-transparent">
+          <Layout className="flex-grow flex flex-col gap-5 ">
+            <Sider className="!w-64 !max-w-64 !flex-none h-full bg-transparent">
               <SiderPage role={role} />
             </Sider>
-            <Content className="h-full px-12  mr-4 my-5 bg-white rounded-xl">
+            <Content className="h-full w-full px-12 bg-white rounded-xl">
               <Outlet />
             </Content>
-          </Layout>
+          </Layout >
         ) : (
           <Content
-            className={`h-full ${
-              location.pathname.split("/")[1] == "signin" || location.pathname.split("/")[1] == "signup" ? "backgroundMain" : " mt-5 bg-transparent pb-5"
-            }`}
+            className={`h-full flex-grow ${location.pathname.split("/")[1] == "signin" || location.pathname.split("/")[1] == "signup" ? "backgroundMain" : " bg-transparent pb-5"
+              }`}
           >
             <Outlet />
-          </Content>
+          </Content >
         )}
-        <Footer className="h-10 mt-2  bg-white">
-          <FooterPage />
-        </Footer>
+        {/* <Footer className="bottom-0 w-full h-10 bg-white">
+          hi
+        </Footer > */}
       </Layout>
     </MyCart.Provider>
   );
